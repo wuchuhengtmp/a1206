@@ -1,29 +1,62 @@
 version: '3'
 
 services:
-  hyperf:
-    image: hyperf/hyperf:7.4-alpine-v3.11-swoole
+#  hyperf:
+#    image: hyperf/hyperf:7.4-alpine-v3.11-swoole
+#    ports:
+#      - "9501:9501"
+#    volumes:
+#      - ./simple/:/opt/www/
+#    privileged: true
+#    working_dir: /opt/www/
+#    restart: always
+#    container_name: simple
+#    # depends_on:
+#    #   - "mysql"
+#    networks:
+#      - default
+#    command:
+#      - /bin/sh
+#      - -c
+#      - |
+#        php bin/simps.php http:start
+#          # composer install
+#          ##php bin/hyperf.php start
+#          #php bin/hyperf.php TryCreateDatabase:true
+#          #php watch -c             # 热更新
+
+
+  redis:
+    image: redis:${REDIS_VERSION}
+    container_name: redis
     ports:
-      - "9501:9501"
+      - "${REDIS_HOST_PORT}:6379"
     volumes:
-      - ./simple/:/opt/www/
-    privileged: true
-    working_dir: /opt/www/
+      - ${REDIS_CONF_FILE}:/etc/redis.conf:ro
+      - ./redis:/data/:rw
     restart: always
-    container_name: simple
-    # depends_on:
-    #   - "mysql"
+    entrypoint: ["redis-server", "/etc/redis.conf"]
+    environment:
+      TZ: "$TZ"
     networks:
       - default
-    command:
-      - /bin/sh
-      - -c
-      - |
-        php bin/simps.php http:start
-          # composer install
-          ##php bin/hyperf.php start
-          #php bin/hyperf.php TryCreateDatabase:true
-          #php watch -c             # 热更新
+
+  mysql:
+    image: mysql:${MYSQL_VERSION}
+    container_name: mysql
+    ports:
+      - "${MYSQL_HOST_PORT}:3306"
+    volumes:
+      - ${MYSQL_CONF_FILE}:/etc/mysql/conf.d/mysql.cnf:ro
+      - ./mysql/data:/var/lib/mysql/:rw
+    restart: always
+    networks:
+      - default
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      TZ: "$TZ"
+
+
   # admin:
   #   image: admin:latest
   #   build:

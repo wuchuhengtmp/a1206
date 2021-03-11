@@ -12,6 +12,11 @@ error_reporting(E_ALL);
 
 require BASE_PATH . '/vendor/autoload.php';
 
+use Symfony\Component\Dotenv\Dotenv;
+
+$dotenv = new Dotenv();
+$dotenv->load(BASE_PATH .'/.env');
+
 \Swoole\Runtime::enableCoroutine(SWOOLE_HOOK_FLAGS);
 
 Simps\Application::run();

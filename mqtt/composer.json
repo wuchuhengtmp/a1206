@@ -2,6 +2,9 @@
     "name": "simple-swoole/skeleton",
     "type": "project",
     "description": "A simple, lightweight and high-performance PHP coroutine framework.",
+    "scripts": {
+        "migration": "bin/migration.php"
+    },
     "keywords": [
         "php",
         "swoole",
@@ -14,7 +17,10 @@
         "php": ">=7.1",
         "ext-swoole": ">=4.4",
         "simple-swoole/simps": "~1.0.0",
-        "simple-swoole/db": "~1.0.0"
+        "simple-swoole/db": "^1.0",
+        "symfony/dotenv": "^5.2",
+        "symfony/console": "^5.2",
+        "doctrine/migrations": "^3.1"
     },
     "autoload": {
         "psr-4": {
@@ -22,9 +28,13 @@
         }
     },
     "bin": [
-        "bin/simps.php"
+        "bin/simps.php",
+        "bin/migration.php"
     ],
     "config": {
         "optimize-autoloader": true
+    },
+    "require-dev": {
+        "robmorgan/phinx": "^0.12.5"
     }
 }

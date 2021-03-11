@@ -1,3 +1,8 @@
 .idea
 mqtt/vendor
 graphql/vendor
+
+mqtt/.env
+
+mysql/data
+!mysql/data/.gitkeep

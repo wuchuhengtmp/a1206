@@ -9,30 +9,26 @@ declare(strict_types=1);
  * @license  https://github.com/simple-swoole/simps/blob/master/LICENSE
  */
 
+use \Simps\Server\Protocol\MQTT;
+
 return [
     'mode' => SWOOLE_PROCESS,
-    'http' => [
+    'mqtt' => [
         'ip' => '0.0.0.0',
-        'port' => 9501,
-        'sock_type' => SWOOLE_SOCK_TCP,
+        'port' => 9503,
         'callbacks' => [
         ],
-        'settings' => [
-            'worker_num' => swoole_cpu_num(),
-        ],
-    ],
-    'ws' => [
-        'ip' => '0.0.0.0',
-        'port' => 9502,
-        'sock_type' => SWOOLE_SOCK_TCP,
-        'callbacks' => [
-            "open" => [\App\Events\WebSocket::class, 'onOpen'],
-            "message" => [\App\Events\WebSocket::class, 'onMessage'],
-            "close" => [\App\Events\WebSocket::class, 'onClose'],
+        'receiveCallbacks' => [
+            MQTT::CONNECT => [\App\Events\MqttServer::class, 'onMqConnect'],
+            MQTT::PINGREQ => [\App\Events\MqttServer::class, 'onMqPingreq'],
+            MQTT::DISCONNECT => [\App\Events\MqttServer::class, 'onMqDisconnect'],
+            MQTT::PUBLISH => [\App\Events\MqttServer::class, 'onMqPublish'],
+            MQTT::SUBSCRIBE => [\App\Events\MqttServer::class, 'onMqSubscribe'],
+            MQTT::UNSUBSCRIBE => [\App\Events\MqttServer::class, 'onMqUnsubscribe'],
         ],
         'settings' => [
-            'worker_num' => swoole_cpu_num(),
-            'open_websocket_protocol' => true,
+            'worker_num' => 1,
+            'open_mqtt_protocol' => true,
         ],
     ],
 ];

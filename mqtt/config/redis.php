@@ -8,8 +8,15 @@ declare(strict_types=1);
  * @document https://doc.simps.io
  * @license  https://github.com/simple-swoole/simps/blob/master/LICENSE
  */
+
+use Symfony\Component\Dotenv\Dotenv;
+
+$dotenv = new Dotenv();
+$dotenv->load(__DIR__.'/../.env');
+
 return [
-    'host' => 'localhost',
+    'host' => '127.0.0.1',
+//    'port' => (int) $_ENV['REDIS_HOST_PORT'],
     'port' => 6379,
     'auth' => '',
     'db_index' => 0,
