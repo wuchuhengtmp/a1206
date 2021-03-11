@@ -1,0 +1,63 @@
+version: '3'
+
+services:
+  hyperf:
+    image: hyperf/hyperf:7.4-alpine-v3.11-swoole
+    ports:
+      - "9501:9501"
+    volumes:
+      - ./simple/:/opt/www/
+    privileged: true
+    working_dir: /opt/www/
+    restart: always
+    container_name: simple
+    # depends_on:
+    #   - "mysql"
+    networks:
+      - default
+    command:
+      - /bin/sh
+      - -c
+      - |
+        php bin/simps.php http:start
+          # composer install
+          ##php bin/hyperf.php start
+          #php bin/hyperf.php TryCreateDatabase:true
+          #php watch -c             # 热更新
+  # admin:
+  #   image: admin:latest
+  #   build:
+  #     context: .
+  #     dockerfile: ./admin/Dockerfile
+  #   ports:
+  #     - "9502:4200"
+  #   volumes:
+  #     - ./admin/:/opt/www/
+  #   privileged: true
+  #   working_dir: /opt/www/
+  #   restart: always
+  #   container_name: admin
+  #   depends_on:
+  #     - "hyperf"
+  #   command:
+  #     - /bin/sh
+  #     - -c
+  #     - |
+  #       [ ! -d `pwd`/node_modules ] && yarn
+  #       ng serve --port 4200 --host 0.0.0.0
+  # mysql:
+  #   image: mysql:8.0
+  #   ports:
+  #     - "3306:3306"
+  #   volumes:
+  #     - ./mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+  #     - ./mysql/data:/var/lib/mysql/:rw
+  #   restart: always
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: "123456"
+  #   container_name: mysql
+  #   networks:
+  #     - default
+
+networks:
+  default:
