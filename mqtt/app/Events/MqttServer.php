@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Events;
 
 
+use App\Dispatcher;
+use App\Events\MqttEvents\LoginEvent;
 use Simps\Server\Protocol\MqttInterface;
 use \Simps\DB\BaseRedis;
 
@@ -12,10 +15,8 @@ class MqttServer implements MqttInterface
 
     public function onMqConnect($server, int $fd, $fromId, $data)
     {
-        $redis = new BaseRedis();
-        $res = $redis->set("ifcon", "asfasdfasdfsda");
-        var_dump($res);
-        // TODO: Implement onMqConnect() method.
+        // 登录事件
+        Dispatcher::getInstance()->dispatch(new LoginEvent($server, $fd, $fromId, $data), LoginEvent::NAME);
     }
 
     public function onMqPingreq($server, int $fd, $fromId, $data): bool
