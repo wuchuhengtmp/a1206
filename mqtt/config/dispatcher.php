@@ -7,5 +7,6 @@
  */
 
 return [
-    \App\Listens\MqttListens\LoginSubscript::class
+    \App\Listens\MqttListens\LoginSubscript::class,
+    \App\Listens\MqttListens\DisconnectSubscript::class
 ];

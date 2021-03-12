@@ -11,10 +11,17 @@ declare(strict_types=1);
 
 namespace App\Listens\MqttListens;
 
+use App\Dispatcher;
 use App\Events\MqttEvents\LoginEvent;
+use App\Events\MqttEvents\LoggedEvent;
+use Simps\DB\BaseModel;
+use Simps\Server\Protocol\MQTT;
+use Swoole\Coroutine;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Utils\Context;
+use Utils\Encrypt;
 
-class LoginSubscript implements EventSubscriberInterface
+class LoginSubscript extends BaseModel implements EventSubscriberInterface
 {
 
     /**
@@ -23,12 +30,55 @@ class LoginSubscript implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-             LoginEvent::NAME => 'handle'
+            LoginEvent::NAME => 'handleLogin',
         ];
     }
 
-   public function handle()
+    /**
+     *  登录
+     * @param LoginEvent $event
+     */
+   public function handleLogin(LoginEvent $event): void
    {
-        echo " login event was trigged \n"; // 触发登录
+       $data = Context::get('data');
+       if ($this->has('users', [
+           'username'=> $data['username'],
+           'password' => Encrypt::hash($data['password'])
+       ])) {
+            $this->_acceptConnect();
+       } else {
+           $this->_rejectConnect();
+       }
+   }
+
+    /**
+     *  接受连接
+     */
+   private function _acceptConnect()
+   {
+
+       $server = Context::getServer();
+       $fd = Context::getFd();
+       $data = Context::getData();
+       $fromId = Context::getFromId();
+
+       $server->send($fd, MQTT::getAck([
+           'cmd' => 2,
+           'code' => 0
+       ]));
+   }
+
+   /**
+    *  拒绝连接
+    */
+   private function _rejectConnect()
+   {
+       $server = Context::getServer();
+       $fd = Context::getFd();
+       $server->send($fd, MQTT::getAck([
+           'cmd' => 2,
+           'code' => 5
+       ]));
+       $server->close($fd);
    }
 }

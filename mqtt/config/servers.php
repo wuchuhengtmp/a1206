@@ -15,8 +15,9 @@ return [
     'mode' => SWOOLE_PROCESS,
     'mqtt' => [
         'ip' => '0.0.0.0',
-        'port' => 9503,
+        'port' => 9603,
         'callbacks' => [
+            'close' => [\App\Events\MqttServer::class, 'onClose'],
         ],
         'receiveCallbacks' => [
             MQTT::CONNECT => [\App\Events\MqttServer::class, 'onMqConnect'],

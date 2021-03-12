@@ -1,29 +1,29 @@
 version: '3'
 
 services:
-#  hyperf:
-#    image: hyperf/hyperf:7.4-alpine-v3.11-swoole
-#    ports:
-#      - "9501:9501"
-#    volumes:
-#      - ./simple/:/opt/www/
-#    privileged: true
-#    working_dir: /opt/www/
-#    restart: always
-#    container_name: simple
-#    # depends_on:
-#    #   - "mysql"
-#    networks:
-#      - default
-#    command:
-#      - /bin/sh
-#      - -c
-#      - |
-#        php bin/simps.php http:start
-#          # composer install
-#          ##php bin/hyperf.php start
-#          #php bin/hyperf.php TryCreateDatabase:true
-#          #php watch -c             # 热更新
+        #hyperf:
+        #  image: hyperf/hyperf:7.4-alpine-v3.11-swoole
+        #  ports:
+        #    - "9503:9503"
+        #  volumes:
+        #    - ./simple/:/opt/www/
+        #  privileged: true
+        #  working_dir: /opt/www/
+        #  restart: always
+        #  container_name: simple
+        #  # depends_on:
+        #  #   - "mysql"
+        #  networks:
+        #    - default
+        #  command:
+        #    - /bin/sh
+        #    - -c
+        #    - |
+        #      php bin/simps.php http:start
+        #        # composer install
+        #        ##php bin/hyperf.php start
+        #        #php bin/hyperf.php TryCreateDatabase:true
+        #        #php watch -c             # 热更新
 
 
   redis:

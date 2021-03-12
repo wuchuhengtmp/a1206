@@ -1,18 +1,16 @@
 <?php
-declare(strict_types=1);
-
 /**
- * 登录前事件
+ * Class RejectConnectEvent
  * @package App\Events\MqttEvents
  * @author wuchuheng  <wuchuheng@163.com>
  */
+declare(strict_types=1);
 
 namespace App\Events\MqttEvents;
 
-use App\Contracts\MqttEventInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class LoginEvent  extends Event
+class RejectConnectEvent extends Event
 {
-    const NAME = 'mqtt.beforeLogin';
+    const NAME = 'mqtt.rejectConnect';
 }

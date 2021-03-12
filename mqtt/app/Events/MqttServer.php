@@ -6,17 +6,20 @@ namespace App\Events;
 
 
 use App\Dispatcher;
+use App\Events\MqttEvents\DisconnectEvent;
 use App\Events\MqttEvents\LoginEvent;
+use App\Events\MqttEvents\LoggedEvent;
 use Simps\Server\Protocol\MqttInterface;
-use \Simps\DB\BaseRedis;
+use Utils\Context;
 
 class MqttServer implements MqttInterface
 {
 
     public function onMqConnect($server, int $fd, $fromId, $data)
     {
-        // 登录事件
-        Dispatcher::getInstance()->dispatch(new LoginEvent($server, $fd, $fromId, $data), LoginEvent::NAME);
+        Context::save(['server' => $server, 'fd' => $fd, 'fromId' => $fromId, 'data' => $data]);
+        // 登录
+        Dispatcher::getInstance()->dispatch(new LoginEvent(), LoginEvent::NAME);
     }
 
     public function onMqPingreq($server, int $fd, $fromId, $data): bool
@@ -26,7 +29,6 @@ class MqttServer implements MqttInterface
 
     public function onMqDisconnect($server, int $fd, $fromId, $data): bool
     {
-        // TODO: Implement onMqDisconnect() method.
     }
 
     public function onMqPublish($server, int $fd, $fromId, $data)
@@ -41,6 +43,17 @@ class MqttServer implements MqttInterface
 
     public function onMqUnsubscribe($server, int $fd, $fromId, $data)
     {
-        // TODO: Implement onMqUnsubscribe() method.
+    }
+
+    /**
+     *  断开
+     * @param $server
+     * @param int $fd
+     * @param $fromId
+     * @param $data
+     */
+    static public function onClose($server, int $fd, $fromId): void
+    {
+        Dispatcher::getInstance()->dispatch(new DisconnectEvent(), DisconnectEvent::NAME);
     }
 }
