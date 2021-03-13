@@ -8,5 +8,8 @@
 
 return [
     \App\Listens\MqttListens\LoginSubscript::class,
-    \App\Listens\MqttListens\DisconnectSubscript::class
+    \App\Listens\MqttListens\DisconnectSubscript::class,
+    \App\Listens\MqttListens\LoggedSubscript::class,
+    \App\Listens\MqttListens\RegisterSubscript::class,
+    \App\Listens\MqttListens\LogSubscript::class
 ];

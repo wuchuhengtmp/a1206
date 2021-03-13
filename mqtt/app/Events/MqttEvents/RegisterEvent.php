@@ -1,18 +1,15 @@
 <?php
-declare(strict_types=1);
-
 /**
- * 登录前事件
+ * Class RegisterEvent
  * @package App\Events\MqttEvents
  * @author wuchuheng  <wuchuheng@163.com>
  */
+declare(strict_types=1);
 
 namespace App\Events\MqttEvents;
-
-use App\Contracts\MqttEventInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class LoginEvent extends Event
+class RegisterEvent extends Event
 {
-    const NAME = 'mqtt.login';
+    const NAME = 'mqtt.register';
 }

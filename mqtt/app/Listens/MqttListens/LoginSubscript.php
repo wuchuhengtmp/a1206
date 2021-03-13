@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 /**
  * 订阅登录验证事件
- *
  * @package App\Listens\MqttListens
  * @author wuchuheng  <wuchuheng@163.com>
  */
@@ -45,7 +44,9 @@ class LoginSubscript extends BaseModel implements EventSubscriberInterface
            'username'=> $data['username'],
            'password' => Encrypt::hash($data['password'])
        ])) {
-            $this->_acceptConnect();
+           // 发布已登录事件
+           Dispatcher::getInstance()->dispatch(new LoggedEvent(), LoggedEvent::NAME);
+           $this->_acceptConnect();
        } else {
            $this->_rejectConnect();
        }
@@ -81,4 +82,5 @@ class LoginSubscript extends BaseModel implements EventSubscriberInterface
        ]));
        $server->close($fd);
    }
+
 }

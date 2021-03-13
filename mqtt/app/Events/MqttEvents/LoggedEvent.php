@@ -1,18 +1,16 @@
 <?php
-declare(strict_types=1);
-
 /**
- * 登录前事件
+ * 已登录事件
  * @package App\Events\MqttEvents
  * @author wuchuheng  <wuchuheng@163.com>
  */
+declare(strict_types=1);
 
 namespace App\Events\MqttEvents;
 
-use App\Contracts\MqttEventInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class LoginEvent extends Event
+class LoggedEvent extends Event
 {
-    const NAME = 'mqtt.login';
+    const NAME = 'mqtt.logged';
 }
