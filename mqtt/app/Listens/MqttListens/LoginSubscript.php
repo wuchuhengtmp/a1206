@@ -19,6 +19,7 @@ use Swoole\Coroutine;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Utils\Context;
 use Utils\Encrypt;
+use Utils\Message;
 
 class LoginSubscript extends BaseModel implements EventSubscriberInterface
 {
@@ -39,30 +40,31 @@ class LoginSubscript extends BaseModel implements EventSubscriberInterface
      */
    public function handleLogin(LoginEvent $event): void
    {
-       $data = Context::get('data');
+       $hasConnectMsg = Message::getConnectMsg($event->fd);
+       if ($hasConnectMsg->isError) {
+           $this->_rejectConnect($event->fd);
+           return;
+       }
+       $data = $hasConnectMsg->res;
        if ($this->has('users', [
            'username'=> $data['username'],
            'password' => Encrypt::hash($data['password'])
        ])) {
            // 发布已登录事件
-           Dispatcher::getInstance()->dispatch(new LoggedEvent(), LoggedEvent::NAME);
-           $this->_acceptConnect();
+           Dispatcher::getInstance()->dispatch(new LoggedEvent($event->fd), LoggedEvent::NAME);
+           $this->_acceptConnect($event->fd);
        } else {
-           $this->_rejectConnect();
+           $this->_rejectConnect($event->fd);
        }
    }
 
     /**
      *  接受连接
      */
-   private function _acceptConnect()
+   private function _acceptConnect(int $fd)
    {
-
-       $server = Context::getServer();
-       $fd = Context::getFd();
-       $data = Context::getData();
-       $fromId = Context::getFromId();
-
+       $hasServer = $server = Context::getServer($fd);
+       $server = $hasServer->res;
        $server->send($fd, MQTT::getAck([
            'cmd' => 2,
            'code' => 0
@@ -72,10 +74,10 @@ class LoginSubscript extends BaseModel implements EventSubscriberInterface
    /**
     *  拒绝连接
     */
-   private function _rejectConnect()
+   private function _rejectConnect(int $fd)
    {
-       $server = Context::getServer();
-       $fd = Context::getFd();
+       $hasServer = Context::getServer($fd);
+       $server = $hasServer->res;
        $server->send($fd, MQTT::getAck([
            'cmd' => 2,
            'code' => 5

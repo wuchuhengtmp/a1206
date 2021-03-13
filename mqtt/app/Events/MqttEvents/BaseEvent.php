@@ -1,6 +1,7 @@
 <?php
 /**
- * 断开前事件
+ * 约束事件实例化的参数
+ *
  * @package App\Events\MqttEvents
  * @author wuchuheng  <wuchuheng@163.com>
  */
@@ -10,7 +11,12 @@ namespace App\Events\MqttEvents;
 
 use Symfony\Contracts\EventDispatcher\Event;
 
-class DisconnectEvent extends BaseEvent
+class BaseEvent extends Event
 {
-    const NAME = 'mqtt.disconnect';
+    public $fd;
+
+    public function __construct(int $fd)
+    {
+        $this->fd = $fd;
+    }
 }

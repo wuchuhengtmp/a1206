@@ -31,6 +31,6 @@ class DisconnectSubscript extends BaseModel implements EventSubscriberInterface
      */
     public function handleDisconnect(DisconnectEvent $event)
     {
-        Context::deleteConectContext();
+        Context::deleteConectContext($event->fd);
     }
 }

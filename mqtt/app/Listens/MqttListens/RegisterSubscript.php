@@ -12,6 +12,7 @@ namespace App\Listens\MqttListens;
 use App\Events\MqttEvents\RegisterEvent;
 use Simps\DB\BaseModel;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Utils\Message;
 
 class RegisterSubscript extends BaseModel implements EventSubscriberInterface
 {
@@ -22,12 +23,14 @@ class RegisterSubscript extends BaseModel implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-
+            RegisterEvent::NAME => 'handle'
         ];
     }
 
-    public function handle()
+    public function handle(RegisterEvent $event)
     {
-
+        $hasConnectMsg = Message::getConnectMsg($event->fd);
+        var_dump($hasConnectMsg->res);
+        var_dump($hasConnectMsg);
     }
 }

@@ -16,61 +16,48 @@ class Context
 {
     static private $pool = [];
 
-
-    static public function save($data = [])
+    static public function save(int $fd, $data = [])
     {
-        array_key_exists('server', $data) && self::set('server', $data['server']);
-        array_key_exists('fd', $data) && self::set('fd', $data['fd']);
-        array_key_exists('fromId', $data) && self::set('fromId', $data['fromId']);
-        array_key_exists('data', $data) && self::set('data', $data['data']);
+        array_key_exists('server', $data) && self::set($fd, 'server', $data['server']);
+        array_key_exists('fd', $data) && self::set($fd, 'fd', $data['fd']);
+        array_key_exists('fromId', $data) && self::set($fd, 'fromId', $data['fromId']);
+        array_key_exists('data', $data) && self::set($fd, 'data', $data['data']);
     }
 
-    static public function set(string $key, $value): void
+    static public function set(int $fd, string $key, $value): void
     {
-        $cid = Coroutine::getuid();
+        $cid = $fd;
         if ($cid) {
             self::$pool[$cid][$key] = $value;
         }
     }
 
-    static public function get(string $key)
+    static public function get(int $fd, string $key): ReportFormat
     {
-        $cid = Coroutine::getuid();
-        if ($cid && array_key_exists($key, self::$pool[$cid])) {
-            return self::$pool[$cid][$key];
+        $res = new ReportFormat();
+        $cid = $fd;
+        if (array_key_exists($cid, self::$pool) && array_key_exists($key, self::$pool[$cid])) {
+            $res->isError = false;
+            $res->res = self::$pool[$cid][$key];
         }
+        return $res;
     }
 
-    static public function getServer()
+    static public function getServer(int $fd)
     {
-        $cid = Coroutine::getuid();
-        return self::$pool[$cid]['server'];
+        return self::get($fd, 'server');
     }
 
-    static public function getFd(): int
+    static public function getData(int $fd): ReportFormat
     {
-        $cid = Coroutine::getuid();
-        return self::$pool[$cid]['fd'];
-    }
-
-    static public function getData()
-    {
-        $cid = Coroutine::getuid();
-        return self::$pool[$cid]['data'];
-    }
-
-    static public function getFromId()
-    {
-        $cid = Coroutine::getuid();
-        return self::$pool[$cid]['fromId'];
+        return self::get($fd, 'data');
     }
 
     /**
      * 删除整个连接上下文
      */
-    static public function deleteConectContext()
+    static public function deleteConectContext(int $fd)
     {
-        $cid = Coroutine::getuid();
-        unset(self::$pool[$cid]);
+        unset(self::$pool[$fd]);
     }
 }

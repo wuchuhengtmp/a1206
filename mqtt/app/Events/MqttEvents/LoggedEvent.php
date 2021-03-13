@@ -8,9 +8,7 @@ declare(strict_types=1);
 
 namespace App\Events\MqttEvents;
 
-use Symfony\Contracts\EventDispatcher\Event;
-
-class LoggedEvent extends Event
+class LoggedEvent extends BaseEvent
 {
     const NAME = 'mqtt.logged';
 }

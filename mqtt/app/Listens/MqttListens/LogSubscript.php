@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace App\Listens\MqttListens;
 
 use App\Dispatcher;
+use App\Events\MqttEvents\BaseEvent;
 use App\Events\MqttEvents\LoggedEvent;
 use App\Events\MqttEvents\RegisterEvent;
 use Simps\DB\BaseModel;
@@ -28,10 +29,15 @@ class LogSubscript extends BaseModel implements EventSubscriberInterface
         $files = scandir($dir);
         $files = preg_grep ('/^.*Event\.php/i', $files);
         $resData = [];
+        $skipClass = [
+            BaseEvent::class
+        ];
         foreach ($files as &$file) {
             $file = str_replace('.php', '', $file);
             $classFile  = "App\\Events\\MqttEvents\\" . $file;
-            $resData[$classFile::NAME] = 'handle';
+             if (!in_array($classFile, $skipClass)) {
+                 $resData[$classFile::NAME] = 'handle';
+             }
         }
         return $resData;
     }

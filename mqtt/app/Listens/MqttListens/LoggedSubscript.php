@@ -12,6 +12,7 @@ use App\Events\MqttEvents\LoggedEvent;
 use Simps\DB\BaseModel;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Utils\Context;
+use Utils\Message;
 
 class LoggedSubscript extends BaseModel implements EventSubscriberInterface
 {
@@ -29,6 +30,5 @@ class LoggedSubscript extends BaseModel implements EventSubscriberInterface
 
     public function handle(): void
     {
-        $data = Context::getData();
     }
 }

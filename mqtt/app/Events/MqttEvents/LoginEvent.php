@@ -12,7 +12,7 @@ namespace App\Events\MqttEvents;
 use App\Contracts\MqttEventInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class LoginEvent extends Event
+class LoginEvent extends BaseEvent
 {
     const NAME = 'mqtt.login';
 }
