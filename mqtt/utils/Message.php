@@ -19,6 +19,8 @@ class Message
 
     private const SUBSCRIPT_KEY = 'subscript'; // 缓存订阅数据
 
+    private const DISCONNECT_DEVICE_ID = 'disconnect_id'; // 断开fd
+
     /**
      * 从报文中获取指令
      * @return ReportFormat
@@ -123,5 +125,21 @@ class Message
     static public function getSubscriptMsg(int $fd): ReportFormat
     {
         return Context::get($fd, self::SUBSCRIPT_KEY);
+    }
+
+    /**
+     *  缓存断开的id
+     */
+    static public function setDisconnectClientId(string $deviceId): void
+    {
+        Context::setGlobal(self::DISCONNECT_DEVICE_ID, $deviceId);
+    }
+
+    /**
+     * 获取断开的fd
+     */
+    static public function getDisconnectClientId(): ReportFormat
+    {
+        return Context::getGlobal(self::DISCONNECT_DEVICE_ID);
     }
 }

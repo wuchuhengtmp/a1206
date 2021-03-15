@@ -11,6 +11,8 @@ declare(strict_types=1);
 namespace App\Events;
 
 use Swoole\WebSocket\Server;
+use Utils\Context;
+use Utils\Helper;
 
 class WebSocket
 {
@@ -21,8 +23,15 @@ class WebSocket
 
     public static function onMessage(Server $server, $frame)
     {
-        echo "receive from {$frame->fd}:{$frame->data},opcode:{$frame->opcode},fin:{$frame->finish}\n";
-        $server->push($frame->fd, 'this is server');
+        Context::set($frame->fd, 'server', $server);
+        Context::set($frame->fd, 'frame', $frame);
+
+        if (Helper::isJson($frame->data)) {
+            $data = json_decode($frame->data, true);
+
+        }
+//        echo "receive from {$frame->fd}:{$frame->data},opcode:{$frame->opcode},fin:{$frame->finish}\n";
+//        $server->push($frame->fd, 'this is server');
     }
 
     public static function onClose(Server $server, $fd)

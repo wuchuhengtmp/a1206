@@ -56,4 +56,9 @@ class SubscriptionsModel extends BaseModel
     {
         $this->insert($this->_tableName, $volums);
     }
+
+    public function reset()
+    {
+        $this->delete($this->_tableName, ['fd' => $this->fd]);
+    }
 }

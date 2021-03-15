@@ -55,6 +55,11 @@ class LogSubscript extends BaseModel implements EventSubscriberInterface
                 $msg . " connected clientId: %s",
                 Color::YELLOW . $hasConnect->res['client_id'] . Color::RESET
             );
+        } else if (!Message::getDisconnectClientId()->isError) {
+            $msg = sprintf(
+                $msg . " connected clientId: %s",
+                Color::RED . Message::getDisconnectClientId()->res . Color::RESET
+            );
         }
         echo $msg . PHP_EOL;
     }

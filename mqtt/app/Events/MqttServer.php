@@ -32,11 +32,15 @@ class MqttServer implements MqttInterface
     {
         Context::save($fd, ['server' => $server, 'fd' => $fd, 'fromId' => $fromId, 'data' => $data]);
         Dispatcher::getInstance()->dispatch(new PingEvent($fd), PingEvent::NAME);
+        $server->send($fd, MQTT::getAck([
+            'cmd' => MQTT::PINGRESP
+        ]));
         return true;
     }
 
     public function onMqDisconnect($server, int $fd, $fromId, $data): bool
     {
+        return true;
     }
 
     public function onMqPublish($server, int $fd, $fromId, $data)

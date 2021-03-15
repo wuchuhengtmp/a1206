@@ -14,6 +14,7 @@ use Swoole\Coroutine;
 
 class Context
 {
+    private const GLOBAL_KEY = 'global';
     static private $pool = [];
 
     static public function save(int $fd, $data = [])
@@ -59,5 +60,28 @@ class Context
     static public function deleteConectContext(int $fd)
     {
         unset(self::$pool[$fd]);
+    }
+
+    /**
+     * 设置全局变量
+     */
+    static public function setGlobal(string $key, $value): void
+    {
+        self::$pool[self::GLOBAL_KEY][$key] = $value;
+    }
+
+    /**
+     *  获取全局变量
+     * @param string $key
+     * @return ReportFormat
+     */
+    static public function getGlobal(string $key): ReportFormat
+    {
+        $res = new ReportFormat();
+        if (array_key_exists(self::GLOBAL_KEY, self::$pool) && array_key_exists($key, self::$pool[self::GLOBAL_KEY])) {
+            $res->isError = false;
+            $res->res = self::$pool[self::GLOBAL_KEY][$key];
+        }
+        return $res;
     }
 }

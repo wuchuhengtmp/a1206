@@ -13,6 +13,20 @@ use \Simps\Server\Protocol\MQTT;
 
 return [
     'mode' => SWOOLE_PROCESS,
+    'ws' => [
+        'ip' => '0.0.0.0',
+        'port' => 9602,
+        'sock_type' => SWOOLE_SOCK_TCP,
+        'callbacks' => [
+            "open" => [\App\Events\WebSocket::class, 'onOpen'],
+            "message" => [\App\Events\WebSocket::class, 'onMessage'],
+            "close" => [\App\Events\WebSocket::class, 'onClose'],
+        ],
+        'settings' => [
+            'worker_num' => swoole_cpu_num(),
+            'open_websocket_protocol' => true,
+        ],
+    ],
     'mqtt' => [
         'ip' => '0.0.0.0',
         'port' => 9603,

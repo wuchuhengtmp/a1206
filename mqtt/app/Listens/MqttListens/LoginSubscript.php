@@ -13,6 +13,7 @@ namespace App\Listens\MqttListens;
 use App\Dispatcher;
 use App\Events\MqttEvents\LoginEvent;
 use App\Events\MqttEvents\LoggedEvent;
+use App\Model\SubscriptionsModel;
 use Simps\DB\BaseModel;
 use Simps\Server\Protocol\MQTT;
 use Swoole\Coroutine;
@@ -45,6 +46,7 @@ class LoginSubscript extends BaseModel implements EventSubscriberInterface
            $this->_rejectConnect($event->fd);
            return;
        }
+       (new SubscriptionsModel($event->fd))->reset();
        $data = $hasConnectMsg->res;
        if ($this->has('users', [
            'username'=> $data['username'],
