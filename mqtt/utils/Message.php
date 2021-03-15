@@ -17,6 +17,8 @@ class Message
 
     private const CONNECT_KEY = 'connect';  // 缓存连接指令消息的key
 
+    private const SUBSCRIPT_KEY = 'subscript'; // 缓存订阅数据
+
     /**
      * 从报文中获取指令
      * @return ReportFormat
@@ -105,5 +107,21 @@ class Message
         $data = $hasData->res;
         $hasContent = Helper::parseContent($data['content']);
         return $hasContent;
+    }
+
+    /**
+     * 保存订阅消息
+     */
+    static public function setSubscriptMsg(int $fd, array $value): void
+    {
+        Context::set($fd, self::SUBSCRIPT_KEY, $value);
+    }
+
+    /**
+     * 获取订阅消息
+     */
+    static public function getSubscriptMsg(int $fd): ReportFormat
+    {
+        return Context::get($fd, self::SUBSCRIPT_KEY);
     }
 }

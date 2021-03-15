@@ -10,6 +10,7 @@ use App\Events\MqttEvents\DisconnectEvent;
 use App\Events\MqttEvents\LoginEvent;
 use App\Events\MqttEvents\PingEvent;
 use App\Events\MqttEvents\RegisterEvent;
+use App\Events\MqttEvents\SubscriptEvent;
 use Simps\Server\Protocol\MQTT;
 use Simps\Server\Protocol\MqttInterface;
 use Swoole\Server;
@@ -49,13 +50,16 @@ class MqttServer implements MqttInterface
                     Message::setRegister($fd, $data);
                     Dispatcher::getInstance()->dispatch(new RegisterEvent($fd), RegisterEvent::NAME);
                     break;
+                default:
+                    var_dump($res->res);
             }
         }
     }
 
     public function onMqSubscribe($server, int $fd, $fromId, $data)
     {
-        // TODO: Implement onMqSubscribe() method.
+        Message::setSubscriptMsg($fd, $data);
+        Dispatcher::getInstance()->dispatch(new SubscriptEvent($fd), SubscriptEvent::NAME);
     }
 
     public function onMqUnsubscribe($server, int $fd, $fromId, $data)

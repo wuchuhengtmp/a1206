@@ -11,5 +11,6 @@ return [
     \App\Listens\MqttListens\DisconnectSubscript::class,
     \App\Listens\MqttListens\LoggedSubscript::class,
     \App\Listens\MqttListens\RegisterSubscript::class,
-    \App\Listens\MqttListens\LogSubscript::class
+    \App\Listens\MqttListens\LogSubscript::class,
+    \App\Listens\MqttListens\SubscriptSubscript::class
 ];
