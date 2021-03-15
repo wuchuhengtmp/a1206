@@ -10,11 +10,15 @@ declare(strict_types=1);
  */
 namespace App\Model;
 
-use Simps\DB\BaseModel;
+use Simps\DB\BaseModel as SBaseModel;
 
-class Model extends BaseModel
+class BaseModel extends SBaseModel
 {
-    public function index()
+    public $fd;
+
+    public function __construct(int $fd)
     {
+        $this->fd = $fd;
+        parent::__construct();
     }
 }

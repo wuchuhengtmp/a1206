@@ -16,6 +16,9 @@ use Simps\DB\BaseModel;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 use Utils\Context;
+use Utils\Helper;
+use Utils\Message;
+use Codedungeon\PHPCliColors\Color;
 
 class LogSubscript extends BaseModel implements EventSubscriberInterface
 {
@@ -44,6 +47,15 @@ class LogSubscript extends BaseModel implements EventSubscriberInterface
 
     public function handle($event):void
     {
-        var_dump(date("H:i:s", time()) . " 触发事件:" . $event::NAME );
+        $hasConnect = Message::getConnectMsg($event->fd);
+        $event_name = Helper::sprinstfLen($event::NAME, 15);
+        $msg = date("[H:i:s]", time()) . " trigger event:" . Color::GREEN . $event_name . Color::RESET;
+        if (!$hasConnect->isError) {
+            $msg = sprintf(
+                $msg . " connected clientId: %s",
+                Color::YELLOW . $hasConnect->res['client_id'] . Color::RESET
+            );
+        }
+        echo $msg . PHP_EOL;
     }
 }

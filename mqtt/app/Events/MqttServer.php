@@ -8,8 +8,11 @@ namespace App\Events;
 use App\Dispatcher;
 use App\Events\MqttEvents\DisconnectEvent;
 use App\Events\MqttEvents\LoginEvent;
+use App\Events\MqttEvents\PingEvent;
 use App\Events\MqttEvents\RegisterEvent;
+use Simps\Server\Protocol\MQTT;
 use Simps\Server\Protocol\MqttInterface;
+use Swoole\Server;
 use Utils\Context;
 use Utils\Message;
 
@@ -26,7 +29,9 @@ class MqttServer implements MqttInterface
 
     public function onMqPingreq($server, int $fd, $fromId, $data): bool
     {
-        // TODO: Implement onMqPingreq() method.
+        Context::save($fd, ['server' => $server, 'fd' => $fd, 'fromId' => $fromId, 'data' => $data]);
+        Dispatcher::getInstance()->dispatch(new PingEvent($fd), PingEvent::NAME);
+        return true;
     }
 
     public function onMqDisconnect($server, int $fd, $fromId, $data): bool
@@ -41,6 +46,7 @@ class MqttServer implements MqttInterface
             switch ($res->res) {
                 // 发布注册事件
                 case 'register':
+                    Message::setRegister($fd, $data);
                     Dispatcher::getInstance()->dispatch(new RegisterEvent($fd), RegisterEvent::NAME);
                     break;
             }

@@ -8,11 +8,14 @@ declare(strict_types=1);
 
 namespace Utils;
 
+use Codedungeon\PHPCliColors\Color;
 use function Symfony\Component\String\u;
 
 class Message
 {
-    static private $_connectKey = 'connect';
+    private const REGISTER_KEY = 'register'; // 缓存注册指令消息的key
+
+    private const CONNECT_KEY = 'connect';  // 缓存连接指令消息的key
 
     /**
      * 从报文中获取指令
@@ -31,12 +34,6 @@ class Message
         return $returnData;
     }
 
-    static public function isJson(string $isJsonString): bool
-    {
-        json_decode($isJsonString);
-        return (json_last_error() == JSON_ERROR_NONE);
-    }
-
     /**
      * 获取消息内容字段
      * @return ReportFormat
@@ -47,15 +44,9 @@ class Message
         $hasData = Context::getData($fd);
         if ($hasData->isError) return $returnData;
         $data = $hasData->res;
-        $content = $data['content'];
-        if (!self::isJson($content)) {
-            preg_match('/[^{]+(.+)/', $content, $res);
-            if (!$res[1]) return $returnData;
-            $content = str_replace('\"', '"', $res[1]);
-        } else {
-            $content = str_replace('\"', '"', $content);
-        }
-        $content = json_decode($content, true);
+        $hasContent = Helper::parseContent($data['content']);
+        if ($hasContent->isError) return $hasContent;
+        $content = $hasContent->res;
         $returnData->isError = false;
         $returnData->res = $content;
         return $returnData;
@@ -65,9 +56,9 @@ class Message
      *  获取当前消息
      * @return ReportFormat
      */
-    static public function getCurrent(): ReportFormat
+    static public function getCurrent(int $fd): ReportFormat
     {
-        return Context::getData();
+        return Context::getData($fd);
     }
 
     /**
@@ -75,7 +66,7 @@ class Message
      */
     static public function setConnectMsg(int $fd, array $data): void
     {
-        Context::set($fd, self::$_connectKey, $data);
+        Context::set($fd, self::CONNECT_KEY, $data);
     }
 
     /**
@@ -84,7 +75,35 @@ class Message
      */
     static public function getConnectMsg(int $fd): ReportFormat
     {
-        $res = Context::get($fd, self::$_connectKey);
+        $res = Context::get($fd, self::CONNECT_KEY);
         return $res;
+    }
+
+    /**
+     * 保存设备注册数据
+     */
+    static public function setRegister(int $fd, array $data): void
+    {
+        Context::set($fd, self::REGISTER_KEY, $data);
+    }
+
+    /**
+     *  获取设备注册数据
+     */
+    static public function getRegister(int $fd): ReportFormat
+    {
+        return Context::get($fd, self::REGISTER_KEY);
+    }
+
+    /**
+     *  获取注册内容
+     */
+    static public function getRegisterContent(int $fd): ReportFormat
+    {
+        $hasData = self::getRegister($fd);
+        if ($hasData->isError) return $hasData;
+        $data = $hasData->res;
+        $hasContent = Helper::parseContent($data['content']);
+        return $hasContent;
     }
 }

@@ -43,7 +43,7 @@ class Context
         return $res;
     }
 
-    static public function getServer(int $fd)
+    static public function getServer(int $fd): ReportFormat
     {
         return self::get($fd, 'server');
     }
