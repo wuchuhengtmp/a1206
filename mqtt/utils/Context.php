@@ -42,10 +42,6 @@ class Context
             $res->isError = false;
             $res->res = self::$pool[$cid][$key];
         }
-        if ($res->isError) {
-            // 连接断开
-            throw new ConnectBrokenException();
-        }
         return $res;
     }
 

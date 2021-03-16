@@ -89,7 +89,11 @@ class WsMessage
      */
     static public function getMsgByEvent(BaseEvent $event) : ReportFormat
     {
-        return Context::get($event->fd, $event->messageId);
+        $hasData = Context::get($event->fd, $event->messageId);
+        if ($hasData->isError) {
+            throw new ConnectBrokenException();
+        }
+        return $hasData;
     }
 
     /**

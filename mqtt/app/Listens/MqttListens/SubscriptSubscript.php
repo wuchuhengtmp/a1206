@@ -40,10 +40,12 @@ class SubscriptSubscript extends BaseModel implements EventSubscriberInterface
             $payload[] = $qos;
             $map['topic'] = $topic;
             $hasSub = $subModel->getFirstByMap($map);
+            list(, , $deviceId) = explode('_', $topic);
             $valums = [
                 'topic' => $topic,
                 'fd' => $event->fd,
-                'qos' => $qos
+                'qos' => $qos,
+                'device_id' => $deviceId
             ];
             if ($hasSub->isError) {
                 $subModel->createSub($valums);

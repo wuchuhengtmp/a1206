@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace App\Listens\MqttListens;
 
 use App\Events\MqttEvents\DisconnectEvent;
+use App\Model\SubscriptionsModel;
 use Simps\DB\BaseModel;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Utils\Context;
@@ -34,6 +35,7 @@ class DisconnectSubscript extends BaseModel implements EventSubscriberInterface
     {
         $connectMsg = Message::getConnectMsg($event->fd)->res;
         Message::setDisconnectClientId($connectMsg['client_id']);
+        (new SubscriptionsModel($event->fd))->reset();
         Context::deleteConectContext($event->fd);
     }
 }
