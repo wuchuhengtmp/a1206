@@ -86,6 +86,7 @@ class Helper
         $newContent = $hasContent->res;
         $newContent['msgid'] = $newContent['deviceid'] . time();
         $newContent['content'] = $content;
-        return json_encode($newContent);
+        $content = json_encode($newContent);
+        return sprintf("%04d", strlen($content)) . 'XCWL' . $content;
     }
 }

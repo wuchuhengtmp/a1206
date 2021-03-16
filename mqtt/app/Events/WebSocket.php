@@ -13,6 +13,8 @@ namespace App\Events;
 use Swoole\WebSocket\Server;
 use Utils\Context;
 use Utils\Helper;
+use Utils\JWT;
+use Utils\WsRouteParser;
 
 class WebSocket
 {
@@ -25,16 +27,16 @@ class WebSocket
     {
         Context::set($frame->fd, 'server', $server);
         Context::set($frame->fd, 'frame', $frame);
-
-        if (Helper::isJson($frame->data)) {
-            $data = json_decode($frame->data, true);
-
+        $routes = config('websocketRoutes');
+        $hasMatchRoute = WsRouteParser::run($frame->fd, $frame->data, $routes);
+        if ($hasMatchRoute->isError) {
+            echo "the route was not matched \n";
+            // :todo 路由没有匹配到
         }
-//        echo "receive from {$frame->fd}:{$frame->data},opcode:{$frame->opcode},fin:{$frame->finish}\n";
-//        $server->push($frame->fd, 'this is server');
     }
 
     public static function onClose(Server $server, $fd)
     {
+
     }
 }

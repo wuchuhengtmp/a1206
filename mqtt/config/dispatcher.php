@@ -12,5 +12,9 @@ return [
     \App\Listens\MqttListens\LoggedSubscript::class,
     \App\Listens\MqttListens\RegisterSubscript::class,
     \App\Listens\MqttListens\LogSubscript::class,
-    \App\Listens\MqttListens\SubscriptSubscript::class
+    \App\Listens\MqttListens\SubscriptSubscript::class,
+
+    // websocket subscript
+    \App\Listens\WebsocketListeners\LoginSubscript::class,
+    \App\Listens\WebsocketListeners\RegisterSubscript::class,
 ];
