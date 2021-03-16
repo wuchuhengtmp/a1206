@@ -18,7 +18,7 @@ class UsersModel extends BaseModel
     private $tableName = 'users';
 
     /**
-     *  获取用户
+     *  mqtt连接 获取用户
      */
     public function getCurrentUser(): ReportFormat
     {

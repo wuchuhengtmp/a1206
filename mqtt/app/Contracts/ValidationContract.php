@@ -13,5 +13,9 @@ use Utils\ReportFormat;
 
 interface ValidationContract
 {
-    public function goCheck(BaseEvent $event): ReportFormat;
+    public function getRules(): array;
+
+    public function goCheck(BaseEvent $event): void;
+
+    public function getMessages(): array;
 }

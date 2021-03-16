@@ -10,6 +10,7 @@ namespace Utils;
 
 use App\Events\MqttEvents\RegisterEvent;
 use App\Events\WebsocketEvents\BaseEvent;
+use App\Exceptions\WsExceptions\ConnectBrokenException;
 use Cake\Database\Schema\BaseSchema;
 use Symfony\Contracts\EventDispatcher\Event;
 
@@ -33,7 +34,7 @@ class WsMessage
             [
                 'url' => $event->url,
                 'method' => $event->method,
-                'success' => true,
+                'isSuccess' => true,
                 'data' => $data
             ]
         ));
@@ -54,7 +55,9 @@ class WsMessage
         if ($hasServer->isError) return $res;
         $server = $hasServer->res;
         $resData = [
-            'success' => false,
+            'url' => $event->url,
+            'method' => $event->method,
+            'isSuccess' => false,
             'errorCode' => array_key_exists('errorCode', $data) ? $data['errorCode'] : 1,
             'errorMsg' => array_key_exists('errorMsg', $data) ? $data['errorMsg'] : 'the action was failed'
         ];
@@ -87,5 +90,18 @@ class WsMessage
     static public function getMsgByEvent(BaseEvent $event) : ReportFormat
     {
         return Context::get($event->fd, $event->messageId);
+    }
+
+    /**
+     * 格式化token
+     * @param string $token
+     * @return string[]
+     */
+    static public function formatJWTToken(string $token): array
+    {
+        return [
+            'tokenType' => 'Bearer',
+            'accessToken' => $token
+        ];
     }
 }

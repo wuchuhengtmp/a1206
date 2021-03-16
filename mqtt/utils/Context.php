@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Utils;
 
+use App\Exceptions\WsExceptions\ConnectBrokenException;
 use Swoole\Coroutine;
 
 class Context
@@ -40,6 +41,10 @@ class Context
         if (array_key_exists($cid, self::$pool) && array_key_exists($key, self::$pool[$cid])) {
             $res->isError = false;
             $res->res = self::$pool[$cid][$key];
+        }
+        if ($res->isError) {
+            // 连接断开
+            throw new ConnectBrokenException();
         }
         return $res;
     }

@@ -9,7 +9,10 @@ declare(strict_types=1);
 namespace App\Listens\WebsocketListeners;
 
 use App\Events\WebsocketEvents\LoginEvent;
+use App\Model\UsersModel;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Utils\JWT;
+use Utils\Message;
 use Utils\WsMessage;
 
 class LoginSubscript implements EventSubscriberInterface
@@ -27,6 +30,13 @@ class LoginSubscript implements EventSubscriberInterface
 
     public function handle(LoginEvent $event): void
     {
-        WsMessage::resSuccess($event->fd, ['hello' => 'zjh']);
+        $hasData = WsMessage::getMsgByEvent($event);
+        if (!$hasData->isError) {
+            $msg = $hasData->res;
+            $account = $msg['data'];
+            $userModel = new UsersModel($event->fd);
+            $user = $userModel->getUserByAccount($account)->res;
+            $jwt = JWT::generate((int) $user['id']);
+            WsMessage::resSuccess($event, WsMessage::formatJWTToken($jwt)); }
     }
 }

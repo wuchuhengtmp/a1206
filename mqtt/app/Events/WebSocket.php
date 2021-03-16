@@ -12,6 +12,7 @@ namespace App\Events;
 
 use App\Events\WebsocketEvents\BaseEvent;
 use App\Exceptions\WsExceptions\BaseException;
+use App\Exceptions\WsExceptions\ConnectBrokenException;
 use Swoole\WebSocket\Server;
 use Utils\Context;
 use Utils\Helper;
@@ -34,8 +35,16 @@ class WebSocket
         try {
             WsRouteParser::run($frame->fd, $frame->data, $routes);
         } catch (BaseException $e) {
-            $event = new BaseEvent($frame->fd);
-            WsMessage::resError($event, ['errorCode' => $e->errorCode, 'errorMsg' => $e->errorMsg]);
+            if ($e instanceof ConnectBrokenException) {
+                echo "连接中断:";
+                var_dump($e->getFile());
+                var_dump($e->getLine());
+                // 连接断开异常
+                // todo: ...
+            } else {
+                $event = new BaseEvent($frame->fd);
+                WsMessage::resError($event, ['errorCode' => $e->errorCode, 'errorMsg' => $e->errorMsg]);
+            }
         }
     }
 

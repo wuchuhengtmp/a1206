@@ -11,9 +11,7 @@ namespace Utils;
 use App\Contracts\RouteParserContract;
 use App\Contracts\ValidationContract;
 use App\Dispatcher;
-use App\Events\WebsocketEvents\RegisterEvent;
-use App\Exceptions\WsExceptions\BaseException;
-use App\Exceptions\WsExceptions\RequestFormatException;
+use App\Exceptions\WsExceptions\FrontEndException;
 
 class WsRouteParser implements RouteParserContract
 {
@@ -116,10 +114,7 @@ class WsRouteParser implements RouteParserContract
                 WsMessage::setMsgByEvent($event);
                 // 验证
                 foreach ($route['validates'] as $validation) {
-                    $hasOk = (new $validation)->goCheck($event);
-                    if ($hasOk->isError)  {
-                        return $res;
-                    }
+                   (new $validation)->goCheck($event);
                 }
                 // 发布事件
                 Dispatcher::getInstance()->dispatch($event, $event::NAME);
@@ -137,18 +132,22 @@ class WsRouteParser implements RouteParserContract
     static public function isRouteFormat($data): bool
     {
         $checkData = function ($data): bool {
-            if (!array_key_exists('url', $data)) return false;
-            if (!array_key_exists('method', $data)) return false;
+            if (!array_key_exists('url', $data)) {
+                throw new FrontEndException('url字段不能为空');
+            }
+            if (!array_key_exists('method', $data)) {
+                throw new FrontEndException('method字段不能为空');
+            }
             return true;
         };
-        if (is_array($data)) {
-            return $checkData($data);
-        } else if(Helper::isJson($data)) {
-            $data = json_decode($data, true);
-            $isOk = $checkData($data);
-            return $isOk;
-        } else {
-            throw new RequestFormatException();
+        if (is_array($data) && !$checkData($data)) {
+            throw new FrontEndException('数据格式不正确');
         }
+        if(is_string($data) && !Helper::isJson($data)) {
+            throw new FrontEndException('不是正确的json格式');
+        } else if (is_string($data) && Helper::isJson($data) && !$checkData(json_decode($data, true)) )  {
+            throw new FrontEndException('数据格式不正确');
+        }
+        return true;
     }
 }

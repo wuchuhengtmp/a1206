@@ -9,7 +9,7 @@ use Utils\WsRouteParser as Router;
 
 return [
     // 登录
-    Router::post('/users/authorizations', \App\Events\WebsocketEvents\LoginEvent::class),
+    Router::post('/users/authorizations', \App\Events\WebsocketEvents\LoginEvent::class, [\App\Validations\WsValidations\LoginValidation::class]),
     // 注册
-    Router::post('/users', \App\Events\WebsocketEvents\RegisterEvent::class, [\App\Validations\WsValidations\LoginValidation::class])
+    Router::post('/users', \App\Events\WebsocketEvents\RegisterEvent::class, [\App\Validations\WsValidations\RegisterValidation::class])
 ];
