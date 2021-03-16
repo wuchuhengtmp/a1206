@@ -10,10 +10,13 @@ declare(strict_types=1);
  */
 namespace App\Events;
 
+use App\Events\WebsocketEvents\BaseEvent;
+use App\Exceptions\WsExceptions\BaseException;
 use Swoole\WebSocket\Server;
 use Utils\Context;
 use Utils\Helper;
 use Utils\JWT;
+use Utils\WsMessage;
 use Utils\WsRouteParser;
 
 class WebSocket
@@ -28,10 +31,11 @@ class WebSocket
         Context::set($frame->fd, 'server', $server);
         Context::set($frame->fd, 'frame', $frame);
         $routes = config('websocketRoutes');
-        $hasMatchRoute = WsRouteParser::run($frame->fd, $frame->data, $routes);
-        if ($hasMatchRoute->isError) {
-            echo "the route was not matched \n";
-            // :todo 路由没有匹配到
+        try {
+            WsRouteParser::run($frame->fd, $frame->data, $routes);
+        } catch (BaseException $e) {
+            $event = new BaseEvent($frame->fd);
+            WsMessage::resError($event, ['errorCode' => $e->errorCode, 'errorMsg' => $e->errorMsg]);
         }
     }
 

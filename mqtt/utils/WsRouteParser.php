@@ -12,6 +12,8 @@ use App\Contracts\RouteParserContract;
 use App\Contracts\ValidationContract;
 use App\Dispatcher;
 use App\Events\WebsocketEvents\RegisterEvent;
+use App\Exceptions\WsExceptions\BaseException;
+use App\Exceptions\WsExceptions\RequestFormatException;
 
 class WsRouteParser implements RouteParserContract
 {
@@ -143,9 +145,10 @@ class WsRouteParser implements RouteParserContract
             return $checkData($data);
         } else if(Helper::isJson($data)) {
             $data = json_decode($data, true);
-            return $checkData($data);
+            $isOk = $checkData($data);
+            return $isOk;
         } else {
-            return false;
+            throw new RequestFormatException();
         }
     }
 }

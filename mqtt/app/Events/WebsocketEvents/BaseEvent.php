@@ -21,7 +21,7 @@ class BaseEvent extends Event
 
     public $messageId;
 
-    public function __construct(int $fd, string $method, string $url)
+    public function __construct(int $fd, string $method = '', string $url = '')
     {
         $this->fd = $fd;
         $this->method = $method;

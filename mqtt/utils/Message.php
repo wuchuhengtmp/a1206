@@ -23,6 +23,7 @@ class Message
 
     /**
      * 从报文中获取指令
+     * @param int $fd
      * @return ReportFormat
      */
     static public function getCommand(int $fd): ReportFormat
