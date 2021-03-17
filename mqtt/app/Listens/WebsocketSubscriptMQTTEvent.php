@@ -33,39 +33,44 @@ class WebsocketSubscriptMQTTEvent
                 'client_id' => env('WS_MQTT_Client_CLIENT_ID'),
                 'keepalive' => env('WS_MQTT_Client_KEEPALIVE'),
             ];
+            go(function () use ($config) {
+                $this->_client($config);
+            });
         }
-
-//        run(function () use ($config) {
-//            $this->_client($config);
-//        });
-
     }
 
     private function _client(array $config): void
     {
-        var_dump("hello \n");
-
-
-//        $client = new MQTTClient($config);
-//        $topics['mqtt_event'] = 1;
-//        $timeSincePing = time();
-//        $client->subscribe($topics);
-//        while (true) {
-//            $buffer = $client->recv();
-//            var_dump($buffer);
-//            if ($buffer && $buffer !== true) {
-//                $timeSincePing = time();
-//            }
-//            if (isset($config['keepalive']) && $timeSincePing < (time() - $config['keepalive'])) {
-//                $buffer = $client->ping();
-//                if ($buffer) {
-//                    echo '发送心跳包成功' . PHP_EOL;
-//                    $timeSincePing = time();
-//                } else {
-//                    $client->close();
-//                    break;
-//                }
-//            }
-//        }
+        $client = new MQTTClient($config);
+        $will = [
+            'topic' => 'simpsmqtt/username/update',
+            'qos' => 1,
+            'retain' => 0,
+            'content' => "123",
+        ];
+        while (! $client->connect(true, $will)) {
+            \Swoole\Coroutine::sleep(3);
+            $client->connect(true, $will);
+        }
+        $topics['mqtt_event'] = 1;
+        $timeSincePing = time();
+        $client->subscribe($topics);
+        while (true) {
+            $buffer = $client->recv();
+            var_dump($buffer);
+            if ($buffer && $buffer !== true) {
+                $timeSincePing = time();
+            }
+            if (isset($config['keepalive']) && $timeSincePing < (time() - $config['keepalive'])) {
+                $buffer = $client->ping();
+                if ($buffer) {
+                    echo '发送心跳包成功' . PHP_EOL;
+                    $timeSincePing = time();
+                } else {
+                    $client->close();
+                    break;
+                }
+            }
+        }
     }
 }

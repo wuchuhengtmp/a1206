@@ -6,6 +6,8 @@
  * @author wuchuheng <wuchyuheng@163.com>
  */
 
+use App\Listens\WebsocketListeners\LogSubscript as WsLogSubscript;
+
 return [
     \App\Listens\MqttListens\LoginSubscript::class,
     \App\Listens\MqttListens\DisconnectSubscript::class,
@@ -17,4 +19,5 @@ return [
     // websocket subscript
     \App\Listens\WebsocketListeners\LoginSubscript::class,
     \App\Listens\WebsocketListeners\RegisterSubscript::class,
+    WsLogSubscript::class
 ];

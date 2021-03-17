@@ -45,17 +45,17 @@ class LogSubscript implements EventSubscriberInterface
         $hasConnect = Message::getConnectMsg($event->fd);
         $event_name = Helper::sprinstfLen($event::NAME, 15);
         $msg = date("[H:i:s]", time()) . " trigger event:" . Color::GREEN . $event_name . Color::RESET;
-        if (!$hasConnect->isError) {
-            $msg = sprintf(
-                $msg . " connected clientId: %s",
-                Color::YELLOW . $hasConnect->res['client_id'] . Color::RESET
-            );
-        } else if (!Message::getDisconnectClientId()->isError) {
-            $msg = sprintf(
-                $msg . " connected clientId: %s",
-                Color::RED . Message::getDisconnectClientId()->res . Color::RESET
-            );
-        }
+//        if (!$hasConnect->isError) {
+//            $msg = sprintf(
+//                $msg . " connected clientId: %s",
+//                Color::YELLOW . $hasConnect->res['client_id'] . Color::RESET
+//            );
+//        } else if (!Message::getDisconnectClientId()->isError) {
+//            $msg = sprintf(
+//                $msg . " connected clientId: %s",
+//                Color::RED . Message::getDisconnectClientId()->res . Color::RESET
+//            );
+//        }
         echo $msg . PHP_EOL;
     }
 
