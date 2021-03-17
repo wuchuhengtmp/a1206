@@ -35,9 +35,9 @@ class WebsocketSubscriptMQTTEvent
             ];
         }
 
-        run(function () use ($config) {
-            $this->_client($config);
-        });
+//        run(function () use ($config) {
+//            $this->_client($config);
+//        });
 
     }
 

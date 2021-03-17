@@ -1,30 +1,50 @@
 version: '3'
 
 services:
-        #hyperf:
-        #  image: hyperf/hyperf:7.4-alpine-v3.11-swoole
-        #  ports:
-        #    - "9503:9503"
-        #  volumes:
-        #    - ./simple/:/opt/www/
-        #  privileged: true
-        #  working_dir: /opt/www/
-        #  restart: always
-        #  container_name: simple
-        #  # depends_on:
-        #  #   - "mysql"
-        #  networks:
-        #    - default
-        #  command:
-        #    - /bin/sh
-        #    - -c
-        #    - |
-        #      php bin/simps.php http:start
-        #        # composer install
-        #        ##php bin/hyperf.php start
-        #        #php bin/hyperf.php TryCreateDatabase:true
-        #        #php watch -c             # 热更新
+  mqtt:
+    image: hyperf/hyperf:7.4-alpine-v3.11-swoole
+    ports:
+      - "9603:9603"
+    volumes:
+      - ./mqtt/:/opt/www/
+      - ./.env/:/opt/www/.env
+    privileged: true
+    working_dir: /opt/www/
+    restart: always
+    container_name: mqtt
+    depends_on:
+      - mysql
+    networks:
+      - default
+    command:
+      - /bin/sh
+      - -c
+      - |
+        composer install
+        php bin/simps.php mqtt:start
 
+  websocket:
+    image: hyperf/hyperf:7.4-alpine-v3.11-swoole
+    ports:
+      - "9602:9602"
+    volumes:
+      - ./mqtt/:/opt/www/
+      - ./.env/:/opt/www/.env
+    privileged: true
+    working_dir: /opt/www/
+    restart: always
+    container_name: websocket
+    depends_on:
+      - mysql
+      - mqtt
+    networks:
+      - default
+    command:
+      - /bin/sh
+      - -c
+      - |
+        composer install
+        php bin/simps.php ws:start
 
   redis:
     image: redis:${REDIS_VERSION}
@@ -55,42 +75,5 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
       TZ: "$TZ"
-
-
-  # admin:
-  #   image: admin:latest
-  #   build:
-  #     context: .
-  #     dockerfile: ./admin/Dockerfile
-  #   ports:
-  #     - "9502:4200"
-  #   volumes:
-  #     - ./admin/:/opt/www/
-  #   privileged: true
-  #   working_dir: /opt/www/
-  #   restart: always
-  #   container_name: admin
-  #   depends_on:
-  #     - "hyperf"
-  #   command:
-  #     - /bin/sh
-  #     - -c
-  #     - |
-  #       [ ! -d `pwd`/node_modules ] && yarn
-  #       ng serve --port 4200 --host 0.0.0.0
-  # mysql:
-  #   image: mysql:8.0
-  #   ports:
-  #     - "3306:3306"
-  #   volumes:
-  #     - ./mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
-  #     - ./mysql/data:/var/lib/mysql/:rw
-  #   restart: always
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: "123456"
-  #   container_name: mysql
-  #   networks:
-  #     - default
-
 networks:
   default:

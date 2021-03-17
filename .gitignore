@@ -7,5 +7,11 @@ mqtt/.env
 mysql/data
 !mysql/data/.gitkeep
 
+redis/dump.rdb
 
+#
+# mac
+#
 .DS_Store
+
+
