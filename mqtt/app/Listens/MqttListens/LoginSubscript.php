@@ -48,10 +48,12 @@ class LoginSubscript extends BaseModel implements EventSubscriberInterface
        }
        (new SubscriptionsModel($event->fd))->reset();
        $data = $hasConnectMsg->res;
-       if ($this->has('users', [
-           'username'=> $data['username'],
-           'password' => Encrypt::hash($data['password'])
-       ])) {
+       $isSystemClient = $data['username'] === env('MQTT_SYS_USER') && $data['password'] === env('MQTT_SYS_PASSWORD');
+       $hasUser = $this->has('users', [
+               'username'=> $data['username'],
+               'password' => Encrypt::hash($data['password'])
+           ]);
+       if ($isSystemClient || $hasUser ) {
            // 发布已登录事件
            Dispatcher::getInstance()->dispatch(new LoggedEvent($event->fd), LoggedEvent::NAME);
            $this->_acceptConnect($event->fd);

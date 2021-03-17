@@ -40,7 +40,7 @@ class SubscriptSubscript extends BaseModel implements EventSubscriberInterface
             $payload[] = $qos;
             $map['topic'] = $topic;
             $hasSub = $subModel->getFirstByMap($map);
-            list(, , $deviceId) = explode('_', $topic);
+            $deviceId = $topic === 'mqtt_event' ? $topic : explode('_', $topic)[2];
             $valums = [
                 'topic' => $topic,
                 'fd' => $event->fd,

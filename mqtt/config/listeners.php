@@ -11,6 +11,8 @@ declare(strict_types=1);
 return [
     //Server::onStart
     'start' => [
+        // 启动服务后便创建mqtt客户端
+        [\App\Listens\WebsocketSubscriptMQTTEvent::class, 'handle']
     ],
     //Server::onWorkerStart
     'workerStart' => [

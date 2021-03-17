@@ -29,7 +29,7 @@ return [
     ],
     'mqtt' => [
         'ip' => '0.0.0.0',
-        'port' => 9603,
+        'port' => (int) env('MQTT_PORT'),
         'callbacks' => [
             'close' => [\App\Events\MqttServer::class, 'onClose'],
         ],
