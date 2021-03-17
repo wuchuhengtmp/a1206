@@ -10,8 +10,10 @@ namespace App\Listens\WebsocketListeners;
 
 use App\Events\WebsocketEvents\BaseEvent;
 use App\Events\WebsocketEvents\ShowMyDevicesEvent;
+use App\Model\DevicesModel;
 use mysql_xdevapi\BaseResult;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Utils\WsMessage;
 
 class ShowMyDevicesSubscript implements EventSubscriberInterface
 {
@@ -28,6 +30,8 @@ class ShowMyDevicesSubscript implements EventSubscriberInterface
 
     public function handle(BaseEvent  $event): void
     {
-        var_dump(ShowMyDevicesEvent::NAME);
+        $me = $event->getAuth()->res;
+        $devices = (new DevicesModel($event->fd))->getDevicesByUid((int) $me['id']);
+        WsMessage::resSuccess($event, $devices);
     }
 }

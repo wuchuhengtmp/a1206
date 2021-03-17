@@ -9,6 +9,8 @@ declare(strict_types=1);
 namespace Utils;
 
 use App\Contracts\JWTContract;
+use App\Events\WebsocketEvents\BaseEvent;
+use App\Model\UsersModel;
 
 class JWT implements JWTContract
 {
@@ -32,10 +34,10 @@ class JWT implements JWTContract
             'exp' => time() + self::$_exp,
             'uid' => $uid
         ];
-        $singing = hash('sha256',  self::$_secrit . json_encode($header) . json_encode($payload));
-        return base64_encode(json_encode($header)) . "." .
-            base64_encode(json_encode($payload)) . "." .
-            base64_encode($singing);
+        $header = base64_encode(json_encode($header));
+        $payload = base64_encode(json_encode($payload));
+        $singing = hash('sha256',  self::$_secrit . $header . $payload);
+        return sprintf("%s.%s.%s", $header, $payload, $singing);
     }
 
     /**
@@ -47,13 +49,41 @@ class JWT implements JWTContract
         $arr = explode('.', $signing);
         if( count($arr) !== 3 ) return false;
         list($header, $payload, $signing) = $arr;
+        $trustSigingin = hash('sha256',  self::$_secrit . $header . $payload);
         $header = base64_decode($header);
         $payload = base64_decode($payload);
-        $signing = base64_decode($signing);
-        $trustSigingin = hash('sha256',  self::$_secrit . $header . $payload);
-        return $signing === $trustSigingin
+        $isAccess = $signing === $trustSigingin
             && Helper::isJson($payload)
             && array_key_exists('exp', json_decode($payload, true))
             && json_decode($payload, true)['exp'] >= time();
+        return $isAccess;
+    }
+
+    /**
+     * @param BaseEvent $event
+     * @return ReportFormat
+     */
+    static public function getAuthByEvent(BaseEvent $event): ReportFormat
+    {
+        $returnData = new ReportFormat();
+        $hasMsg = WsMessage::getMsgByEvent($event);
+        if ($hasMsg->isError) return $hasMsg;
+        $msg = $hasMsg->res;
+        if (!array_key_exists('authorization', $msg)) return $res;
+        preg_match('/^[B|b]earer\s(.+)/', $msg['authorization'], $res);
+        if (!array_key_exists(1, $res)) return $res;
+        $token = $res[1];
+        if (!self::check($token)) return $res;
+        $payload = json_decode(base64_decode(explode('.', $token)[1]), true);
+        $uid = $payload['uid'];
+        $userModel = new UsersModel($event->fd);
+        if ($userModel->hasUser(['id' => $uid])) {
+            $returnData->res = $userModel->getUserById($uid);
+            $returnData->isError = false;
+            return $returnData;
+        } else {
+            return $returnData;
+        }
+
     }
 }

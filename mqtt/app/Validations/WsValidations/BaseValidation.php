@@ -37,10 +37,26 @@ class BaseValidation implements ValidationContract
         foreach ($fields as $field => $rules) {
             foreach ($rules as $rule) {
                 $methodName = "_" . $rule;
-                if (method_exists($this, $methodName)) {
+                // 基本验证方法
+                if (method_exists(self::class, $methodName)) {
                     $messageKey = $field . "." . $rule;
                     $message = array_key_exists($messageKey, $messages) ? $messages[$messageKey] : '';
                     $this->$methodName($event, $field, $message);
+                } else if (method_exists(static::class, $rule)) {
+                    // 扩展验证方法
+                    $data = WsMessage::getMsgByEvent($event)->res['data'];
+                    (new static())->$rule($event, $data, function ($errorMsg = '') use ($field, $rule, $event) {
+                        // 错误消息
+                        if ($errorMsg === '') {
+                            $messages = $this->getMessages();
+                            $mk = sprintf("%s.%s", $field, $rule);
+                            $errorMsg = array_key_exists($mk, $messages) ? $messages[$mk] : 'the validation was faild by function' . $rule;
+                        }
+                        $e = new UserException($errorMsg);
+                        $e->url = $event->url;
+                        $e->method = $event->method;
+                        throw $e;
+                    });
                 }
             }
         }
@@ -56,7 +72,10 @@ class BaseValidation implements ValidationContract
         $data = WsMessage::getMsgByEvent($event)->res['data'];
         if (!array_key_exists($field, $data) || strlen($data[$field]) === 0) {
             $message = $message === '' ? $field . '不能为空' : $message;
-            throw new UserException($message);
+            $e = new UserException($message);
+            $e->url = $event->url;
+            $e->method = $event->method;
+            throw $e;
         }
     }
 

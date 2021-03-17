@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Utils;
 
 
+use App\Events\WebsocketEvents\BaseEvent;
+
 class Encrypt
 {
     static public function hash(string $string): string

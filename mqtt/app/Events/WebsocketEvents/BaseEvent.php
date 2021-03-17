@@ -11,6 +11,10 @@ namespace App\Events\WebsocketEvents;
 
 use Symfony\Contracts\EventDispatcher\Event;
 use Utils\Context;
+use Utils\Encrypt;
+use Utils\JWT;
+use Utils\ReportFormat;
+use Utils\WsMessage;
 
 class BaseEvent extends Event
 {
@@ -26,7 +30,7 @@ class BaseEvent extends Event
 
     public $isLogin = false;
 
-    public $auth;
+    private $_auth;
 
     public function __construct(int $fd, string $method = '', string $url = '')
     {
@@ -40,5 +44,10 @@ class BaseEvent extends Event
             $this->isLogin = true;
             $this->auth = $hasLogin->res;
         }
+    }
+
+    public function getAuth(): ReportFormat
+    {
+        return JWT::getAuthByEvent($this);
     }
 }

@@ -80,4 +80,13 @@ class UsersModel extends BaseModel
        return $this->has($this->tableName, $map);
     }
 
+    /**
+     * @param int $uid
+     * @return false|mixed
+     */
+    public function getUserById(int $uid)
+    {
+        return $this->get($this->tableName, '*', ['id' => $uid]);
+    }
+
 }

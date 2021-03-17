@@ -11,6 +11,7 @@ namespace App\Validations\WsValidations;
 use App\Contracts\ValidationContract;
 use App\Events\WebsocketEvents\BaseEvent;
 use App\Model\UsersModel;
+use Utils\Encrypt;
 use Utils\ReportFormat;
 use Utils\WsMessage;
 
@@ -23,9 +24,23 @@ class LoginValidation extends BaseValidation implements ValidationContract
     public function getRules(): array
     {
         return [
-            'username' => [ 'required' ],
+            'username' => [ 'required', 'checkAccount' ],
             'password' => [ 'required' ]
         ];
+    }
+
+    /**
+     * @param BaseEvent $event
+     * @param array $data
+     * @param callable $reportError
+     */
+    public function checkAccount(BaseEvent $event, array $data, callable $reportError)
+    {
+        $map = [
+            'username' => $data['username'],
+            'password' => $data['password']
+        ];
+        !(new UsersModel($event->fd))->hasUser($map) && $reportError('Incorrect account or password');
     }
 
     /**

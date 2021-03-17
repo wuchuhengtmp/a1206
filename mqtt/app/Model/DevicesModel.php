@@ -69,4 +69,14 @@ class DevicesModel extends BaseModel
         $res = $this->has($this->tableName, $map);
         return $res;
     }
+
+
+    /**
+     * @param int $uid
+     * @return array
+     */
+    public function getDevicesByUid(int $uid): array
+    {
+        return $this->select($this->tableName, '*', ['user_id' => $uid]);
+    }
 }
