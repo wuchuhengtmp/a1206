@@ -15,9 +15,10 @@ return [
     \App\Listens\MqttListens\RegisterSubscript::class,
     \App\Listens\MqttListens\LogSubscript::class,
     \App\Listens\MqttListens\SubscriptSubscript::class,
+    \App\Listens\MqttListens\ReportSubscript::class,
 
     // websocket subscript
     \App\Listens\WebsocketListeners\LoginSubscript::class,
     \App\Listens\WebsocketListeners\RegisterSubscript::class,
-    WsLogSubscript::class
+    WsLogSubscript::class,
 ];

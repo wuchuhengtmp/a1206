@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace Utils;
 
+use App\Events\MqttEvents\BaseEvent;
+
 class Helper
 {
     /**
@@ -78,13 +80,19 @@ class Helper
 
     /**
      *  格式化响应报文的content字段
+     * @param BaseEvent $event
+     * @param array $content
+     * @param string $command
+     * @return string
      */
-    static public function fResContent(int $fd, array $content): string
+    static public function fResContent(BaseEvent $event, array $content, string $command): string
     {
-        $hasContent = Message::getRegisterContent($fd);
+        $data = $event->currentMsg;
+        $hasContent = Helper::parseContent($data['content']);
         if ($hasContent->isError) return json_encode([]);
         $newContent = $hasContent->res;
         $newContent['msgid'] = $newContent['deviceid'] . time();
+        $newContent['command'] = $command;
         $newContent['content'] = $content;
         $content = json_encode($newContent);
         return sprintf("%04d", strlen($content)) . 'XCWL' . $content;

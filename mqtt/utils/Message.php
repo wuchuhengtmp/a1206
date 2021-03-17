@@ -8,7 +8,9 @@ declare(strict_types=1);
 
 namespace Utils;
 
+use App\Events\MqttEvents\BaseEvent;
 use Codedungeon\PHPCliColors\Color;
+use Simps\Server\Protocol\MQTT;
 use function Symfony\Component\String\u;
 
 class Message
@@ -108,8 +110,7 @@ class Message
         $hasData = self::getRegister($fd);
         if ($hasData->isError) return $hasData;
         $data = $hasData->res;
-        $hasContent = Helper::parseContent($data['content']);
-        return $hasContent;
+        return Helper::parseContent($data['content']);
     }
 
     /**
@@ -142,5 +143,38 @@ class Message
     static public function getDisconnectClientId(): ReportFormat
     {
         return Context::getGlobal(self::DISCONNECT_DEVICE_ID);
+    }
+
+    /**
+     *  设置当前消息
+     * @param BaseEvent $event
+     * @param $value
+     */
+    static public function setCurrentMsg(BaseEvent $event, $value): void
+    {
+        Context::set($event->fd, $event->messageId, $value);
+    }
+
+    /** 获取当前消息
+     * @param BaseEvent $event
+     * @return ReportFormat
+     */
+    static public function getCurrentMsg(BaseEvent $event): ReportFormat
+    {
+        return Context::get($event->fd, $event->messageId);
+    }
+
+    /**
+     *  发送
+     * @param BaseEvent $event
+     * @param array $content
+     * @param string $command
+     */
+    static public function send(BaseEvent $event, array $content, string $command): void
+    {
+        $msg = $event->currentMsg;
+        $server = $event->getServer();
+        $msg['content'] = Helper::fResContent($event, $content, $command);
+        $server->send($event->fd, MQTT::getAck($msg));
     }
 }
