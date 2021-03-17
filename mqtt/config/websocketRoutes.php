@@ -16,4 +16,6 @@ return [
     Router::post('/pings', \App\Events\WebsocketEvents\PingEvent::class),
     // 分类列表
     Router::get('/categories', \App\Events\WebsocketEvents\ShowCategoriesEvent::class),
+    // 用户设备
+    Router::get('/me/devices', \App\Events\WebsocketEvents\ShowMyDevicesEvent::class, [\App\Validations\WsValidations\AuthValidation::class])
 ];

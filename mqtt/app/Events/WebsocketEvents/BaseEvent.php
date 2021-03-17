@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace App\Events\WebsocketEvents;
 
 use Symfony\Contracts\EventDispatcher\Event;
+use Utils\Context;
 
 class BaseEvent extends Event
 {
@@ -21,11 +22,23 @@ class BaseEvent extends Event
 
     public $messageId;
 
+    public $currentMsg;
+
+    public $isLogin = false;
+
+    public $auth;
+
     public function __construct(int $fd, string $method = '', string $url = '')
     {
         $this->fd = $fd;
         $this->method = $method;
         $this->url = $url;
         $this->messageId =  $fd . "|" . $this->method . "|" . $this->url . "|" . $messageId = microtime();
+        // 是否登录
+        $hasLogin = Context::get($fd, 'auth');
+        if (!$hasLogin->isError) {
+            $this->isLogin = true;
+            $this->auth = $hasLogin->res;
+        }
     }
 }

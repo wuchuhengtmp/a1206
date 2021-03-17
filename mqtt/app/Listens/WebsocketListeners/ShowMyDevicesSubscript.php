@@ -28,6 +28,6 @@ class ShowMyDevicesSubscript implements EventSubscriberInterface
 
     public function handle(BaseEvent  $event): void
     {
-
+        var_dump(ShowMyDevicesEvent::NAME);
     }
 }

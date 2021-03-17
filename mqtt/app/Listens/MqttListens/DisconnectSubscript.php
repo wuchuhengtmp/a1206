@@ -33,8 +33,8 @@ class DisconnectSubscript extends BaseModel implements EventSubscriberInterface
      */
     public function handleDisconnect(DisconnectEvent $event)
     {
-        $connectMsg = Message::getConnectMsg($event->fd)->res;
-        Message::setDisconnectClientId($connectMsg['client_id']);
+        $connectMsg = Message::getConnectMsg($event->fd);
+        !$connectMsg->isError && Message::setDisconnectClientId($connectMsg->res['client_id']);
         (new SubscriptionsModel($event->fd))->reset();
         Context::deleteConectContext($event->fd);
     }

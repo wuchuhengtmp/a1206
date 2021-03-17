@@ -106,7 +106,14 @@ class WsRouteParser implements RouteParserContract
         if (!self::isRouteFormat($currentRoute)) return $res;
         if (Helper::isJson($currentRoute)) $currentRoute = json_decode($currentRoute, true);
         $method = strtoupper($currentRoute['method']);
+        $methods = [ 'GET', 'POST', 'DELETE', 'PUT', 'PATCH' ];
         $url = $currentRoute['url'];
+        if (!in_array($method, $methods)) {
+            $e = new FrontEndException('the method was invalid');
+            $e->method = $method;
+            $e->url = $url;
+            throw $e;
+        }
         foreach ($routes as $route) {
             if ($route['method'] === $method && $route['url'] === $url) {
                 $event = new $route['event']($fd, $route['method'], $route['url']);
