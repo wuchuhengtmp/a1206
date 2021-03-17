@@ -12,7 +12,7 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20210315022411 extends AbstractMigration
 {
-    private $tableName = 'subscriptions';
+    private $_tableName = 'subscriptions';
 
     public function getDescription() : string
     {
@@ -22,7 +22,7 @@ final class Version20210315022411 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         $this->addSql(<<<MySQL_QUERY
-        CREATE TABLE `{$this->tableName}` (
+        CREATE TABLE `{$this->_tableName}` (
           `id` int(11) NOT NULL AUTO_INCREMENT,
           `fd` int(11) NOT NULL COMMENT '连接id',
           `device_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '设备id',
@@ -39,6 +39,6 @@ MySQL_QUERY
 
     public function down(Schema $schema) : void
     {
-        if ($schema->hasTable($this->tableName)) $schema->dropTable($this->tableName);
+        if ($schema->hasTable($this->_tableName)) $schema->dropTable($this->_tableName);
     }
 }

@@ -13,5 +13,7 @@ return [
     // 注册
     Router::post('/users', \App\Events\WebsocketEvents\RegisterEvent::class, [\App\Validations\WsValidations\RegisterValidation::class]),
     // 心跳
-    Router::post('/pings', \App\Events\WebsocketEvents\PingEvent::class)
+    Router::post('/pings', \App\Events\WebsocketEvents\PingEvent::class),
+    // 分类列表
+    Router::get('/categories', \App\Events\WebsocketEvents\ShowCategoriesEvent::class),
 ];

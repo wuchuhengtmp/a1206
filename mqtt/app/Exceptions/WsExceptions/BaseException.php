@@ -8,11 +8,17 @@ declare(strict_types=1);
 
 namespace App\Exceptions\WsExceptions;
 
+use App\Events\MqttEvents\BaseEvent;
+
 class BaseException extends \Exception implements \Throwable
 {
     public $errorCode = 1;
 
     public $errorMsg = '系统错误';
+
+    public $url = "";
+
+    public $method = "";
 
     public function __construct($message = "", $code = 0, Throwable $previous = null)
     {

@@ -123,6 +123,10 @@ class WsRouteParser implements RouteParserContract
                 return $res;
             }
         }
+        $e = new FrontEndException('the route wasn\'t matched');
+        $e->method = strtoupper($currentRoute['method']);
+        $e->url = $currentRoute['url'];
+        throw $e;
         return $res;
     }
 

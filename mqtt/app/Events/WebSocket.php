@@ -42,7 +42,7 @@ class WebSocket
                 // 连接断开异常
                 // todo: ...
             } else {
-                $event = new BaseEvent($frame->fd);
+                $event = new BaseEvent($frame->fd, $e->method, $e->url);
                 WsMessage::resError($event, ['errorCode' => $e->errorCode, 'errorMsg' => $e->errorMsg]);
             }
         }
