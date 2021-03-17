@@ -21,4 +21,5 @@ return [
     \App\Listens\WebsocketListeners\LoginSubscript::class,
     \App\Listens\WebsocketListeners\RegisterSubscript::class,
     WsLogSubscript::class,
+    \App\Listens\WebsocketListeners\PingSubscript::class
 ];
