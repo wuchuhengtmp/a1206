@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace App\Listens\MqttListens;
 
 use App\Dispatcher;
+use App\Events\MqttEvents\BaseEvent;
 use App\Events\MqttEvents\LoginEvent;
 use App\Events\MqttEvents\LoggedEvent;
 use App\Model\SubscriptionsModel;
@@ -56,7 +57,7 @@ class LoginSubscript extends BaseModel implements EventSubscriberInterface
        if ($isSystemClient || $hasUser ) {
            // 发布已登录事件
            Dispatcher::getInstance()->dispatch(new LoggedEvent($event->fd), LoggedEvent::NAME);
-           $this->_acceptConnect($event->fd);
+           $this->_acceptConnect($event);
        } else {
            $this->_rejectConnect($event->fd);
        }
@@ -64,12 +65,12 @@ class LoginSubscript extends BaseModel implements EventSubscriberInterface
 
     /**
      *  接受连接
+     * @param BaseEvent $event
      */
-   private function _acceptConnect(int $fd)
+   private function _acceptConnect(BaseEvent $event)
    {
-       $hasServer = $server = Context::getServer($fd);
-       $server = $hasServer->res;
-       $server->send($fd, MQTT::getAck([
+       $server = $event->getServer();
+       $server->send($event->fd, MQTT::getAck([
            'cmd' => 2,
            'code' => 0
        ]));

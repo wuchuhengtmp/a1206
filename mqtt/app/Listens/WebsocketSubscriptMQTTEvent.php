@@ -34,7 +34,7 @@ class WebsocketSubscriptMQTTEvent
                 'keepalive' => env('WS_MQTT_Client_KEEPALIVE'),
             ];
             go(function () use ($config) {
-                $this->_client($config);
+//                $this->_client($config);
             });
         }
     }

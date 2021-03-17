@@ -44,6 +44,7 @@ return [
         'settings' => [
             'worker_num' => 1,
             'open_mqtt_protocol' => true,
+            'package_max_length' => 2000000
         ],
     ],
 ];

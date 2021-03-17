@@ -40,8 +40,9 @@ class RegisterSubscript extends BaseModel implements EventSubscriberInterface
         // 发送注册响应结果给设备
         $c = $hasSuccess->isError ? Helper::RES_FAIL : Helper::RES_SUCCESS;
         $c = Helper::fResContent($event, $c, 'register');
-        $regisgerMsg = Message::getRegister($event->fd)->res;
+        $regisgerMsg = $event->currentMsg;
         $regisgerMsg['content'] = $c;
+        $regisgerMsg['cmd'] = MQTT::PUBCOMP; // 标记完成消息
         $server->send($event->fd, MQTT::getAck($regisgerMsg));
     }
 }
