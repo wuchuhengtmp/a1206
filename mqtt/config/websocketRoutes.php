@@ -7,17 +7,32 @@ declare(strict_types=1);
 
 use Utils\WsRouteParser as Router;
 
+use App\Events\WebsocketEvents\{
+    ShowDeviceDetailEvent,
+    LoginEvent,
+    RegisterEvent,
+    PingEvent,
+    ShowCategoriesEvent,
+    ShowMyDevicesEvent
+};
+
+use \App\Validations\WsValidations\{
+    AuthValidation,
+    RegisterValidation,
+    LoginValidation,
+    ShowDeviceDetailValidation
+};
 return [
     // 登录
-    Router::post('/users/authorizations', \App\Events\WebsocketEvents\LoginEvent::class, [\App\Validations\WsValidations\LoginValidation::class]),
+    Router::post('/users/authorizations', LoginEvent::class, [LoginValidation::class]),
     // 注册
-    Router::post('/users', \App\Events\WebsocketEvents\RegisterEvent::class, [\App\Validations\WsValidations\RegisterValidation::class]),
+    Router::post('/users', RegisterEvent::class, [RegisterValidation::class]),
     // 心跳
-    Router::post('/pings', \App\Events\WebsocketEvents\PingEvent::class),
+    Router::post('/pings', PingEvent::class),
     // 分类列表
-    Router::get('/categories', \App\Events\WebsocketEvents\ShowCategoriesEvent::class),
+    Router::get('/categories', ShowCategoriesEvent::class),
     // 用户设备
-    Router::get('/me/devices', \App\Events\WebsocketEvents\ShowMyDevicesEvent::class, [\App\Validations\WsValidations\AuthValidation::class]),
+    Router::get('/me/devices', ShowMyDevicesEvent::class, [AuthValidation::class]),
     // 用户设备详情
-    Router::get('/me/devices/:id', \App\Events\WebsocketEvents\ShowDeviceDetailEvent::class, [ \App\Validations\WsValidations\AuthValidation::class ])
+    Router::get('/me/devices/:id', ShowDeviceDetailEvent::class, [ AuthValidation::class, ShowDeviceDetailValidation::class ])
 ];

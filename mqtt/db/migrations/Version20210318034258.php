@@ -12,7 +12,7 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20210318034258 extends AbstractMigration
 {
-    private $_tableName = 'categories';
+    private $_tableName = 'files';
 
     public function getDescription() : string
     {
