@@ -22,8 +22,6 @@ class IndexController
                 [
                     'method' => $request->server['request_method'],
                     'message' => 'Hello Simps.',
-                    'path' => $path,
-                    'url' => (new LocalStorage())->url($path),
                 ]
             )
         );

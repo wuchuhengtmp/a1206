@@ -32,6 +32,12 @@ class BaseEvent extends Event
 
     private $_auth;
 
+    /**
+     * 路由参数
+     * @var array
+     */
+    public $routeParams = [];
+
     public function __construct(int $fd, string $method = '', string $url = '')
     {
         $this->fd = $fd;

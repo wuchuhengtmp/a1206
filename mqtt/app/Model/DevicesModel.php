@@ -80,4 +80,9 @@ class DevicesModel extends BaseModel
     {
         return $this->select($this->tableName, '*', ['user_id' => $uid]);
     }
+
+    public function uploadDevice($deviceid, array $columns): void
+    {
+        $this->update($this->tableName, $columns, ['device_id' => $deviceid]);
+    }
 }

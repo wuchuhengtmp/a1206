@@ -115,8 +115,10 @@ class WsRouteParser implements RouteParserContract
             throw $e;
         }
         foreach ($routes as $route) {
-            if ($route['method'] === $method && $route['url'] === $url) {
+            $hasMatcheUrl = self::parseUrlParams($route['url'], $url);
+            if ($route['method'] === $method && !$hasMatcheUrl->isError) {
                 $event = new $route['event']($fd, $route['method'], $route['url']);
+                $event->routeParams = $hasMatcheUrl->res;
                 // 保存各种事件的消息，降低数据覆盖的可能性
                 WsMessage::setMsgByEvent($event);
                 // 验证
@@ -161,4 +163,31 @@ class WsRouteParser implements RouteParserContract
         }
         return true;
     }
+
+    /**
+     *  匹配并解析路由参数
+     * @param $route
+     * @param $url
+     * @return ReportFormat
+     */
+    static public function parseUrlParams($route, $url): ReportFormat
+    {
+        $report = new ReportFormat();
+        preg_match_all('/:(\w+)/', $route, $res);
+        $preRule= str_replace('/', '\/', $route);
+        foreach ($res[0] as $placeHolder) {
+            $preRule = str_replace($placeHolder, '([^\/]+)', $preRule);
+        }
+        $isOk = preg_match("/^$preRule$/", $url, $r);
+        if ($isOk) {
+            $routeParams = [];
+            foreach ($res[1] as $i => $paramName) {
+                $routeParams[$paramName] = $r[$i + 1];
+            }
+            $report->isError = false;
+            $report->res = $routeParams;
+        }
+        return $report;
+    }
+
 }

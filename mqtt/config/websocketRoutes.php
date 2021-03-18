@@ -17,5 +17,7 @@ return [
     // 分类列表
     Router::get('/categories', \App\Events\WebsocketEvents\ShowCategoriesEvent::class),
     // 用户设备
-    Router::get('/me/devices', \App\Events\WebsocketEvents\ShowMyDevicesEvent::class, [\App\Validations\WsValidations\AuthValidation::class])
+    Router::get('/me/devices', \App\Events\WebsocketEvents\ShowMyDevicesEvent::class, [\App\Validations\WsValidations\AuthValidation::class]),
+    // 用户设备详情
+    Router::get('/me/devices/:id', \App\Events\WebsocketEvents\ShowDeviceDetailEvent::class, [ \App\Validations\WsValidations\AuthValidation::class ])
 ];
