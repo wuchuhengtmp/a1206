@@ -38,7 +38,7 @@ class DevicesModel extends BaseModel
             'client_id' => $connectMsg['client_id'],
             'clean_session' => $connectMsg['clean_session'],
             'version' => $rMsg['content']['version'],
-            'vender' => $rMsg['content']['vender']
+            'vender' => $rMsg['content']['vender'],
         ];
         if ($this->isExists()) {
             // 更新一台设备
@@ -48,6 +48,7 @@ class DevicesModel extends BaseModel
             ]);
         } else {
             // 添加一台设备
+            $device['alias'] = $device['device_id'];
             $this->insert($this->tableName, $device);
         }
         $res->isError = false;

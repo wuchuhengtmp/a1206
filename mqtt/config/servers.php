@@ -13,6 +13,24 @@ use \Simps\Server\Protocol\MQTT;
 
 return [
     'mode' => SWOOLE_PROCESS,
+    'http' => [
+        'ip' => '0.0.0.0',
+        'port' => 9501,
+        'sock_type' => SWOOLE_SOCK_TCP,
+        'callbacks' => [
+        ],
+        'settings' => [
+            'worker_num' => swoole_cpu_num(),
+            'document_root' =>  (function() {
+                $path = BASE_PATH . '/' . config('filesystems')[config('filesystems')['default']]['root'];
+                !is_dir($path) && mkdir($path, 0755, true);
+                return $path;
+            })(),
+            'enable_static_handler' => true,
+            'http_index_files' => ['indesx.html', 'index.txt'],
+            'static_handler_locations' => ['/files'],
+        ],
+    ],
     'ws' => [
         'ip' => '0.0.0.0',
         'port' => 9602,
@@ -44,7 +62,6 @@ return [
         'settings' => [
             'worker_num' => 1,
             'open_mqtt_protocol' => true,
-            'package_max_length' => 2000000
         ],
     ],
 ];
