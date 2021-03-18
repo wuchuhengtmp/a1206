@@ -11,12 +11,12 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Storages\LocalStorage;
+use App\Storages\Storage;
 
 class IndexController
 {
     public function index($request, $response)
     {
-        $path = (new LocalStorage)->put('index.png', 'safasdfasd');
         $response->end(
             json_encode(
                 [

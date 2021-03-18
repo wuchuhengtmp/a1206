@@ -22,7 +22,7 @@ return [
         'settings' => [
             'worker_num' => swoole_cpu_num(),
             'document_root' =>  (function() {
-                $path = BASE_PATH . '/' . config('filesystems')[config('filesystems')['default']]['root'];
+                $path = BASE_PATH . '/' . config('filesystems')['local']['root'];
                 !is_dir($path) && mkdir($path, 0755, true);
                 return $path;
             })(),

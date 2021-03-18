@@ -1,51 +1,51 @@
 version: '3'
 
 services:
-  mqtt:
-    image: hyperf/hyperf:7.4-alpine-v3.11-swoole
-    ports:
-      - "9603:9603"
-    volumes:
-      - ./mqtt/:/opt/www/
-      - ./.env/:/opt/www/.env
-    privileged: true
-    working_dir: /opt/www/
-    restart: always
-    container_name: mqtt
-    depends_on:
-      - mysql
-    networks:
-      - default
-    command:
-      - /bin/sh
-      - -c
-      - |
-        composer install
-        php bin/simps.php mqtt:start
-
-  websocket:
-    image: hyperf/hyperf:7.4-alpine-v3.11-swoole
-    ports:
-      - "9602:9602"
-    volumes:
-      - ./mqtt/:/opt/www/
-      - ./.env/:/opt/www/.env
-    privileged: true
-    working_dir: /opt/www/
-    restart: always
-    container_name: websocket
-    depends_on:
-      - mysql
-      - mqtt
-    networks:
-      - default
-    command:
-      - /bin/sh
-      - -c
-      - |
-        composer install
-        php bin/simps.php ws:start
-
+        #  mqtt:
+        #    image: hyperf/hyperf:7.4-alpine-v3.11-swoole
+        #    ports:
+        #      - "9603:9603"
+        #    volumes:
+        #      - ./mqtt/:/opt/www/
+        #      - ./.env/:/opt/www/.env
+        #    privileged: true
+        #    working_dir: /opt/www/
+        #    restart: always
+        #    container_name: mqtt
+        #    depends_on:
+        #      - mysql
+        #    networks:
+        #      - default
+        #    command:
+        #      - /bin/sh
+        #      - -c
+        #      - |
+        #        composer install
+        #        php bin/simps.php mqtt:start
+        #
+        #  websocket:
+        #    image: hyperf/hyperf:7.4-alpine-v3.11-swoole
+        #    ports:
+        #      - "9602:9602"
+        #    volumes:
+        #      - ./mqtt/:/opt/www/
+        #      - ./.env/:/opt/www/.env
+        #    privileged: true
+        #    working_dir: /opt/www/
+        #    restart: always
+        #    container_name: websocket
+        #    depends_on:
+        #      - mysql
+        #      - mqtt
+        #    networks:
+        #      - default
+        #    command:
+        #      - /bin/sh
+        #      - -c
+        #      - |
+        #        composer install
+        #        php bin/simps.php ws:start
+        #
   redis:
     image: redis:${REDIS_VERSION}
     container_name: redis
