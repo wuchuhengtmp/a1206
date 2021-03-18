@@ -14,7 +14,7 @@ use Utils\ReportFormat;
 
 class DevicesModel extends BaseModel
 {
-    private $tableName = 'devices';
+    public $tableName = 'devices';
 
     /**
      *  添加一台设备或者更新一台设备
