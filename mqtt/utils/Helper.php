@@ -81,11 +81,11 @@ class Helper
     /**
      *  格式化响应报文的content字段
      * @param BaseEvent $event
-     * @param array $content
+     * @param array | null $content
      * @param string $command
      * @return string
      */
-    static public function fResContent(BaseEvent $event, array $content, string $command): string
+    static public function fResContent(BaseEvent $event, $content, string $command): string
     {
         $data = $event->currentMsg;
         $hasContent = Helper::parseContent($data['content']);

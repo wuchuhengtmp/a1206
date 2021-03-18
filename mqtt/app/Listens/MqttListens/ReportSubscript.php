@@ -37,6 +37,13 @@ class ReportSubscript implements EventSubscriberInterface
         $msg = $event->currentMsg;
         $msg['content'] = Helper::fResContent($event, Helper::RES_SUCCESS,'report_data_ack');
         $msg['cmd'] = MQTT::PUBCOMP;
-        $event->getServer()->send($event->fd, MQTT::getAck($msg));
+        $server = $event->getServer();
+        $fd = $event->fd;
+        $server->send($fd, MQTT::getAck($msg));
+        // 获取设备参数
+        $rMsg =  $msg;
+        $rMsg['content'] = Helper::fResContent($event, null,'get_data_all');
+        $rMsg['cmd'] = MQTT::SUBACK;
+        $server->send($fd, MQTT::getAck($rMsg));
     }
 }

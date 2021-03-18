@@ -18,4 +18,13 @@ class CategoriesModel extends BaseModel
     {
         return $this->select($this->_tableName, ['id', 'name']);
     }
+
+    /**
+     * @param int $cid
+     * @return array
+     */
+    public function getById(int $cid): array
+    {
+        return $this->get($this->_tableName, '*', ['id' => $cid]);
+    }
 }
