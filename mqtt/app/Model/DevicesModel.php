@@ -104,18 +104,11 @@ class DevicesModel extends BaseModel
             WHERE
                 df.device_id = %d 
         ", $deviceId))->fetchAll();
-        $res = [];
-        foreach ($files as $file) {
-            $tmp = [];
-            $tmp['id'] = $file['deviceId'];
-            $tmp['url'] = (new Storage())->disk($file['disk'])->url($file['path']);
-            $urlInfo =  pathinfo($tmp['url']);
-            preg_match('/^([^\.]+)/', $urlInfo['basename'], $mRes);
-            $tmp['name'] = $mRes[1];
-            $res[] = $tmp;
+        $fileIds = array_column($files, 'id');
+        $defaultFiles = (new ConfigsModel($this->fd))->getDefaultAudio();
+        foreach ($defaultFiles as &$dFile) {
+            $dFile['isSelect'] = in_array($dFile['file_id'], $fileIds);
         }
-        return $res;
+        return $defaultFiles;
     }
-
-
 }
