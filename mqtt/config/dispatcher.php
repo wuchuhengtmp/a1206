@@ -16,6 +16,7 @@ return [
     \App\Listens\MqttListens\LogSubscript::class,
     \App\Listens\MqttListens\SubscriptSubscript::class,
     \App\Listens\MqttListens\ReportSubscript::class,
+    \App\Listens\MqttListens\UpdataFileSubscript::class,
 
     // websocket subscript
     \App\Listens\WebsocketListeners\LoginSubscript::class,

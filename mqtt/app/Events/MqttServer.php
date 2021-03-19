@@ -13,6 +13,7 @@ use App\Events\MqttEvents\PingEvent;
 use App\Events\MqttEvents\RegisterEvent;
 use App\Events\MqttEvents\ReportEvent;
 use App\Events\MqttEvents\SubscriptEvent;
+use App\Events\MqttEvents\UpdataFileEvent;
 use Simps\Server\Protocol\MQTT;
 use Simps\Server\Protocol\MqttInterface;
 use Swoole\Server;
@@ -39,6 +40,7 @@ class MqttServer implements MqttInterface
 
     public function onMqDisconnect($server, int $fd, $fromId, $data): bool
     {
+        Dispatcher::getInstance()->dispatch(new DisconnectEvent($fd, [], $server), DisconnectEvent::NAME);
         return true;
     }
 
@@ -56,6 +58,10 @@ class MqttServer implements MqttInterface
                 // 发布上报事件
                 case 'report_data':
                     Dispatcher::getInstance()->dispatch(new ReportEvent($fd, $data, $server), ReportEvent::NAME);
+                    break;
+                // 上传文件事件
+                case UpdataFileEvent::NAME:
+                    Dispatcher::getInstance()->dispatch(new UpdataFileEvent($fd, $data, $server), UpdataFileEvent::NAME);
                     break;
                 default:
                     var_dump($res->res);
@@ -82,6 +88,6 @@ class MqttServer implements MqttInterface
      */
     static public function onClose($server, int $fd, $fromId): void
     {
-        Dispatcher::getInstance()->dispatch(new DisconnectEvent($fd, [], $server), DisconnectEvent::NAME);
+//        Dispatcher::getInstance()->dispatch(new DisconnectEvent($fd, [], $server), DisconnectEvent::NAME);
     }
 }

@@ -64,4 +64,9 @@ class SubscriptionsModel extends BaseModel
     {
         $this->delete($this->_tableName, ['fd' => $this->fd]);
     }
+
+    public function getDataByTopic($topick)
+    {
+        return $this->select($this->_tableName, '*', ['topic' => $topick]);
+    }
 }

@@ -12,7 +12,8 @@ return [
     //Server::onStart
     'start' => [
         // 启动服务后便创建mqtt客户端
-        [\App\Listens\WebsocketSubscriptMQTTEvent::class, 'handle']
+        [\App\Listens\WebsocketSubscriptMQTTEvent::class, 'handle'],
+        [\App\Listens\MqttStartListener::class, 'handle']
     ],
     //Server::onWorkerStart
     'workerStart' => [

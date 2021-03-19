@@ -45,15 +45,9 @@ class WebsocketSubscriptMQTTEvent
     private function _client(array $config): void
     {
         $client = new MQTTClient($config);
-        $will = [
-            'topic' => 'simpsmqtt/username/update',
-            'qos' => 1,
-            'retain' => 0,
-            'content' => "123",
-        ];
-        while (! $client->connect(true, $will)) {
+        while (! $client->connect(true)) {
             \Swoole\Coroutine::sleep(3);
-            $client->connect(true, $will);
+            $client->connect(true);
         }
         $topics['mqtt_event'] = 1;
         $timeSincePing = time();
@@ -82,12 +76,24 @@ class WebsocketSubscriptMQTTEvent
     {
         go(function () use($client) {
             $redis = new Redis();
-            $redis->connect('127.0.0.1', 6379);
-
-
-
-
-
+            $redis->connect(env('REDIS_HOST', '127.0.0.1'), (int) env('REDIS_HOST_PORT', 6379));
+            if ($redis->subscribe(['dataForWsMqttClient'])) {
+                while ($msg = $redis->recv()) {
+                    list($type, $name, $info) = $msg;
+                    switch ($type) {
+                        case 'subscript':
+                            break;
+                        case 'message':
+                            $info = json_decode($info, true);
+                            $topic = $info['topic'];
+                            $qos = $info['qos'];
+                            $retain = $info['retain'];
+                            $content = $info['content'];
+                            $client->publish($topic, $content);
+                            break;
+                    }
+                }
+            }
         });
     }
 }

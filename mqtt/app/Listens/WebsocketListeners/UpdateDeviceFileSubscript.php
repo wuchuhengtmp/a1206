@@ -17,6 +17,7 @@ use App\Model\DevicesModel;
 use App\Model\FilesModel;
 use FastRoute\DataGenerator;
 use Simps\Client\MQTTClient;
+use Swoole\Coroutine\Redis;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Utils\WsMessage;
 
@@ -121,6 +122,9 @@ class UpdateDeviceFileSubscript implements EventSubscriberInterface
             'retain' => 0,
             'content' => $content,
         ];
-        GlobalChannel::getInstance()->push($will);
+
+        $redis = new Redis();
+        $redis->connect(env('REDIS_HOST', '127.0.0.1'), (int) env('REDIS_HOST_PORT', 6379));
+        $redis->publish('dataForWsMqttClient', json_encode($will));
     }
 }
