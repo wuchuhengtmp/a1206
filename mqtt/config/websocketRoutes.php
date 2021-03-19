@@ -15,7 +15,8 @@ use App\Events\WebsocketEvents\{
     ShowCategoriesEvent,
     ShowMyDevicesEvent,
     UploadDeviceFileEvent,
-    ShowDevicefilesEvent
+    ShowDevicefilesEvent,
+    DestroyDeviceFileEvent
 };
 
 use \App\Validations\WsValidations\{
@@ -23,7 +24,8 @@ use \App\Validations\WsValidations\{
     RegisterValidation,
     LoginValidation,
     UserDeviceMustBeExistsValidation,
-    UploadFileValidation
+    UploadFileValidation,
+    DeviceFileMustBeExistsValidation
 };
 return [
     // 登录
@@ -41,5 +43,11 @@ return [
     // 设备文件上传
     Router::post('/me/devices/:id/files', UploadDeviceFileEvent::class, [AuthValidation::class, UploadFileValidation::class, UserDeviceMustBeExistsValidation::class]),
     // 展示设备文件
-    Router::get('/me/devices/:id/files', ShowDevicefilesEvent::class, [AuthValidation::class, UserDeviceMustBeExistsValidation::class])
+    Router::get('/me/devices/:id/files', ShowDevicefilesEvent::class, [AuthValidation::class, UserDeviceMustBeExistsValidation::class]),
+    // 删除设备文件
+    Router::delete('/me/devices/:id/files/:fileId', DestroyDeviceFileEvent::class, [
+        AuthValidation::class,
+        UserDeviceMustBeExistsValidation::class,
+        DeviceFileMustBeExistsValidation::class
+    ])
 ];
