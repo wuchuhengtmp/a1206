@@ -1,6 +1,6 @@
 <?php
 /**
- * wetsocket 路由
+ * wetsocket 路由配置
  * @author wuchuheng  <wuchuheng@163.com>
  */
 declare(strict_types=1);
@@ -14,7 +14,8 @@ use App\Events\WebsocketEvents\{
     PingEvent,
     ShowCategoriesEvent,
     ShowMyDevicesEvent,
-    UploadDeviceFileEvent
+    UploadDeviceFileEvent,
+    ShowDevicefilesEvent
 };
 
 use \App\Validations\WsValidations\{
@@ -39,4 +40,6 @@ return [
     Router::get('/me/devices/:id', ShowDeviceDetailEvent::class, [ AuthValidation::class, UserDeviceMustBeExistsValidation::class ]),
     // 设备文件上传
     Router::post('/me/devices/:id/files', UploadDeviceFileEvent::class, [AuthValidation::class, UploadFileValidation::class, UserDeviceMustBeExistsValidation::class]),
+    // 展示设备文件
+    Router::get('/me/devices/:id/files', ShowDevicefilesEvent::class, [AuthValidation::class, UserDeviceMustBeExistsValidation::class])
 ];

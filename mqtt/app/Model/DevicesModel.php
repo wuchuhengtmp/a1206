@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use App\Storages\Storage;
 use Utils\Context;
 use Utils\Message;
 use Utils\ReportFormat;
@@ -85,4 +86,36 @@ class DevicesModel extends BaseModel
     {
         $this->update($this->tableName, $columns, ['device_id' => $deviceid]);
     }
+
+
+    /**
+     * @param int $deviceId
+     * @return array
+     */
+    public function getFilesByDeviceId(int $deviceId): array
+    {
+        $files = $this->query(sprintf("
+            SELECT
+                f.*,
+                df.id as deviceId
+            FROM
+                device_files as df
+                INNER JOIN files as f ON f.id = df.file_id
+            WHERE
+                df.device_id = %d 
+        ", $deviceId))->fetchAll();
+        $res = [];
+        foreach ($files as $file) {
+            $tmp = [];
+            $tmp['id'] = $file['deviceId'];
+            $tmp['url'] = (new Storage())->disk($file['disk'])->url($file['path']);
+            $urlInfo =  pathinfo($tmp['url']);
+            preg_match('/^([^\.]+)/', $urlInfo['basename'], $mRes);
+            $tmp['name'] = $mRes[1];
+            $res[] = $tmp;
+        }
+        return $res;
+    }
+
+
 }

@@ -26,4 +26,5 @@ return [
     \App\Listens\WebsocketListeners\ShowMyDevicesSubscript::class,
     \App\Listens\WebsocketListeners\ShowDeviceDetailSubscript::class,
     \App\Listens\WebsocketListeners\UploadDeviceFileSubscript::class,
+    \App\Listens\WebsocketListeners\ShowDeviceFilesSubscript::class
 ];

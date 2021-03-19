@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use App\Storages\Storage;
+
 class FilesModel extends BaseModel
 {
     private $_tableName = 'files';

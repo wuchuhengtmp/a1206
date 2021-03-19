@@ -10,5 +10,5 @@ namespace App\Events\WebsocketEvents;
 
 class ShowDeviceDetailEvent extends BaseEvent
 {
-    const NAME = 'ws.api./me/devices/:id';
+    const NAME = 'ws.get.api./me/devices/:id';
 }
