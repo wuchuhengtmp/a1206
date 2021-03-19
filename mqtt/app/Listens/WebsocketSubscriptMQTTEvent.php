@@ -8,16 +8,19 @@ declare(strict_types=1);
 
 namespace App\Listens;
 
+use App\Events\WebsocketEvents\MqttClientPingEvent;
+use App\GlobalChannel;
+use FastRoute\Dispatcher;
 use Simps\Client\MQTTClient;
 use Simps\Singleton;
-use function Swoole\Coroutine\run;
+use Swoole\Coroutine\Redis;
 
 class WebsocketSubscriptMQTTEvent
 {
     use Singleton;
 
     /**
-     * g启动ws服务并创建mqtt 客户端
+     * 启动ws服务并创建mqtt 客户端
      * @param $server
      */
     public function handle($server): void
@@ -34,7 +37,7 @@ class WebsocketSubscriptMQTTEvent
                 'keepalive' => env('WS_MQTT_Client_KEEPALIVE'),
             ];
             go(function () use ($config) {
-//                $this->_client($config);
+                $this->_client($config);
             });
         }
     }
@@ -55,16 +58,17 @@ class WebsocketSubscriptMQTTEvent
         $topics['mqtt_event'] = 1;
         $timeSincePing = time();
         $client->subscribe($topics);
+        $this->_send($client);
         while (true) {
             $buffer = $client->recv();
-            var_dump($buffer);
             if ($buffer && $buffer !== true) {
                 $timeSincePing = time();
             }
             if (isset($config['keepalive']) && $timeSincePing < (time() - $config['keepalive'])) {
                 $buffer = $client->ping();
                 if ($buffer) {
-                    echo '发送心跳包成功' . PHP_EOL;
+//                    var_dump($buffer);
+//                    \App\Dispatcher::getInstance()->dispatch(new MqttClientPingEvent(0), MqttClientPingEvent::NAME);
                     $timeSincePing = time();
                 } else {
                     $client->close();
@@ -72,5 +76,18 @@ class WebsocketSubscriptMQTTEvent
                 }
             }
         }
+    }
+
+    private function _send(MQTTClient $client)
+    {
+        go(function () use($client) {
+            $redis = new Redis();
+            $redis->connect('127.0.0.1', 6379);
+
+
+
+
+
+        });
     }
 }

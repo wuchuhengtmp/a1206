@@ -41,7 +41,7 @@ final class Version20210319012744 extends AbstractMigration
 
     public function postUp(Schema $schema): void
     {
-        $this->connection->exec("INSERT INTO `configs`(`id`, `name`, `value`, `created_at`, `updated_at`) VALUES (1, 'DEFAULT_AUDIO_5', '7', '2021-03-19 09:30:35', '2021-03-19 09:30:52') ");
+        $this->connection->exec("INSERT INTO `configs`(`id`, `name`, `value`, `created_at`, `updated_at`) VALUES (1, 'DEFAULT_AUDIO_5', 5, '2021-03-19 09:30:35', '2021-03-19 09:30:52') ");
         $this->connection->exec("INSERT INTO `configs`(`id`, `name`, `value`, `created_at`, `updated_at`) VALUES (2, 'DEFAULT_AUDIO_6', 6, '2021-03-19 09:31:02', '2021-03-19 09:31:18')");
         $this->connection->exec("INSERT INTO `configs`(`id`, `name`, `value`, `created_at`, `updated_at`) VALUES (3, 'DEFAULT_AUDIO_7', 7, '2021-03-19 09:31:03', '2021-03-19 09:31:11')");
         $this->connection->exec("INSERT INTO `configs`(`id`, `name`, `value`, `created_at`, `updated_at`) VALUES (4, 'DEFAULT_AUDIO_8', 8, '2021-03-19 09:31:04', '2021-03-19 09:31:12')");

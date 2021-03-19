@@ -28,4 +28,6 @@ return [
     \App\Listens\WebsocketListeners\UploadDeviceFileSubscript::class,
     \App\Listens\WebsocketListeners\ShowDeviceFilesSubscript::class,
     \App\Listens\WebsocketListeners\DestroyDeviceFileSubscript::class,
+    \App\Listens\WebsocketListeners\UploadDeviceFileSubscript::class,
+    \App\Listens\WebsocketListeners\UpdateDeviceFileSubscript::class,
 ];

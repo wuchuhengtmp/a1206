@@ -16,7 +16,8 @@ use App\Events\WebsocketEvents\{
     ShowMyDevicesEvent,
     UploadDeviceFileEvent,
     ShowDevicefilesEvent,
-    DestroyDeviceFileEvent
+    DestroyDeviceFileEvent,
+    UpdateDeviceFileEvent
 };
 
 use \App\Validations\WsValidations\{
@@ -49,5 +50,10 @@ return [
         AuthValidation::class,
         UserDeviceMustBeExistsValidation::class,
         DeviceFileMustBeExistsValidation::class
-    ])
+    ]),
+    // 更新设备文件
+    Router::patch('/me/devices/:id/files', UpdateDeviceFileEvent::class, [
+        AuthValidation::class,
+        UserDeviceMustBeExistsValidation::class,
+    ]),
 ];

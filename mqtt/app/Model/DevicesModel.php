@@ -108,7 +108,18 @@ class DevicesModel extends BaseModel
         $defaultFiles = (new ConfigsModel($this->fd))->getDefaultAudio();
         foreach ($defaultFiles as &$dFile) {
             $dFile['isSelect'] = in_array($dFile['file_id'], $fileIds);
+            $dFile['id'] = $dFile['file_id'];
+            unset($dFile['file_id']);
         }
         return $defaultFiles;
+    }
+
+    /**
+     * @param int $deviceId
+     * @return array
+     */
+    public function getOneById(int $deviceId): array
+    {
+        return $this->get($this->tableName, '*', ['id' => $deviceId]);
     }
 }

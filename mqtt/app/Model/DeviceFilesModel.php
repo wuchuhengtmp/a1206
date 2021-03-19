@@ -47,4 +47,23 @@ class DeviceFilesModel extends BaseModel
         $res = $this->delete($this->_tableName, ['file_id' => $fileId, 'device_id' => $deviceId]);
         return (bool) $res->rowCount();
     }
+
+    /**
+     * @param int $uid
+     * @param int $deviceId
+     * @return array
+     */
+    public function getDataById(int $deviceId): array
+    {
+        return $this->query(" SELECT * FROM device_files WHERE device_id = $deviceId ")->fetchAll();
+    }
+
+    /**
+     * @param array $map
+     * @return array
+     */
+    public function hasOne(array $map): bool
+    {
+        return $this->has($this->_tableName, $map);
+    }
 }

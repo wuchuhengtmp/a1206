@@ -28,6 +28,7 @@ final class Version20210318034258 extends AbstractMigration
               `disk` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '硬盘名',
               `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
               `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `size` int(11) DEFAULT NULL,
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='文件表';
 MySQL_QUERY
