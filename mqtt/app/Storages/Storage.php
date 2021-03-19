@@ -52,7 +52,7 @@ class Storage implements StorageContract
      */
     public function get(string $path): string
     {
-        // TODO: Implement get() method.
+
     }
 
     /**
@@ -61,7 +61,7 @@ class Storage implements StorageContract
      */
     public function exists(string $path): bool
     {
-        // TODO: Implement exists() method.
+
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 /**
- * Class ShowDeviceDetailValidation
+ * 设备用户必须有这个设备
  * @package App\Validations\WsValidations
  * @author wuchuheng  <wuchuheng@163.com>
  */
@@ -14,7 +14,7 @@ use App\Model\DevicesModel;
 use App\Model\UsersModel;
 use Utils\JWT;
 
-class ShowDeviceDetailValidation extends BaseValidation
+class UserDeviceMustBeExistsValidation extends BaseValidation
 {
     public function goCheck(BaseEvent $event): void
     {

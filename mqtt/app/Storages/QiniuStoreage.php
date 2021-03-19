@@ -21,7 +21,7 @@ class QiniuStoreage implements StorageContract
      */
     public function disk(string $disk): StorageContract
     {
-        // TODO: Implement disk() method.
+
     }
 
     /**
@@ -37,7 +37,11 @@ class QiniuStoreage implements StorageContract
         $auth = new Auth($c['accessKey'], $c['secretKey']);
         $token = $auth->uploadToken($c['bucket']);
         // :xxx todo 这里需要异常处理下
-        list($ret, $error) = $uploadMgr->putFile($token, $path, '/Users/wuchuheng/Desktop/myProject/a1206/com.huizhouyiren.a1206Admin/mqtt/storages/files/localDisk/index.txt');
+        $file = tmpfile();
+        fwrite($file, $content);
+        $fullPath = stream_get_meta_data($file)['uri'];
+        list($ret, $error) = $uploadMgr->putFile($token, $path, $fullPath);
+        fclose($file);
         return $path;
     }
 
@@ -47,7 +51,7 @@ class QiniuStoreage implements StorageContract
      */
     public function get(string $path): string
     {
-        // TODO: Implement get() method.
+
     }
 
     /**
@@ -56,7 +60,7 @@ class QiniuStoreage implements StorageContract
      */
     public function exists(string $path): bool
     {
-        // TODO: Implement exists() method.
+
     }
 
     /**

@@ -24,5 +24,6 @@ return [
     \App\Listens\WebsocketListeners\PingSubscript::class,
     \App\Listens\WebsocketListeners\ShowCategoriesSubscript::class,
     \App\Listens\WebsocketListeners\ShowMyDevicesSubscript::class,
-    \App\Listens\WebsocketListeners\ShowDeviceDetailSubscript::class
+    \App\Listens\WebsocketListeners\ShowDeviceDetailSubscript::class,
+    \App\Listens\WebsocketListeners\UploadDeviceFileSubscript::class,
 ];

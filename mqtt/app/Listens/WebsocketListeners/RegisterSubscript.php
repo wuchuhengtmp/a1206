@@ -39,6 +39,7 @@ class RegisterSubscript implements EventSubscriberInterface
         $hasUser = $userModel->getUserByAccount($account);
         if ($hasUser->isError) {
             $userId = $userModel->createUser($account);
+            $userModel->initUserConfigByUid($userId);
             $jwt = JWT::generate($userId);
             WsMessage::resSuccess($event, WsMessage::formatJWTToken($jwt));
         }

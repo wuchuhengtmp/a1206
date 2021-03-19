@@ -13,14 +13,16 @@ use App\Events\WebsocketEvents\{
     RegisterEvent,
     PingEvent,
     ShowCategoriesEvent,
-    ShowMyDevicesEvent
+    ShowMyDevicesEvent,
+    UploadDeviceFileEvent
 };
 
 use \App\Validations\WsValidations\{
     AuthValidation,
     RegisterValidation,
     LoginValidation,
-    ShowDeviceDetailValidation
+    UserDeviceMustBeExistsValidation,
+    UploadFileValidation
 };
 return [
     // 登录
@@ -34,5 +36,7 @@ return [
     // 用户设备
     Router::get('/me/devices', ShowMyDevicesEvent::class, [AuthValidation::class]),
     // 用户设备详情
-    Router::get('/me/devices/:id', ShowDeviceDetailEvent::class, [ AuthValidation::class, ShowDeviceDetailValidation::class ])
+    Router::get('/me/devices/:id', ShowDeviceDetailEvent::class, [ AuthValidation::class, UserDeviceMustBeExistsValidation::class ]),
+    // 设备文件上传
+    Router::post('/me/devices/:id/files', UploadDeviceFileEvent::class, [AuthValidation::class, UploadFileValidation::class, UserDeviceMustBeExistsValidation::class]),
 ];

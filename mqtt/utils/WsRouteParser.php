@@ -117,7 +117,7 @@ class WsRouteParser implements RouteParserContract
         foreach ($routes as $route) {
             $hasMatcheUrl = self::parseUrlParams($route['url'], $url);
             if ($route['method'] === $method && !$hasMatcheUrl->isError) {
-                $event = new $route['event']($fd, $route['method'], $route['url']);
+                $event = new $route['event']($fd, $route['method'], $url);
                 $event->routeParams = $hasMatcheUrl->res;
                 // 保存各种事件的消息，降低数据覆盖的可能性
                 WsMessage::setMsgByEvent($event);

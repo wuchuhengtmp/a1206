@@ -88,5 +88,4 @@ class UsersModel extends BaseModel
     {
         return $this->get($this->tableName, '*', ['id' => $uid]);
     }
-
 }
