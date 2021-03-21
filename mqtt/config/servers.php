@@ -33,7 +33,7 @@ return [
     ],
     'ws' => [
         'ip' => '0.0.0.0',
-        'port' => 9602,
+        'port' => 9502,
         'sock_type' => SWOOLE_SOCK_TCP,
         'callbacks' => [
             "open" => [\App\Events\WebSocket::class, 'onOpen'],

@@ -69,7 +69,7 @@ class BaseValidation implements ValidationContract
      */
     static private function _required(BaseEvent $event, string $field, string $message = ''): void
     {
-        $res = WsMessage::getMsgByEvent($event);
+        $res = WsMessage::getMsgByEvent($event)->res;
         if (!array_key_exists('data', $res)) {
             $e = new UserException("data 字段不能为空");
             $e->url = $event->url;
