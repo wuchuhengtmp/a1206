@@ -15,7 +15,7 @@ return [
     'mode' => SWOOLE_PROCESS,
     'http' => [
         'ip' => '0.0.0.0',
-        'port' => 9501,
+        'port' => 9604,
         'sock_type' => SWOOLE_SOCK_TCP,
         'callbacks' => [
         ],

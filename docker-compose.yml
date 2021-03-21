@@ -50,20 +50,24 @@ services:
   broker:
     image: emqx/emqx
     ports:
-    - "9603:1883"
-    - "8081:8081"
-    - "8083:8083"
-    - "8883:8883"
-    - "8084:8084"
-    - "18083:18083"
+      - 1883:1883
+      - 8081:8081
+      - 8083:8083
+      - 8883:8883
+      - 8084:8084
+      - 18083:18083
+    container_name: broker
+    volumes:
+      - "./broker/emqx_web_hook.conf:/opt/emqx/etc/plugins/emqx_web_hook.conf"
+
   redis:
     image: redis:${REDIS_VERSION}
     container_name: redis
+      - ./redis:/data/:rw
     ports:
       - "${REDIS_HOST_PORT}:6379"
     volumes:
       - ${REDIS_CONF_FILE}:/etc/redis.conf:ro
-      - ./redis:/data/:rw
     restart: always
     entrypoint: ["redis-server", "/etc/redis.conf"]
     environment:
