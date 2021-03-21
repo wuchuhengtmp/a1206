@@ -7,9 +7,9 @@ declare(strict_types=1);
 
 use Utils\WsRouteParser as Router;
 
-//use App\Events\WebsocketEvents\{
+use App\Events\WebsocketEvents\{
 //    ShowDeviceDetailEvent,
-//    LoginEvent,
+    LoginEvent
 //    RegisterEvent,
 //    PingEvent,
 //    ShowCategoriesEvent,
@@ -18,20 +18,21 @@ use Utils\WsRouteParser as Router;
 //    ShowDevicefilesEvent,
 //    DestroyDeviceFileEvent,
 //    UpdateDeviceFileEvent
-//};
+};
 //
-//use \App\Validations\WsValidations\{
+use \App\Validations\WsValidations\{
 //    AuthValidation,
 //    RegisterValidation,
-//    LoginValidation,
+    LoginValidation
 //    UserDeviceMustBeExistsValidation,
 //    UploadFileValidation,
 //    DeviceFileMustBeExistsValidation
-//};
+};
 return [
 //    // 登录
     Router::post('/users/authorizations',
-//        LoginEvent::class, [LoginValidation::class]
+        LoginEvent::class,
+        [LoginValidation::class]
     ),
 //    // 注册
 //    Router::post('/users', RegisterEvent::class, [RegisterValidation::class]),
