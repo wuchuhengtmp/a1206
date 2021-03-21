@@ -32,8 +32,8 @@ class ShowMyDevicesSubscript implements EventSubscriberInterface
     public function handle(BaseEvent  $event): void
     {
         $me = $event->getAuth()->res;
-        $devices = (new DevicesModel($event->fd))->getDevicesByUid((int) $me['id']);
-        $cm = new CategoriesModel($event->fd);
+        $devices = (new DevicesModel())->getDevicesByUid((int) $me['id']);
+        $cm = new CategoriesModel();
         $resd = [];
         foreach ($devices as &$device) {
             $c = $cm->getById((int) $device['category_id']);

@@ -10,6 +10,7 @@ namespace App\Validations\WsValidations;
 
 use App\Events\WebsocketEvents\BaseEvent;
 use App\Exception\WsExceptions\FrontEndException;
+use App\Model\UsersModel;
 use FastRoute\DataGenerator;
 use Utils\JWT;
 use Utils\WsMessage;
@@ -42,6 +43,16 @@ class AuthValidation extends BaseValidation
         $token =  $res[1];
         if (!JWT::check($token)) {
             $e = new FrontEndException('the token was invalid');
+            $e->url = $cMsg['url'];
+            $e->method = $cMsg['method'];
+            throw $e;
+        }
+
+        $payload = json_decode(base64_decode(explode('.', $token)[1]), true);
+        $uid = $payload['uid'];
+        $userModel = new UsersModel();
+        if ($userModel->where('id', $uid)->get()->isEmpty()) {
+            $e = new FrontEndException('token的关联用户不存在');
             $e->url = $cMsg['url'];
             $e->method = $cMsg['method'];
             throw $e;

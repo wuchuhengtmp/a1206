@@ -29,16 +29,16 @@ use \App\Validations\WsValidations\{
     DeviceFileMustBeExistsValidation
 };
 return [
-//    // 登录
+    // 登录
     Router::post('/users/authorizations', LoginEvent::class, [LoginValidation::class] ),
-//    // 注册
+    // 注册
     Router::post('/users', RegisterEvent::class, [RegisterValidation::class]),
-//    // 心跳
+    // 心跳
     Router::post('/pings', PingEvent::class),
-//    // 分类列表
+    // 分类列表
     Router::get('/categories', ShowCategoriesEvent::class),
-//    // 用户设备
-//    Router::get('/me/devices', ShowMyDevicesEvent::class, [AuthValidation::class]),
+    // 用户设备
+    Router::get('/me/devices', ShowMyDevicesEvent::class, [AuthValidation::class]),
 //    // 用户设备详情
 //    Router::get('/me/devices/:id', ShowDeviceDetailEvent::class, [ AuthValidation::class, UserDeviceMustBeExistsValidation::class ]),
 //    // 设备文件上传

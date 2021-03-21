@@ -69,7 +69,7 @@ class JWT implements JWTContract
         $hasMsg = WsMessage::getMsgByEvent($event);
         if ($hasMsg->isError) return $hasMsg;
         $msg = $hasMsg->res;
-        $userModel = new UsersModel($event->fd);
+        $userModel = new UsersModel();
         if (!array_key_exists('authorization', $msg)) return $returnData;
         preg_match('/^[B|b]earer\s(.+)/', $msg['authorization'], $res);
         if (!array_key_exists(1, $res)) return $res;
@@ -77,7 +77,7 @@ class JWT implements JWTContract
         if (!self::check($token)) return $res;
         $payload = json_decode(base64_decode(explode('.', $token)[1]), true);
         $uid = $payload['uid'];
-        if ($userModel->hasUser(['id' => $uid])) {
+        if ($userModel->where('id',  $uid)->get()->isNotEmpty()) {
             $returnData->res = $userModel->getUserById($uid);
             $returnData->isError = false;
             return $returnData;

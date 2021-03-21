@@ -73,4 +73,9 @@ class UsersModel extends Model
         $uid = $user->id;
         return $uid;
     }
+
+    public function getUserById(int $uid): array
+    {
+        return self::query()->find($uid)->toArray();
+    }
 }

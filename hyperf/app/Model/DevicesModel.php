@@ -6,14 +6,14 @@ namespace App\Model;
 use Hyperf\DbConnection\Model\Model;
 /**
  */
-class CategoriesModel extends Model
+class DevicesModel extends Model
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'categories';
+    protected $table = 'devices';
     /**
      * The attributes that are mass assignable.
      *
@@ -27,13 +27,8 @@ class CategoriesModel extends Model
      */
     protected $casts = [];
 
-    public function getAll(): array
+    public function getDevicesByUid(int $uid): array
     {
-        return self::query()->select('id', 'name')->get()->toArray();
-    }
-
-    public function getById(int $cid): array
-    {
-        return self::query()->find($cid)->toArray();
+        return self::query()->where('user_id', $uid)->get()->toArray();
     }
 }
