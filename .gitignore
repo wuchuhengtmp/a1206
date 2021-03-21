@@ -14,4 +14,18 @@ redis/dump.rdb
 #
 .DS_Store
 
+hyperf/.buildpath
+hyperf/.settings/
+hyperf/.project
+hyperf/*.patch
+hyperf/.idea/
+hyperf/.git/
+hyperf/runtime/
+hyperf/vendor/
+hyperf/.phpintel/
+hyperf/.env
+hyperf/.DS_Store
+hyperf/.phpunit*
+hyperf/*.cache
+
 
