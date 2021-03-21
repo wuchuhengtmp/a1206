@@ -1,12 +1,12 @@
 <?php
 /**
  * 获取分类
- * @package App\Listens\WebsocketListeners
+ * @package App\Listener\WebsocketListeners
  * @author wuchuheng  <wuchuheng@163.com>
  */
 declare(strict_types=1);
 
-namespace App\Listens\WebsocketListeners;
+namespace App\Listener\WebsocketListeners;
 
 use App\Events\WebsocketEvents\BaseEvent;
 use App\Model\CategoriesModel;

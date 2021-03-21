@@ -6,7 +6,7 @@
  * @author wuchuheng <wuchyuheng@163.com>
  */
 
-//use App\Listens\WebsocketListeners\LogSubscript as WsLogSubscript;
+//use App\Listener\WebsocketListeners\LogSubscript as WsLogSubscript;
 
 return [
 //    \App\Listens\MqttListens\LoginSubscript::class,
@@ -23,7 +23,7 @@ return [
     \App\Listener\WebsocketListeners\LoginSubscript::class,
     \App\Listener\WebsocketListeners\RegisterSubscript::class,
 //    WsLogSubscript::class,
-//    \App\Listener\WebsocketListeners\PingSubscript::class,
+    \App\Listener\WebsocketListeners\PingSubscript::class,
 //    \App\Listener\WebsocketListeners\ShowCategoriesSubscript::class,
 //    \App\Listener\WebsocketListeners\ShowMyDevicesSubscript::class,
 //    \App\Listener\WebsocketListeners\ShowDeviceDetailSubscript::class,

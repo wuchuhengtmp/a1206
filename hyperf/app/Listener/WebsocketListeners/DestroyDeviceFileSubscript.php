@@ -1,7 +1,7 @@
 <?php
 /**
  * 订阅删除
- * @package App\Listens\WebsocketListeners
+ * @package App\Listen\WebsocketListeners
  * @author wuchuheng  <wuchuheng@163.com>
  */
 declare(strict_types=1);

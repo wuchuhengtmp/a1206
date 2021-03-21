@@ -1,7 +1,7 @@
 <?php
 /**
  * Class MqttClientPingEvent
- * @package App\Listens\WebsocketListeners
+ * @package App\Listener\WebsocketListeners
  * @author wuchuheng  <wuchuheng@163.com>
  */
 declare(strict_types=1);

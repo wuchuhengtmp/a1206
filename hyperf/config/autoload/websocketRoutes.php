@@ -11,7 +11,7 @@ use App\Events\WebsocketEvents\{
 //    ShowDeviceDetailEvent,
     LoginEvent,
     RegisterEvent,
-//    PingEvent,
+    PingEvent,
 //    ShowCategoriesEvent,
 //    ShowMyDevicesEvent,
 //    UploadDeviceFileEvent,
@@ -34,7 +34,7 @@ return [
 //    // 注册
     Router::post('/users', RegisterEvent::class, [RegisterValidation::class]),
 //    // 心跳
-//    Router::post('/pings', PingEvent::class),
+    Router::post('/pings', PingEvent::class),
 //    // 分类列表
 //    Router::get('/categories', ShowCategoriesEvent::class),
 //    // 用户设备
