@@ -52,7 +52,7 @@ class WebsocketSubscriptMQTTEvent
         $topics['mqtt_event'] = 1;
         $timeSincePing = time();
         $client->subscribe($topics);
-        $this->_send($client);
+        $this->_send($config, $client);
         while (true) {
             $buffer = $client->recv();
             if ($buffer && $buffer !== true) {
@@ -72,24 +72,25 @@ class WebsocketSubscriptMQTTEvent
         }
     }
 
-    private function _send(MQTTClient $client)
+    private function _send($config, MQTTClient $client)
     {
-        go(function () use($client) {
+        go(function() use($config, $client) {
             $redis = new Redis();
             $redis->connect(env('REDIS_HOST', '127.0.0.1'), (int) env('REDIS_HOST_PORT', 6379));
             if ($redis->subscribe(['dataForWsMqttClient'])) {
                 while ($msg = $redis->recv()) {
                     list($type, $name, $info) = $msg;
+                    var_dump($msg);
                     switch ($type) {
                         case 'subscript':
                             break;
                         case 'message':
-                            $info = json_decode($info, true);
-                            $topic = $info['topic'];
-                            $qos = $info['qos'];
-                            $retain = $info['retain'];
-                            $content = $info['content'];
-                            $client->publish($topic, $content);
+                                $info = json_decode($info, true);
+                                $topic = $info['topic'];
+                                $qos = $info['qos'];
+                                $retain = $info['retain'];
+                                $content = $info['content'];
+                                $client->publish($topic, $content);
                             break;
                     }
                 }

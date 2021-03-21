@@ -14,6 +14,7 @@ use App\Events\MqttEvents\RegisterEvent;
 use App\Events\MqttEvents\ReportEvent;
 use App\Events\MqttEvents\SubscriptEvent;
 use App\Events\MqttEvents\UpdataFileEvent;
+use App\Events\MqttEvents\UpdataFileResponseEvent;
 use Simps\Server\Protocol\MQTT;
 use Simps\Server\Protocol\MqttInterface;
 use Swoole\Server;
@@ -62,6 +63,10 @@ class MqttServer implements MqttInterface
                 // 上传文件事件
                 case UpdataFileEvent::NAME:
                     Dispatcher::getInstance()->dispatch(new UpdataFileEvent($fd, $data, $server), UpdataFileEvent::NAME);
+                    break;
+                // 设备响应文件上传事件
+                case UpdataFileResponseEvent::NAME:
+                    Dispatcher::getInstance()->dispatch(new UpdataFileResponseEvent($fd, $data, $server), UpdataFileResponseEvent::NAME);
                     break;
                 default:
                     var_dump($res->res);

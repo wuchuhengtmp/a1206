@@ -116,15 +116,10 @@ class UpdateDeviceFileSubscript implements EventSubscriberInterface
             $c = sprintf("%04dXCWL%s", strlen($c), $c);
             return $c;
         })();
-        $will = [
-            'topic' => env('MQTT_TOPIC_PREFIX') . $device['device_id'],
-            'qos' => 1,
-            'retain' => 0,
-            'content' => $content,
-        ];
-
-        $redis = new Redis();
-        $redis->connect(env('REDIS_HOST', '127.0.0.1'), (int) env('REDIS_HOST_PORT', 6379));
-        $redis->publish('dataForWsMqttClient', json_encode($will));
+        $mClient = (new \App\MqttClient())->getInstance();
+        $mClient->publish(
+            env('MQTT_TOPIC_PREFIX') . $device['device_id'],
+            $content
+        );
     }
 }

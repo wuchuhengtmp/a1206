@@ -44,8 +44,10 @@ class UpdataFileSubscript implements EventSubscriberInterface
         $subjects = (new SubscriptionsModel($event->fd))->getDataByTopic($topic);
         $msg['cmd'] = MQTT::PUBLISH;
         foreach ($subjects as $subject) {
-            if ($server->exist((int)$subject['fd'])) {
-                $server->send($fd, MQTT::getAck($msg));
+            $sfd = (int)$subject['fd'];
+            if ($server->exist($sfd)) {
+                var_dump($sfd);
+                $server->send($sfd, MQTT::getAck($msg));
             }
         }
     }
