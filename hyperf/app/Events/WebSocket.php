@@ -11,8 +11,8 @@ declare(strict_types=1);
 namespace App\Events;
 
 use App\Events\WebsocketEvents\BaseEvent;
-use App\Exceptions\WsExceptions\BaseException;
-use App\Exceptions\WsExceptions\ConnectBrokenException;
+use App\Exception\WsExceptions\BaseException;
+use App\Exception\WsExceptions\ConnectBrokenException;
 use Swoole\WebSocket\Server;
 use Utils\Context;
 use Utils\Helper;

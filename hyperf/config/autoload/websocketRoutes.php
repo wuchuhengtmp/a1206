@@ -9,8 +9,8 @@ use Utils\WsRouteParser as Router;
 
 use App\Events\WebsocketEvents\{
 //    ShowDeviceDetailEvent,
-    LoginEvent
-//    RegisterEvent,
+    LoginEvent,
+    RegisterEvent,
 //    PingEvent,
 //    ShowCategoriesEvent,
 //    ShowMyDevicesEvent,
@@ -22,7 +22,7 @@ use App\Events\WebsocketEvents\{
 //
 use \App\Validations\WsValidations\{
 //    AuthValidation,
-//    RegisterValidation,
+    RegisterValidation,
     LoginValidation
 //    UserDeviceMustBeExistsValidation,
 //    UploadFileValidation,
@@ -30,12 +30,9 @@ use \App\Validations\WsValidations\{
 };
 return [
 //    // 登录
-    Router::post('/users/authorizations',
-        LoginEvent::class,
-        [LoginValidation::class]
-    ),
+    Router::post('/users/authorizations', LoginEvent::class, [LoginValidation::class] ),
 //    // 注册
-//    Router::post('/users', RegisterEvent::class, [RegisterValidation::class]),
+    Router::post('/users', RegisterEvent::class, [RegisterValidation::class]),
 //    // 心跳
 //    Router::post('/pings', PingEvent::class),
 //    // 分类列表

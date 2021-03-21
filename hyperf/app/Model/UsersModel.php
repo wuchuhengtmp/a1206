@@ -54,12 +54,23 @@ class UsersModel extends Model
 
     public function hasUser(array $map): bool
     {
-        $map['password'] = Encrypt::hash($map['password']);
-        $hasusers = self::query()
-            ->where('username', $map['username'])
-            ->where('password', $map['password'])
-            ->get();
+        $in = self::query();
+        if (array_key_exists('password', $map)) {
+            $map['password'] = Encrypt::hash($map['password']);
+            $in->where('password', $map['password']);
+        }
+        $hasusers = $in->where('username', $map['username']) ->get();
         return (bool) $hasusers->count();
     }
 
+    public function createUser(array $account): int
+    {
+        $account['password'] = Encrypt::hash($account['password']);
+        $user =  new self();
+        $user->password = $account['password'];
+        $user->username = $account['username'];
+        $user->save();
+        $uid = $user->id;
+        return $uid;
+    }
 }

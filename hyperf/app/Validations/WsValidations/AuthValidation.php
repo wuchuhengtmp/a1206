@@ -9,7 +9,7 @@ declare(strict_types=1);
 namespace App\Validations\WsValidations;
 
 use App\Events\WebsocketEvents\BaseEvent;
-use App\Exceptions\WsExceptions\FrontEndException;
+use App\Exception\WsExceptions\FrontEndException;
 use FastRoute\DataGenerator;
 use Utils\JWT;
 use Utils\WsMessage;

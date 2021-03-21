@@ -10,9 +10,8 @@ namespace App\Validations\WsValidations;
 
 use App\Contracts\ValidationContract;
 use App\Events\WebsocketEvents\BaseEvent;
-use App\Exceptions\WsExceptions\UserException;
+use App\Exception\WsExceptions\UserException;
 use App\Model\UsersModel;
-use Utils\Message;
 use Utils\ReportFormat;
 use Utils\WsMessage;
 
@@ -27,8 +26,11 @@ class RegisterValidation implements ValidationContract
     {
         $res = new ReportFormat();
         $account = WsMessage::getMsgByEvent($event)->res['data'];
-        if (!array_key_exists('username', $account) && !array_key_exists('password', $account)) {
-            throw new UserException('请输入账号密码');
+        if (!array_key_exists('username', $account)) {
+            throw new UserException('请输入账号');
+        }
+        if (!array_key_exists('password', $account)) {
+            throw new UserException('请输入密码');
         }
         if (strlen($account['password']) === 0) {
             throw new UserException('密码不能为空');
@@ -36,7 +38,7 @@ class RegisterValidation implements ValidationContract
         if (strlen($account['password']) < 6) {
             throw new UserException('密码不能少于6位');
         }
-        $userModel = new UsersModel($event->fd);
+        $userModel = new UsersModel();
         $isUser = $userModel->hasUser(['username' => $account['username']]);
         if ($isUser) {
             throw new UserException('用户已经存在');

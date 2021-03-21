@@ -9,7 +9,7 @@ declare(strict_types=1);
 namespace App\Validations\WsValidations;
 
 use App\Events\WebsocketEvents\BaseEvent;
-use App\Exceptions\WsExceptions\UserException;
+use App\Exception\WsExceptions\UserException;
 use App\Model\DeviceFilesModel;
 
 class DeviceFileMustBeExistsValidation extends BaseValidation
