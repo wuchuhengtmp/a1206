@@ -1,21 +1,28 @@
 <?php
-declare(strict_types=1);
 
+declare(strict_types=1);
+/**
+ *
+ * @link     https://wuchuheng.com
+ * @author   wuchuheng <wuchuheng@163.com>
+ * @license  MIT
+ */
 namespace App\Controller;
 
 use Hyperf\Contract\OnCloseInterface;
 use Hyperf\Contract\OnMessageInterface;
 use Hyperf\Contract\OnOpenInterface;
 use Swoole\Http\Request;
-use Swoole\Server;
 use Swoole\Websocket\Frame;
-use Swoole\WebSocket\Server as WebSocketServer;
+use Utils\WsRouteParser;
 
 class WebSocketController implements OnMessageInterface, OnOpenInterface, OnCloseInterface
 {
     public function onMessage($server, Frame $frame): void
     {
-        $server->push($frame->fd, 'Recv: ' . $frame->data);
+        $routes = config('websocketRoutes');
+        var_dump($routes);
+        WsRouteParser::run($frame->fd, $frame->data, $routes);
     }
 
     public function onClose($server, int $fd, int $reactorId): void

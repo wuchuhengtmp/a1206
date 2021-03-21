@@ -11,35 +11,10 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
-use Hyperf\HttpServer\Contract\RequestInterface;
-use Hyperf\WebSocketServer\Sender;
-use Swoole\Server;
-use Hyperf\Di\Annotation\Inject;
-
 class IndexController extends AbstractController
 {
-    /**
-     * @Inject
-     * @var Sender
-     */
-    protected $sender;
-
-    /**
-     * @Inject
-     * @var Server
-     */
-    protected $server;
-
-    public function index(RequestInterface $request)
+    public function index()
     {
-        $server = $this->server;
-        foreach ($server->connections as $fd) {
-            // 需要先判断是否是正确的websocket连接，否则有可能会push失败
-            if ($server->isEstablished($fd)) {
-                $server->push($fd, "the message from matt");
-            }
-        }
-        $body = $request->getBody();
         $user = $this->request->input('user', 'Hyperf');
         $method = $this->request->getMethod();
 

@@ -20,7 +20,7 @@ return [
             'name' => 'http',
             'type' => Server::SERVER_HTTP,
             'host' => '0.0.0.0',
-            'port' => 9601,
+            'port' => (int) env('HYPERF_HTTP_PORT', 9604),
             'sock_type' => SWOOLE_SOCK_TCP,
             'callbacks' => [
                 Event::ON_REQUEST => [Hyperf\HttpServer\Server::class, 'onRequest'],
@@ -30,7 +30,7 @@ return [
             'name' => 'ws',
             'type' => Server::SERVER_WEBSOCKET,
             'host' => '0.0.0.0',
-            'port' => 9602,
+            'port' => (int) env('HYPERF_WS_PORT', 9602),
             'sock_type' => SWOOLE_SOCK_TCP,
             'callbacks' => [
                 Event::ON_HAND_SHAKE => [Hyperf\WebSocketServer\Server::class, 'onHandShake'],
@@ -38,7 +38,6 @@ return [
                 Event::ON_CLOSE => [Hyperf\WebSocketServer\Server::class, 'onClose'],
             ],
         ],
-
     ],
     'settings' => [
         Constant::OPTION_ENABLE_COROUTINE => true,
