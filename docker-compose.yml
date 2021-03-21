@@ -46,6 +46,16 @@ services:
         #        composer install
         #        php bin/simps.php ws:start
         #
+
+  broker:
+    image: emqx/emqx
+    ports:
+    - "9603:1883"
+    - "8081:8081"
+    - "8083:8083"
+    - "8883:8883"
+    - "8084:8084"
+    - "18083:18083"
   redis:
     image: redis:${REDIS_VERSION}
     container_name: redis
