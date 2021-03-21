@@ -29,7 +29,7 @@ class ShowCategoriesSubscript implements EventSubscriberInterface
 
     public function handle(BaseEvent $event): void
     {
-        $cList = (new CategoriesModel($event->fd))->getAll();
+        $cList = (new CategoriesModel())->getAll();
         WsMessage::resSuccess($event, $cList);
     }
 }

@@ -8,25 +8,25 @@ declare(strict_types=1);
 use Utils\WsRouteParser as Router;
 
 use App\Events\WebsocketEvents\{
-//    ShowDeviceDetailEvent,
+    ShowDeviceDetailEvent,
     LoginEvent,
     RegisterEvent,
     PingEvent,
-//    ShowCategoriesEvent,
-//    ShowMyDevicesEvent,
-//    UploadDeviceFileEvent,
-//    ShowDevicefilesEvent,
-//    DestroyDeviceFileEvent,
-//    UpdateDeviceFileEvent
+    ShowCategoriesEvent,
+    ShowMyDevicesEvent,
+    UploadDeviceFileEvent,
+    ShowDevicefilesEvent,
+    DestroyDeviceFileEvent,
+    UpdateDeviceFileEvent
 };
 //
 use \App\Validations\WsValidations\{
-//    AuthValidation,
+    AuthValidation,
     RegisterValidation,
-    LoginValidation
-//    UserDeviceMustBeExistsValidation,
-//    UploadFileValidation,
-//    DeviceFileMustBeExistsValidation
+    LoginValidation,
+    UserDeviceMustBeExistsValidation,
+    UploadFileValidation,
+    DeviceFileMustBeExistsValidation
 };
 return [
 //    // 登录
@@ -36,7 +36,7 @@ return [
 //    // 心跳
     Router::post('/pings', PingEvent::class),
 //    // 分类列表
-//    Router::get('/categories', ShowCategoriesEvent::class),
+    Router::get('/categories', ShowCategoriesEvent::class),
 //    // 用户设备
 //    Router::get('/me/devices', ShowMyDevicesEvent::class, [AuthValidation::class]),
 //    // 用户设备详情
