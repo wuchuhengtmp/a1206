@@ -63,11 +63,11 @@ services:
   redis:
     image: redis:${REDIS_VERSION}
     container_name: redis
-      - ./redis:/data/:rw
     ports:
       - "${REDIS_HOST_PORT}:6379"
     volumes:
       - ${REDIS_CONF_FILE}:/etc/redis.conf:ro
+      - ./redis:/data/:rw
     restart: always
     entrypoint: ["redis-server", "/etc/redis.conf"]
     environment:
