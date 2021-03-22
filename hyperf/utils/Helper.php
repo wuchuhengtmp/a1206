@@ -79,21 +79,13 @@ class Helper
     }
 
     /**
-     *  格式化响应报文的content字段.
-     * @param array | null $content
+     * @param array $content
+     * @return string
      */
-    public static function fResContent(BaseEvent $event, $content, string $command): string
+    static public function fMqttMsg(array $content): string
     {
-        $data = $event->currentMsg;
-        $hasContent = Helper::parseContent($data['content']);
-        if ($hasContent->isError) {
-            return json_encode([]);
-        }
-        $newContent = $hasContent->res;
-        $newContent['msgid'] = $newContent['deviceid'] . time();
-        $newContent['command'] = $command;
-        $newContent['content'] = $content;
-        $content = json_encode($newContent);
+        $content = \json_encode($content);
+
         return sprintf('%04d', strlen($content)) . 'XCWL' . $content;
     }
 }

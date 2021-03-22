@@ -4,8 +4,56 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8576cbe23b4b433b56f74fbd06af3a56",
+    "content-hash": "4ab04b88c613f4251cc8c173e8c646e2",
     "packages": [
+        {
+            "name": "codedungeon/php-cli-colors",
+            "version": "1.12.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mikeerickson/php-cli-colors.git",
+                "reference": "e346156f75717140a3dd622124d2ec686aa7ff8e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mikeerickson/php-cli-colors/zipball/e346156f75717140a3dd622124d2ec686aa7ff8e",
+                "reference": "e346156f75717140a3dd622124d2ec686aa7ff8e",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": ">=5.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Codedungeon\\PHPCliColors\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mike Erickson",
+                    "email": "codedungeon@gmail.com"
+                }
+            ],
+            "description": "Liven up you PHP Console Apps with standard colors",
+            "homepage": "https://github.com/mikeerickson/php-cli-colors",
+            "keywords": [
+                "color",
+                "colors",
+                "composer",
+                "package",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/mikeerickson/php-cli-colors/issues",
+                "source": "https://github.com/mikeerickson/php-cli-colors/tree/1.12.2"
+            },
+            "time": "2021-01-05T04:48:27+00:00"
+        },
         {
             "name": "doctrine/annotations",
             "version": "1.12.1",
@@ -3828,6 +3876,81 @@
                 "source": "https://github.com/Roave/Signature/tree/1.4.0"
             },
             "time": "2021-01-25T09:39:37+00:00"
+        },
+        {
+            "name": "simps/mqtt",
+            "version": "v1.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/simps/mqtt.git",
+                "reference": "36f6a9d254a2bd6ccfde47905dfde141f8f7f331"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/simps/mqtt/zipball/36f6a9d254a2bd6ccfde47905dfde141f8f7f331",
+                "reference": "36f6a9d254a2bd6ccfde47905dfde141f8f7f331",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.16",
+                "phpunit/phpunit": "^7.0.0",
+                "swoole/ide-helper": ">=4.4.19"
+            },
+            "suggest": {
+                "ext-swoole": "The ext-swoole >= v4.4.19 needs to be loaded when using the MQTT Client."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Simps\\MQTT\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Lu Fei",
+                    "email": "lufei@simps.io"
+                }
+            ],
+            "description": "MQTT Protocol Analysis and Coroutine Client for PHP",
+            "keywords": [
+                "client",
+                "coroutine",
+                "mqtt",
+                "mqtt3.1",
+                "mqtt5.0",
+                "mqtt_client",
+                "mqtt_protocol",
+                "php",
+                "simps",
+                "swoole"
+            ],
+            "support": {
+                "issues": "https://github.com/simps/mqtt/issues",
+                "source": "https://github.com/simps/mqtt/tree/v1.3.2"
+            },
+            "funding": [
+                {
+                    "url": "https://simps.io/#/zh-cn/donate",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/simple-swoole",
+                    "type": "github"
+                },
+                {
+                    "url": "https://opencollective.com/simps",
+                    "type": "open_collective"
+                }
+            ],
+            "time": "2021-03-08T01:16:05+00:00"
         },
         {
             "name": "symfony/console",

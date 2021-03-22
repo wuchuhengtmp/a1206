@@ -1,6 +1,6 @@
 <?php
 /**
- * Class RejectConnectEvent
+ * Class ReportDataEvent
  * @package App\Events\MqttEvents
  * @author wuchuheng  <wuchuheng@163.com>
  */
@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace App\Events\MqttEvents;
 
-class RejectConnectEvent extends BaseEvent
+class ReportDataEvent extends BaseEvent
 {
-    const NAME = 'mqtt.rejectConnect';
+
 }
