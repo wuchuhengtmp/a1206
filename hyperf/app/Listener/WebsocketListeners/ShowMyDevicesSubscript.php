@@ -38,6 +38,7 @@ class ShowMyDevicesSubscript implements EventSubscriberInterface
         foreach ($devices as &$device) {
             $c = $cm->getById((int) $device['category_id']);
             $tmp = [];
+            $tmp['id'] = $device['id'];
             $tmp['category_name'] = $c['name'];
             $tmp['category_id'] = $c['id'];
             $tmp['status'] = $device['status'];
