@@ -39,8 +39,8 @@ return [
     Router::get('/categories', ShowCategoriesEvent::class),
     // 用户设备
     Router::get('/me/devices', ShowMyDevicesEvent::class, [AuthValidation::class]),
-//    // 用户设备详情
-//    Router::get('/me/devices/:id', ShowDeviceDetailEvent::class, [ AuthValidation::class, UserDeviceMustBeExistsValidation::class ]),
+    // 用户设备详情
+    Router::get('/me/devices/:id', ShowDeviceDetailEvent::class, [ AuthValidation::class, UserDeviceMustBeExistsValidation::class ]),
 //    // 设备文件上传
 //    Router::post('/me/devices/:id/files', UploadDeviceFileEvent::class, [AuthValidation::class, UploadFileValidation::class, UserDeviceMustBeExistsValidation::class]),
 //    // 展示设备文件

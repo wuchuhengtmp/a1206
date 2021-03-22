@@ -35,7 +35,7 @@ class ShowDeviceDetailSubscript implements EventSubscriberInterface
     {
         $user = JWT::getAuthByEvent($event)->res;
         $did = $event->routeParams['id'];
-        $dm = (new DevicesModel($event->fd));
+        $dm = new DevicesModel();
         $columns = [
             'id',
             'status',
@@ -50,7 +50,7 @@ class ShowDeviceDetailSubscript implements EventSubscriberInterface
             'trigger_modes',
             'battery_vol'
         ];
-        $detail = $dm->get($dm->tableName, $columns, ['id' => $did, 'user_id' => $user['id']]);
+        $detail = $dm->where('id', $did)->where('user_id', $user['id'])->select($columns)->first()->toArray();
         $detail['trigger_modes'] = \json_decode($detail['trigger_modes'], true);
         WsMessage::resSuccess($event, $detail);
     }

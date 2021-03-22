@@ -20,8 +20,8 @@ class UserDeviceMustBeExistsValidation extends BaseValidation
     {
         $me = JWT::getAuthByEvent($event)->res;
         $did = $event->routeParams['id'];
-        $deviceModel = new DevicesModel($event->fd);
-        $isDevice = $deviceModel->has($deviceModel->tableName, ['user_id' => $me['id'], 'id' => $did]);
+        $deviceModel = new DevicesModel();
+        $isDevice = $deviceModel->where('user_id',  $me['id']) ->where('id',  $did)->get()->isNotEmpty();
         $e = new UserException('没有这个设备');
         $e->url = $event->url;
         $e->method = $event->method;
