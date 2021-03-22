@@ -52,8 +52,8 @@ return [
 //        DeviceFileMustBeExistsValidation::class
 //    ]),
 //    // 更新设备文件
-//    Router::patch('/me/devices/:id/files', UpdateDeviceFileEvent::class, [
-//        AuthValidation::class,
-//        UserDeviceMustBeExistsValidation::class,
-//    ]),
+    Router::patch('/me/devices/:id/files', UpdateDeviceFileEvent::class, [
+        AuthValidation::class,
+        UserDeviceMustBeExistsValidation::class,
+    ]),
 ];

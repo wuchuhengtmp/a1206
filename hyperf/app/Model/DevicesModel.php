@@ -53,4 +53,9 @@ class DevicesModel extends Model
         }
         return $defaultFiles;
     }
+
+    public function getOneById(int $deviceId): array
+    {
+        return self::query()->find($deviceId)->toArray();
+    }
 }

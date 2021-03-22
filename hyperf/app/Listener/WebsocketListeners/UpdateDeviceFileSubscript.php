@@ -49,7 +49,9 @@ class UpdateDeviceFileSubscript implements EventSubscriberInterface
         // 删除ids
         $unSelectIds = [];
         foreach ($data as $e) {
-            $isExists = (new DeviceFilesModel($event->fd))->hasOne(['device_id' => $deviceId, 'file_id' => $e['id']]);
+            $isExists = (bool) (new DeviceFilesModel())->where('device_id',  $deviceId)
+                ->where('file_id', $e['id'])
+                ->count();
             // 新文件
             if ($isExists) {
                 $unSelectIds[] = $e['id'];
@@ -70,10 +72,12 @@ class UpdateDeviceFileSubscript implements EventSubscriberInterface
      */
     public function filterData(BaseEvent $event, array $data): array
     {
-        $dModel = new DeviceFilesModel($event->fd);
+        $dModel = new DeviceFilesModel();
         $deviceId = (int) $event->routeParams['id'];
         foreach ($data as $k => &$e) {
-            $isData = $dModel->hasOne(['file_id' => $e['id'], 'device_id' => $deviceId]);
+            $isData = DeviceFilesModel::query()->where('file_id', $e['id'])
+                ->where('device_id', $deviceId)
+                ->first();
             if ($isData && $e['isSelect'] ) {
                 unset($data[$k]);
             } else if (!$isData && !$e['isSelect']) {
@@ -88,38 +92,38 @@ class UpdateDeviceFileSubscript implements EventSubscriberInterface
      */
     public function sendFileToMqttByFileId(BaseEvent $event, int $fileId): void
     {
-        $fileModel = new FilesModel($event->fd);
+        $fileModel = new FilesModel();
         $deviceId = (int) $event->routeParams['id'];
-        $device = (new DevicesModel($event->fd))->getOneById($deviceId);
+        $device = (new DevicesModel())->getOneById($deviceId);
         $config = config('mqttClient');
-        $client = new MQTTClient($config);
-        $file = $fileModel->getFileById($fileId);
-        $size = 0;
-        if ($file['size'] === null) {
-            $size = strlen(file_get_contents($file['url']));
-            $fileModel->updateSize((int)$file['id'], $size);
-        }
-        $content = (function () use($device, $file, $size) {
-            $c = [
-                'type' => 'JRBJQ_AIR724',
-                'deviceid' => '',
-                'msgid' => $device['device_id'] . time(),
-                'command' => 'updata_file',
-                'updata_file' => [
-                    'op_mode' => 1,
-                    'http_root' => $file['url'],
-                    'file_check_sum' => $size,
-                    'del_file' => -1
-                ]
-            ];
-            $c = json_encode($c);
-            $c = sprintf("%04dXCWL%s", strlen($c), $c);
-            return $c;
-        })();
-        $mClient = (new \App\MqttClient())->getInstance();
-        $mClient->publish(
-            env('MQTT_TOPIC_PREFIX') . $device['device_id'],
-            $content
-        );
+//        $client = new MQTTClient($config);
+//        $file = $fileModel->getFileById($fileId);
+//        $size = 0;
+//        if ($file['size'] === null) {
+//            $size = strlen(file_get_contents($file['url']));
+//            $fileModel->updateSize((int)$file['id'], $size);
+//        }
+//        $content = (function () use($device, $file, $size) {
+//            $c = [
+//                'type' => 'JRBJQ_AIR724',
+//                'deviceid' => '',
+//                'msgid' => $device['device_id'] . time(),
+//                'command' => 'updata_file',
+//                'updata_file' => [
+//                    'op_mode' => 1,
+//                    'http_root' => $file['url'],
+//                    'file_check_sum' => $size,
+//                    'del_file' => -1
+//                ]
+//            ];
+//            $c = json_encode($c);
+//            $c = sprintf("%04dXCWL%s", strlen($c), $c);
+//            return $c;
+//        })();
+//        $mClient = (new \App\MqttClient())->getInstance();
+//        $mClient->publish(
+//            env('MQTT_TOPIC_PREFIX') . $device['device_id'],
+//            $content
+//        );
     }
 }
