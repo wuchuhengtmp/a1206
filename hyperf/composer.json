@@ -18,6 +18,7 @@
         "hyperf/config": "^2.1",
         "hyperf/database": "~2.1.0",
         "hyperf/db-connection": "~2.1.0",
+        "hyperf/filesystem": "^2.1",
         "hyperf/framework": "~2.1.0",
         "hyperf/guzzle": "~2.1.0",
         "hyperf/http-server": "~2.1.0",
@@ -25,7 +26,8 @@
         "hyperf/memory": "~2.1.0",
         "hyperf/process": "~2.1.0",
         "hyperf/redis": "~2.1.0",
-        "hyperf/websocket-server": "^2.1"
+        "hyperf/websocket-server": "^2.1",
+        "overtrue/flysystem-qiniu": "^1.0"
     },
     "require-dev": {
         "swoole/ide-helper": "^4.5",

@@ -31,7 +31,7 @@ class ShowDeviceFilesSubscript implements EventSubscriberInterface
     public function handle(BaseEvent  $event): void
     {
         $id = (int) $event->routeParams['id'];
-        $files = (new DevicesModel($event->fd))->getFilesByDeviceId($id);
+        $files = (new DevicesModel())->getFilesByDeviceId($id);
         WsMessage::resSuccess($event, $files);
     }
 }

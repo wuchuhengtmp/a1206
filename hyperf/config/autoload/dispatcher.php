@@ -28,7 +28,7 @@ return [
     \App\Listener\WebsocketListeners\ShowMyDevicesSubscript::class,
     \App\Listener\WebsocketListeners\ShowDeviceDetailSubscript::class,
 //    \App\Listener\WebsocketListeners\UploadDeviceFileSubscript::class,
-//    \App\Listener\WebsocketListeners\ShowDeviceFilesSubscript::class,
+    \App\Listener\WebsocketListeners\ShowDeviceFilesSubscript::class,
 //    \App\Listener\WebsocketListeners\DestroyDeviceFileSubscript::class,
 //    \App\Listener\WebsocketListeners\UploadDeviceFileSubscript::class,
 //    \App\Listener\WebsocketListeners\UpdateDeviceFileSubscript::class,

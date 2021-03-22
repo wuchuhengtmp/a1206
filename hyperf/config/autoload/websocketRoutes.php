@@ -44,7 +44,7 @@ return [
 //    // 设备文件上传
 //    Router::post('/me/devices/:id/files', UploadDeviceFileEvent::class, [AuthValidation::class, UploadFileValidation::class, UserDeviceMustBeExistsValidation::class]),
 //    // 展示设备文件
-//    Router::get('/me/devices/:id/files', ShowDevicefilesEvent::class, [AuthValidation::class, UserDeviceMustBeExistsValidation::class]),
+    Router::get('/me/devices/:id/files', ShowDevicefilesEvent::class, [AuthValidation::class, UserDeviceMustBeExistsValidation::class]),
 //    // 删除设备文件
 //    Router::delete('/me/devices/:id/files/:fileId', DestroyDeviceFileEvent::class, [
 //        AuthValidation::class,
