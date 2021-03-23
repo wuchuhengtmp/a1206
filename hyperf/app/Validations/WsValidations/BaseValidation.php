@@ -37,11 +37,19 @@ class BaseValidation implements ValidationContract
         foreach ($fields as $field => $rules) {
             foreach ($rules as $rule) {
                 $methodName = "_" . $rule;
-                // 基本验证方法
+                $withPropertyMethodName = explode(':', $rule)[0];
+                // 基本验证规则
                 if (method_exists(self::class, $methodName)) {
                     $messageKey = $field . "." . $rule;
                     $message = array_key_exists($messageKey, $messages) ? $messages[$messageKey] : '';
-                    $this->$methodName($event, $field, $message);
+                    $this->$methodName($event, $field, $message, $rules);
+                } else if (method_exists(self::class, '_' . $withPropertyMethodName)) {
+                    // 带有参数规则内置规则
+                    $messageKey = $field . "." . $withPropertyMethodName;
+                    $message = array_key_exists($messageKey, $messages) ? $messages[$messageKey] : '';
+                    $methodName ='_' . $withPropertyMethodName;
+                    $params = explode(':', $rule)[1];
+                    $this->$methodName($event, $field, $message, $params);
                 } else if (method_exists(static::class, $rule)) {
                     // 扩展验证方法
                     $data = WsMessage::getMsgByEvent($event)->res['data'];
@@ -83,6 +91,27 @@ class BaseValidation implements ValidationContract
             $e->url = $event->url;
             $e->method = $event->method;
             throw $e;
+        }
+    }
+
+    /**
+     *  集合验证
+     * @param BaseEvent $event
+     * @param string $field
+     * @param string $message
+     */
+    static private function _in(BaseEvent $event, string $field, string $message = '', string $params): void
+    {
+        $res = WsMessage::getMsgByEvent($event)->res;
+        if (array_key_exists($field, $res['data'])) {
+            $newParams  = explode(',', $params);
+            if (!array_key_exists((string) $res['data'][$field], $newParams)) {
+                $message = $message === '' ? $field . '必须是集合元素 ' . $params . ' 中的1个'  : $message;
+                $e = new UserException($message);
+                $e->url = $event->url;
+                $e->method = $event->method;
+                throw $e;
+            }
         }
     }
 

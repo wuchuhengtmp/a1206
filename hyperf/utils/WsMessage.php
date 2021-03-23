@@ -28,7 +28,7 @@ class WsMessage
         $server->push($event->fd, json_encode(
             [
                 'url' => $event->url,
-                'method' => $event->method,
+                'method' => strtoupper($event->method),
                 'isSuccess' => true,
                 'data' => $data
             ]

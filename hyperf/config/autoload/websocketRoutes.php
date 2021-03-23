@@ -60,6 +60,7 @@ return [
     // 设备播放
     Router::put('/me/devices/:id/play', DevicePlayDevent::class, [
         AuthValidation::class,
+        \App\Validations\WsValidations\DevicePlayValidation::class,
         UserDeviceMustBeExistsValidation::class,
     ])
 ];
