@@ -1,6 +1,6 @@
 <?php
 /**
- * Class SetDevicesSuondSubscript
+ * Class SetDevicesSoundSubscript
  * @package App\Listener\WebsocketListeners
  * @author wuchuheng  <wuchuheng@163.com>
  */
@@ -17,7 +17,7 @@ use Utils\Helper;
 use Utils\MqttClient;
 use Utils\WsMessage;
 
-class SetDevicesSuondSubscript implements EventSubscriberInterface
+class SetDevicesSoundSubscript implements EventSubscriberInterface
 {
 
     public static function getSubscribedEvents()

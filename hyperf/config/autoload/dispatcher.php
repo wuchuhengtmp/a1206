@@ -33,5 +33,6 @@ return [
 //    \App\Listener\WebsocketListeners\UploadDeviceFileSubscript::class,
     \App\Listener\WebsocketListeners\UpdateDeviceFileSubscript::class,
     \App\Listener\WebsocketListeners\DevicePlaySubscript::class,
-    \App\Listener\WebsocketListeners\SetDevicesSuondSubscript::class
+    \App\Listener\WebsocketListeners\SetDevicesSoundSubscript::class,
+    \App\Listener\WebsocketListeners\PlayFilesSubscript::class
 ];

@@ -19,7 +19,8 @@ use App\Events\WebsocketEvents\{
     ShowDevicefilesEvent,
     DestroyDeviceFileEvent,
     UpdateDeviceFileEvent,
-    DevicePlayDevent
+    DevicePlayDevent,
+    PlayFilesEvent
 };
 //
 use \App\Validations\WsValidations\{
@@ -28,7 +29,8 @@ use \App\Validations\WsValidations\{
     LoginValidation,
     UserDeviceMustBeExistsValidation,
     UploadFileValidation,
-    DeviceFileMustBeExistsValidation
+    DeviceFileMustBeExistsValidation,
+    PlayFilesValidation
 };
 return [
     // 登录
@@ -70,4 +72,10 @@ return [
         \App\Validations\WsValidations\LimitSoundValidation::class,
         UserDeviceMustBeExistsValidation::class,
     ]),
+    // 上/下一曲
+    Router::put('/me/devices/:id/playFiles/:status', PlayFilesEvent::class, [
+        AuthValidation::class,
+        PlayFilesValidation::class,
+        UserDeviceMustBeExistsValidation::class,
+    ])
 ];
