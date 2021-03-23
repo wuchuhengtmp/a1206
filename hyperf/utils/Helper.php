@@ -88,4 +88,9 @@ class Helper
 
         return sprintf('%04d', strlen($content)) . 'XCWL' . $content;
     }
+
+    static public function formatTopicByDeviceId(string $deviceId): string
+    {
+        return sprintf("JRBJQ_AIR724_%s", $deviceId);
+    }
 }

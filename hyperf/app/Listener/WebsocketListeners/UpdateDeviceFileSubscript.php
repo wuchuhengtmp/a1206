@@ -19,6 +19,7 @@ use FastRoute\DataGenerator;
 use Simps\Client\MQTTClient;
 use Swoole\Coroutine\Redis;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Utils\Helper;
 use Utils\WsMessage;
 
 class UpdateDeviceFileSubscript implements EventSubscriberInterface
@@ -95,35 +96,25 @@ class UpdateDeviceFileSubscript implements EventSubscriberInterface
         $fileModel = new FilesModel();
         $deviceId = (int) $event->routeParams['id'];
         $device = (new DevicesModel())->getOneById($deviceId);
-        $config = config('mqttClient');
-//        $client = new MQTTClient($config);
-//        $file = $fileModel->getFileById($fileId);
-//        $size = 0;
-//        if ($file['size'] === null) {
-//            $size = strlen(file_get_contents($file['url']));
-//            $fileModel->updateSize((int)$file['id'], $size);
-//        }
-//        $content = (function () use($device, $file, $size) {
-//            $c = [
-//                'type' => 'JRBJQ_AIR724',
-//                'deviceid' => '',
-//                'msgid' => $device['device_id'] . time(),
-//                'command' => 'updata_file',
-//                'updata_file' => [
-//                    'op_mode' => 1,
-//                    'http_root' => $file['url'],
-//                    'file_check_sum' => $size,
-//                    'del_file' => -1
-//                ]
-//            ];
-//            $c = json_encode($c);
-//            $c = sprintf("%04dXCWL%s", strlen($c), $c);
-//            return $c;
-//        })();
-//        $mClient = (new \App\MqttClient())->getInstance();
-//        $mClient->publish(
-//            env('MQTT_TOPIC_PREFIX') . $device['device_id'],
-//            $content
-//        );
+        $file = $fileModel->where('id', $fileId)->first();
+        $content = (function () use($device, $file) {
+            $c = [
+                'type' => 'JRBJQ_AIR724',
+                'deviceid' => '',
+                'msgid' => $device['device_id'] . time(),
+                'command' => 'updata_file',
+                'updata_file' => [
+                    'op_mode' => 1,
+                    'http_root' => $file['url'],
+                    'file_check_sum' => $file->size,
+                    'del_file' => -1
+                ]
+            ];
+            $c = json_encode($c);
+            $c = sprintf("%04dXCWL%s", strlen($c), $c);
+            return $c;
+        })();
+        $topic = Helper::formatTopicByDeviceId($device['device_id']);
+        (new \Utils\MqttClient())->getClient()->publish($topic, $content, 1);
     }
 }
