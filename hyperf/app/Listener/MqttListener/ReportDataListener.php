@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace App\Listener\MqttListener;
 
+use App\Events\MqttEvents\AddDevicesEvent;
 use App\Events\MqttEvents\BaseEvent;
 use App\Events\MqttEvents\ReportDataEvent;
+use App\Model\DevicesModel;
+use App\Model\UsersModel;
 use Hyperf\Event\Annotation\Listener;
 use Psr\Container\ContainerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Utils\Helper;
 use Utils\MqttClient;
 
@@ -47,6 +51,20 @@ class ReportDataListener implements ListenerInterface
         go(function () use ($msg, $topic, $mqttClient) {
             $res = $mqttClient->getClient()->publish($topic, $msg, 1);
         });
+        // 保存设备
+        $data = $event->data;
+        $isUser = UsersModel::query()->where('username', $data['from_username'])->get()->isNotEmpty();
+        if ($isUser) {
+            $user = UsersModel::query()->where('username', $data['from_username'])->first();
+            $payload = json_decode(substr($data['payload'], 8), true);
+            $isDevices = DevicesModel::query()->where('user_id', $user->id)->where('device_id', $payload['deviceid'])
+                ->get()
+                ->isNotEmpty();
+            if (!$isDevices) {
+                $dispatcher = $this->container->get(EventDispatcherInterface::class);
+                $dispatcher->dispatch(new AddDevicesEvent($event->data));
+            }
+        }
     }
 }
 

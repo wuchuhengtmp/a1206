@@ -24,7 +24,7 @@ class MqttClient
             $config = [
                 'userName' => env('HPERF_MQTT_USERNAME'), // 用户名
                 'password' => env('HPERF_MQTT_PASSWORD'), // 密码
-                'clientId' => env('HPERF_MQTT_CLIENTID') . '_' . time(), // 客户端id
+                'clientId' => env('HPERF_MQTT_CLIENTID') . '_system', // 客户端id
                 'keepAlive' => 10, // 默认0秒，设置成0代表禁用
                 'protocolName' => 'MQTT', // 协议名，默认为MQTT(3.1.1版本)，也可为MQIsdp(3.1版本)
                 'protocolLevel' => 4, // 协议等级，MQTT3.1.1版本为4，5.0版本为5，MQIsdp为3

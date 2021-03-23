@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Events\MqttEvents\ClientConnectedEvent;
+use App\Events\MqttEvents\RegisterEvent;
 use App\Events\MqttEvents\ReportDataEvent;
 use http\Env\Request;
 use Hyperf\HttpServer\Contract\RequestInterface;
@@ -29,7 +30,6 @@ class IndexController extends AbstractController
     public function index(RequestInterface $request)
     {
         $content = $request->getBody()->getContents();
-//        var_dump($content);
         $content = json_decode($content, true);
         if (array_key_exists('payload', $content)) {
             $payload = $content['payload'];
@@ -40,17 +40,16 @@ class IndexController extends AbstractController
                     $this->eventDispatcher->dispatch(new ReportDataEvent($content));
                     break;
                 case 'register':
-                    //
+                    $this->eventDispatcher->dispatch(new RegisterEvent($content));
                     break;
             }
         }
-//        switch ($content->action) action{
-//            // 设备连接
-//            case 'client_connected':
-//                $this->eventDispatcher->dispatch(new ClientConnectedEvent($content));
-//                echo "connected\n";
-//                break;
-//        }
+        switch ($content['action']) {
+            // 设备连接
+            case 'client_connected':
+                $this->eventDispatcher->dispatch(new ClientConnectedEvent($content));
+                break;
+        }
 
         $user = $this->request->input('user', 'Hyperf');
         $method = $this->request->getMethod();

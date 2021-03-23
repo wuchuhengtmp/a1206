@@ -44,6 +44,7 @@ class CreateDevicesTable extends Migration
               `memory_size` int(11) default null comment '内存余量',
               `trigger_modes` varbinary(255) default null,
               `battery_vol` int(255) default null comment '电力',
+              `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
               primary key (`id`)
             ) engine=innodb auto_increment=4 default charset=utf8mb4 collate=utf8mb4_unicode_ci;
         ");

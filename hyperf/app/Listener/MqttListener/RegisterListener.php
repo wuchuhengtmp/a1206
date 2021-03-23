@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Listener\MqttListener;
 
 use App\CacheModel\RedisCasheModel;
-use App\Events\MqttEvents\ClientConnectedEvent;
+use App\Events\MqttEvents\RegisterEvent;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Utils\ApplicationContext;
 use Psr\Container\ContainerInterface;
@@ -14,7 +14,7 @@ use Hyperf\Event\Contract\ListenerInterface;
 /**
  * @Listener
  */
-class ClientConnectListener implements ListenerInterface
+class RegisterListener implements ListenerInterface
 {
     /**
      * @var ContainerInterface
@@ -29,14 +29,15 @@ class ClientConnectListener implements ListenerInterface
     public function listen(): array
     {
         return [
-            ClientConnectedEvent::class
+            RegisterEvent::class
         ];
     }
 
     public function process(object $event)
     {
-        $container = ApplicationContext::getContainer();
-        $redisModel = $container->get(RedisCasheModel::class);
-        $redisModel->setConnectInfo($event->data['client_id'], $event->data);
+        $data = $event->data;
+        $payload = \json_decode(substr($data['payload'],8), true);
+        $cashe = ApplicationContext::getContainer()->get(RedisCasheModel::class);
+        $cashe->setRegisterInfo($event->data['from_client_id'], $payload);
     }
 }
