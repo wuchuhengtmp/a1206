@@ -10,6 +10,8 @@ namespace Utils;
 
 use App\Events\WebsocketEvents\BaseEvent;
 use App\Exception\WsExceptions\ConnectBrokenException;
+use Hyperf\Utils\ApplicationContext;
+use Swoole\Server;
 
 class WsMessage
 {
@@ -22,11 +24,7 @@ class WsMessage
     static public function resSuccess(BaseEvent $event, array $data = []): ReportFormat
     {
         $res = new ReportFormat();
-        $hasServer = Context::getServer($event->fd);
-        if ($hasServer->isError) {
-            return $res;
-        }
-        $server = $hasServer->res;
+        $server = ApplicationContext::getContainer()->get(Server::class);
         $server->push($event->fd, json_encode(
             [
                 'url' => $event->url,

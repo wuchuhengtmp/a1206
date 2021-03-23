@@ -6,6 +6,7 @@ namespace App\Listener\MqttListener;
 
 use App\CacheModel\RedisCasheModel;
 use App\Events\MqttEvents\GetDataAllAckEvent;
+use App\Events\WebsocketEvents\BaseEvent;
 use App\Model\DevicesModel;
 use App\Model\UsersModel;
 use Hyperf\Event\Annotation\Listener;
@@ -13,6 +14,10 @@ use Hyperf\Utils\ApplicationContext;
 use Psr\Container\ContainerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Swoole\Server;
+use Utils\Context;
+use Utils\Helper;
+use Utils\Message;
+use Utils\WsMessage;
 
 /**
  * @Listener
@@ -63,9 +68,13 @@ class GetDataAllAckListener implements ListenerInterface
         $fd = $redis->getFdByUid($user->id);
         $server = ApplicationContext::getContainer()->get(Server::class);
          if ($server->isEstablished($fd)) {
-             $server->push($fd, json_encode([
-                 'url' => sprintf('/me/devices/%d/', )/me/devices/'
-             ]));
+             $redisModel = ApplicationContext::getContainer()->get(RedisCasheModel::class);
+             $msg = $redisModel->getControllerMessageQueue($devcieId);
+             $msg = json_decode(substr($msg, 8), true);
+             $data = $msg['content'];
+             $url = sprintf('/me/devices/%d', $devcie['id']);
+             $event = new BaseEvent($fd, 'put', $url);
+             WsMessage::resSuccess($event, $data);
          }
     }
 }
