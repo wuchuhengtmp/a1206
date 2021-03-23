@@ -7,6 +7,7 @@ namespace App\Listener\MqttListener;
 use App\Events\MqttEvents\AddDevicesEvent;
 use App\Events\MqttEvents\BaseEvent;
 use App\Events\MqttEvents\ReportDataEvent;
+use App\Events\MqttEvents\UpdateDeviceEvent;
 use App\Model\DevicesModel;
 use App\Model\UsersModel;
 use Hyperf\Event\Annotation\Listener;
@@ -60,9 +61,13 @@ class ReportDataListener implements ListenerInterface
             $isDevices = DevicesModel::query()->where('user_id', $user->id)->where('device_id', $payload['deviceid'])
                 ->get()
                 ->isNotEmpty();
+            $dispatcher = $this->container->get(EventDispatcherInterface::class);
             if (!$isDevices) {
-                $dispatcher = $this->container->get(EventDispatcherInterface::class);
+                // 添加一台设备
                 $dispatcher->dispatch(new AddDevicesEvent($event->data));
+            } else {
+                // 更新一台设备
+                $dispatcher->dispatch(new UpdateDeviceEvent($event->data));
             }
         }
     }

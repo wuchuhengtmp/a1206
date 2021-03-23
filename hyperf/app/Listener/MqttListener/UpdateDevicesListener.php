@@ -6,6 +6,7 @@ namespace App\Listener\MqttListener;
 
 use App\CacheModel\RedisCasheModel;
 use App\Events\MqttEvents\AddDevicesEvent;
+use App\Events\MqttEvents\UpdateDeviceEvent;
 use App\Model\DevicesModel;
 use App\Model\UsersModel;
 use Hyperf\Event\Annotation\Listener;
@@ -16,7 +17,7 @@ use Hyperf\Event\Contract\ListenerInterface;
 /**
  * @Listener
  */
-class AddDevicesListener implements ListenerInterface
+class UpdateDevicesListener implements ListenerInterface
 {
     /**
      * @var ContainerInterface
@@ -30,23 +31,19 @@ class AddDevicesListener implements ListenerInterface
 
     public function listen(): array
     {
-        return [
-            AddDevicesEvent::class
-        ];
+        return [ UpdateDeviceEvent::class ];
     }
 
     public function process(object $event)
     {
         $data = $event->data;
-        $username = $data['from_username'];
-        $user = UsersModel::where('username', $username)->first();
+        $user = UsersModel::query()->where('username', $data['from_username'])->first();
         $payload = json_decode(substr($data['payload'], 8), true);
-        $device = new DevicesModel();
+        $device = DevicesModel::query()->where('user_id', $user->id)->where('device_id', $payload['deviceid'])
+            ->first();
         $redis = ApplicationContext::getContainer()->get(RedisCasheModel::class);
-        $connectInfo = $redis->getConnectInfoByClientId($event->data['from_client_id']);
         $registerInfo = $redis->getRegisterInfoByClientId($event->data['from_client_id']);
-        $device->device_id = $payload['deviceid'];
-        $device->user_id = $user->id;
+        $connectInfo = $redis->getConnectInfoByClientId($event->data['from_client_id']);
         $device->ip_address = $connectInfo['ipaddress'];
         $device->keepalive = $connectInfo['keepalive'];
         $device->protocol = "mqtt_" . $connectInfo['proto_ver'];
