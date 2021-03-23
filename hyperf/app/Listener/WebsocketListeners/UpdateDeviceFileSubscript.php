@@ -43,7 +43,6 @@ class UpdateDeviceFileSubscript implements EventSubscriberInterface
         $data = WsMessage::getMsgByEvent($event)->res['data'];
         // 过滤重复数据
         $data = $this->filterData($event, $data);
-        $user = $event->getAuth()->res;
         $deviceId = (int) $event->routeParams['id'];
         // 新添加ids
         $selectIds = [];
@@ -63,6 +62,15 @@ class UpdateDeviceFileSubscript implements EventSubscriberInterface
         // 添加
         foreach ($selectIds as $fileId ) {
             $this->sendFileToMqttByFileId($event, (int) $fileId);
+            $fileModel = (new DeviceFilesModel());
+            $fileModel->file_id = $fileId;
+            $fileModel->device_id = $deviceId;
+            $fileModel->save();
+        }
+        // 要删除的文件
+        foreach ($unSelectIds as $fileId ) {
+            // todo: 这里需要写删除设备的业务代码
+//            $this->delDeviceFile($event, (int) $fileId);
         }
     }
 
@@ -73,7 +81,6 @@ class UpdateDeviceFileSubscript implements EventSubscriberInterface
      */
     public function filterData(BaseEvent $event, array $data): array
     {
-        $dModel = new DeviceFilesModel();
         $deviceId = (int) $event->routeParams['id'];
         foreach ($data as $k => &$e) {
             $isData = DeviceFilesModel::query()->where('file_id', $e['id'])
@@ -97,6 +104,36 @@ class UpdateDeviceFileSubscript implements EventSubscriberInterface
         $deviceId = (int) $event->routeParams['id'];
         $device = (new DevicesModel())->getOneById($deviceId);
         $file = $fileModel->where('id', $fileId)->first();
+        $message = (function () use($device, $file) {
+            $c = [
+                'type' => 'JRBJQ_AIR724',
+                'deviceid' => '',
+                'msgid' => $device['device_id'] . time(),
+                'command' => 'updata_file',
+                'updata_file' => [
+                    'op_mode' => 1,
+                    'http_root' => $file['url'],
+                    'file_check_sum' => $file->size,
+                    'del_file' => -1
+                ]
+            ];
+            return Helper::fMqttMsg($c);
+        })();
+        $topic = Helper::formatTopicByDeviceId($device['device_id']);
+        (new \Utils\MqttClient())->getClient()->publish($topic, $message, 1);
+    }
+
+    /**
+     *  删除设备文件
+     * @param BaseEvent $event
+     * @param int $fileId
+     */
+    private function _deldeviceFile(BaseEvent $event, int $fileId): void
+    {
+        $fileModel = new FilesModel();
+        $deviceId = (int) $event->routeParams['id'];
+        $device = (new DevicesModel())->getOneById($deviceId);
+        $file = $fileModel->where('id', $fileId)->first();
         $content = (function () use($device, $file) {
             $c = [
                 'type' => 'JRBJQ_AIR724',
@@ -110,9 +147,7 @@ class UpdateDeviceFileSubscript implements EventSubscriberInterface
                     'del_file' => -1
                 ]
             ];
-            $c = json_encode($c);
-            $c = sprintf("%04dXCWL%s", strlen($c), $c);
-            return $c;
+            return Helper::fMqttMsg($c);
         })();
         $topic = Helper::formatTopicByDeviceId($device['device_id']);
         (new \Utils\MqttClient())->getClient()->publish($topic, $content, 1);

@@ -17,7 +17,8 @@ use App\Events\WebsocketEvents\{
     UploadDeviceFileEvent,
     ShowDevicefilesEvent,
     DestroyDeviceFileEvent,
-    UpdateDeviceFileEvent
+    UpdateDeviceFileEvent,
+    DevicePlayDevent
 };
 //
 use \App\Validations\WsValidations\{
@@ -56,4 +57,9 @@ return [
         AuthValidation::class,
         UserDeviceMustBeExistsValidation::class,
     ]),
+    // 设备播放
+    Router::put('/me/devices/:id/play', DevicePlayDevent::class, [
+        AuthValidation::class,
+        UserDeviceMustBeExistsValidation::class,
+    ])
 ];

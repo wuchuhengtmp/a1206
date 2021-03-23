@@ -79,16 +79,21 @@ class Helper
     }
 
     /**
+     * 格式化为符合设备的消息格式
      * @param array $content
      * @return string
      */
     static public function fMqttMsg(array $content): string
     {
         $content = \json_encode($content);
-
         return sprintf('%04d', strlen($content)) . 'XCWL' . $content;
     }
 
+    /**
+     *  获取设备订阅的主题
+     * @param string $deviceId
+     * @return string
+     */
     static public function formatTopicByDeviceId(string $deviceId): string
     {
         return sprintf("JRBJQ_AIR724_%s", $deviceId);

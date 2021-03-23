@@ -32,4 +32,5 @@ return [
 //    \App\Listener\WebsocketListeners\DestroyDeviceFileSubscript::class,
 //    \App\Listener\WebsocketListeners\UploadDeviceFileSubscript::class,
     \App\Listener\WebsocketListeners\UpdateDeviceFileSubscript::class,
+    \App\Listener\WebsocketListeners\DevicePlaySubscript::class
 ];
