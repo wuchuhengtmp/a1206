@@ -8,6 +8,7 @@ declare(strict_types=1);
 use Utils\WsRouteParser as Router;
 
 use App\Events\WebsocketEvents\{
+    SetDeviceSoundEvent,
     ShowDeviceDetailEvent,
     LoginEvent,
     RegisterEvent,
@@ -62,5 +63,11 @@ return [
         AuthValidation::class,
         \App\Validations\WsValidations\DevicePlayValidation::class,
         UserDeviceMustBeExistsValidation::class,
-    ])
+    ]),
+    // 设备设备声音
+    Router::put('/me/devices/:id/sounds', SetDeviceSoundEvent::class, [
+        AuthValidation::class,
+        \App\Validations\WsValidations\LimitSoundValidation::class,
+        UserDeviceMustBeExistsValidation::class,
+    ]),
 ];

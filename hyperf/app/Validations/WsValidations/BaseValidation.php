@@ -116,6 +116,30 @@ class BaseValidation implements ValidationContract
     }
 
     /**
+     *  区间验证
+     * @param BaseEvent $event
+     * @param string $field
+     * @param string $message
+     * @param string $params
+     */
+    static private function _between(BaseEvent $event, string $field, string $message = '', string $params): void
+    {
+        $res = WsMessage::getMsgByEvent($event)->res;
+        if (array_key_exists($field, $res['data'])) {
+            list($limtStart, $limitEnd) = explode(',', $params);
+            if ($res['data'][$field] >= $limtStart &&  $res['data'][$field] <= $limitEnd) {
+            } else {
+                $message = $message === '' ? $field . ' 必须是在 ' . $params . ' 之间'  : $message;
+                $e = new UserException($message);
+                $e->url = $event->url;
+                $e->method = $event->method;
+                throw $e;
+
+            }
+        }
+    }
+
+    /**
      * @return array
      */
     public function getMessages(): array
