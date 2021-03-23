@@ -8,8 +8,10 @@ declare(strict_types=1);
 
 namespace App\Listener\WebsocketListeners;
 
+use App\CacheModel\RedisCasheModel;
 use App\Events\WebsocketEvents\LoginEvent;
 use App\Model\UsersModel;
+use Hyperf\Utils\ApplicationContext;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Utils\JWT;
 use Utils\WsMessage;
@@ -29,6 +31,7 @@ class LoginSubscript implements EventSubscriberInterface
 
     public function handle(LoginEvent $event): void
     {
+
         $hasData = WsMessage::getMsgByEvent($event);
         if (!$hasData->isError) {
             $msg = $hasData->res;

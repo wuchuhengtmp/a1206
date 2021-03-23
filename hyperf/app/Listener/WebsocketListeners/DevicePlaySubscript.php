@@ -8,10 +8,12 @@ declare(strict_types=1);
 
 namespace App\Listener\WebsocketListeners;
 
+use App\CacheModel\RedisCasheModel;
 use App\Events\WebsocketEvents\BaseEvent;
 use App\Events\WebsocketEvents\DevicePlayDevent;
 use App\Model\DevicesModel;
 use App\Model\FilesModel;
+use Hyperf\Utils\ApplicationContext;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Utils\Context;
 use Utils\Helper;
@@ -34,7 +36,7 @@ class DevicePlaySubscript implements EventSubscriberInterface
         $message = (function () use($device, $deviceId, $play_status) {
             $c = [
                 'type' => 'JRBJQ_AIR724',
-                'deviceid' => $deviceId,
+                'deviceid' => $device['device_id'],
                 'msgid' => $device['device_id'] . time(),
                 'command' => 'play_crtl',
                 'content' => [
@@ -45,5 +47,7 @@ class DevicePlaySubscript implements EventSubscriberInterface
         })();
         $topic = Helper::formatTopicByDeviceId($device['device_id']);
         (new MqttClient())->getClient()->publish($topic, $message, 1);
+        $redisModel = ApplicationContext::getContainer()->get(RedisCasheModel::class);
+        $redisModel->setControMessageQueue($device['device_id'],  $message);
     }
 }

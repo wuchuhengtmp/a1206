@@ -91,4 +91,53 @@ class RedisCasheModel extends BaseAbstract
         $data = $redis->hget($this->prefix . ":clientIdMapRegisterInfo", $key);
         return \json_decode($data, true);
     }
+
+    public function uidBindFd(int $uid, int $fd): void
+    {
+        $redis = $this->_getClient();
+        $redis->hset($this->prefix . ":uidBindFd", (string) $uid, (string) $fd);
+    }
+
+    public function getFdByUid(int $uid): int
+    {
+        $redis = $this->_getClient();
+        return (int) $redis->hget($this->prefix . ":uidBindFd", (string) $uid);
+    }
+
+    /**
+     *  保存控制消息队列
+     * @param string $devcieId
+     * @param $msg
+     */
+    public function setControMessageQueue(string $devcieId, $msg)
+    {
+        $redis = $this->_getClient();
+        $key = $this->prefix . ":devcieMessageQueue";
+        $hkey = $devcieId;
+        $data = [];
+        if ($redis->hExists($key, $hkey)) {
+            $oldData = json_decode($redis->hGet($key, $hkey), true);
+            $oldData[] = $msg;
+            $data = $oldData;
+        } else {
+            $data[] = $msg;
+        }
+        $redis->hSet($key, $hkey, json_encode($data));
+    }
+
+    /**
+     * 获取控制消息队列
+     * @param string $devcieId
+     * @return mixed
+     */
+    public function getControllerMessageQueue(string $devcieId)
+    {
+        $redis = $this->_getClient();
+        $key = $this->prefix . ":devcieMessageQueue";
+        $hkey = $devcieId;
+        $queue = json_decode($redis->hGet($key, $hkey), true);
+        $e = array_shift($queue);
+        $redis->hSet($key, $hkey, json_encode($queue));
+        return $e;
+    }
 }

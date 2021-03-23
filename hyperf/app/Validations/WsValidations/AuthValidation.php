@@ -8,10 +8,12 @@ declare(strict_types=1);
 
 namespace App\Validations\WsValidations;
 
+use App\CacheModel\RedisCasheModel;
 use App\Events\WebsocketEvents\BaseEvent;
 use App\Exception\WsExceptions\FrontEndException;
 use App\Model\UsersModel;
 use FastRoute\DataGenerator;
+use Hyperf\Utils\ApplicationContext;
 use Utils\JWT;
 use Utils\WsMessage;
 
@@ -57,5 +59,8 @@ class AuthValidation extends BaseValidation
             $e->method = $cMsg['method'];
             throw $e;
         }
+        // 用户id绑定fd
+        $redisModel = ApplicationContext::getContainer()->get(RedisCasheModel::class);
+        $redisModel->uidBindFd((int) $uid, (int) $event->fd);
     }
 }
