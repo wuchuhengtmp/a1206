@@ -1,29 +1,29 @@
 version: '3'
 
 services:
-  #hyperf:
-  #  image: hyperf/hyperf:7.4-alpine-v3.11-swoole
-  #  ports:
-  #    - "9602:9602"
-  #    - "9604:9604"
-  #  volumes:
-  #    - ./hyperf/:/opt/www/
-  #    - ./.env:/opt/www/.env
-  #  privileged: true
-  #  working_dir: /opt/www/
-  #  restart: always
-  #  container_name: hyperf
-  #  depends_on:
-  #    - mysql
-  #  networks:
-  #    - default
-  #  command:
-  #    - /bin/sh
-  #    - -c
-  #    - |
-  #      composer install
-  #      php bin/hyperf.php tryCreateDatabaseAndSeeder:true
-  #      php bin/hyperf.php start
+  hyperf:
+    image: hyperf/hyperf:7.4-alpine-v3.11-swoole
+    ports:
+      - "9602:9602"
+      - "9604:9604"
+    volumes:
+      - ./hyperf/:/opt/www/
+      - ./.env:/opt/www/.env
+    privileged: true
+    working_dir: /opt/www/
+    restart: always
+    container_name: hyperf
+    depends_on:
+      - mysql
+    networks:
+      - default
+    command:
+      - /bin/sh
+      - -c
+      - |
+        composer install
+        php bin/hyperf.php tryCreateDatabaseAndSeeder:true
+        php bin/hyperf.php start
 
   broker:
     image: emqx/emqx
@@ -40,7 +40,7 @@ services:
 
   redis:
     image: redis:${REDIS_VERSION}
-    container_name: redis
+    container_name: redis_a1206
     ports:
       - "${REDIS_HOST_PORT}:6379"
     volumes:
