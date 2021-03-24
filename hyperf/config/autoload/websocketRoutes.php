@@ -10,6 +10,7 @@ use Utils\WsRouteParser as Router;
 use App\Events\WebsocketEvents\{
     SetDeviceSoundEvent,
     ShowDeviceDetailEvent,
+    PlayModeEvent,
     LoginEvent,
     RegisterEvent,
     PingEvent,
@@ -76,6 +77,11 @@ return [
     Router::put('/me/devices/:id/playFiles/:status', PlayFilesEvent::class, [
         AuthValidation::class,
         PlayFilesValidation::class,
+        UserDeviceMustBeExistsValidation::class,
+    ]),
+    // 播放模式
+    Router::put('/me/devices/:id/playMode', PlayModeEvent::class, [
+        AuthValidation::class,
         UserDeviceMustBeExistsValidation::class,
     ])
 ];

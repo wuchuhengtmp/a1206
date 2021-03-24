@@ -1,6 +1,6 @@
 <?php
 /**
- * 发送控制指令到设备
+ * 查询设备参数
  * @package App\Servics
  * @author wuchuheng  <wuchuheng@163.com>
  */
@@ -15,9 +15,9 @@ use Hyperf\Utils\ApplicationContext;
 use Utils\Helper;
 use Utils\MqttClient;
 
-class SendControllerCommadToDevice
+class SendQueryCommandToDevice extends BaseAbstract
 {
-    function send(BaseEvent $event, $content = null)
+    public function send(BaseEvent $event, $content = null): void
     {
         $deviceId = (int) $event->routeParams['id'];
         $device = (new DevicesModel())->getOneById($deviceId);
@@ -26,7 +26,7 @@ class SendControllerCommadToDevice
                 'type' => 'JRBJQ_AIR724',
                 'deviceid' => $device['device_id'],
                 'msgid' => $device['device_id'] . time(),
-                'command' => 'play_crtl',
+                'command' => 'get_data_all',
                 'content' => $content
             ];
             return Helper::fMqttMsg($c);

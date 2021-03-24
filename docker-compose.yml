@@ -28,16 +28,15 @@ services:
   broker:
     image: emqx/emqx
     ports:
-      - 1883:1883 #mqtt
+      - 1883:1883
       - 8081:8081
-      - 8083:8083 #后台
+      - 8083:8083
       - 8883:8883
       - 8084:8084
       - 18083:18083
     container_name: broker
     volumes:
-      - ./broker/emqx_web_hook.conf:/opt/emqx/etc/plugins/emqx_web_hook.conf
-#      - ./broker/license/:/opt/emqx/etc/emqx.lic/
+      - "./broker/emqx_web_hook.conf:/opt/emqx/etc/plugins/emqx_web_hook.conf"
 
   redis:
     image: redis:${REDIS_VERSION}

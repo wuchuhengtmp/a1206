@@ -46,7 +46,6 @@ class IndexController extends AbstractController
                     break;
                     // 获取设备数据或设备设备响应
                 case 'get_data_all_ack':
-                    $date = date("h:i:s\n", time());
                     $this->eventDispatcher->dispatch(new GetDataAllAckEvent($content));
                     break;
             }

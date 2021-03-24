@@ -12,6 +12,7 @@ use App\CacheModel\RedisCasheModel;
 use App\Events\WebsocketEvents\BaseEvent;
 use App\Events\WebsocketEvents\PlayFilesEvent;
 use App\Servics\SendControllerCommadToDevice;
+use App\Servics\SendQueryCommandToDevice;
 use Hyperf\Utils\ApplicationContext;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Utils\WsMessage;

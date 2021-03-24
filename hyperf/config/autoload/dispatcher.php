@@ -34,5 +34,6 @@ return [
     \App\Listener\WebsocketListeners\UpdateDeviceFileSubscript::class,
     \App\Listener\WebsocketListeners\DevicePlaySubscript::class,
     \App\Listener\WebsocketListeners\SetDevicesSoundSubscript::class,
-    \App\Listener\WebsocketListeners\PlayFilesSubscript::class
+    \App\Listener\WebsocketListeners\PlayFilesSubscript::class,
+    \App\Listener\WebsocketListeners\PlayModeSubscript::class
 ];
