@@ -21,7 +21,8 @@ use App\Events\WebsocketEvents\{
     DestroyDeviceFileEvent,
     UpdateDeviceFileEvent,
     DevicePlayDevent,
-    PlayFilesEvent
+    PlayFilesEvent,
+    AddConfigTimeEvent
 };
 //
 use \App\Validations\WsValidations\{
@@ -83,5 +84,10 @@ return [
     Router::put('/me/devices/:id/playMode', PlayModeEvent::class, [
         AuthValidation::class,
         UserDeviceMustBeExistsValidation::class,
-    ])
+    ]),
+    // 添加设备定时
+    Router::post('/me/devices/:id/configTimes', AddConfigTimeEvent::class, [
+        AuthValidation::class,
+        UserDeviceMustBeExistsValidation::class,
+    ]),
 ];
