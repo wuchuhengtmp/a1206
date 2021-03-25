@@ -13,6 +13,7 @@ namespace App\Controller;
 
 use App\Events\MqttEvents\ClientConnectedEvent;
 use App\Events\MqttEvents\GetDataAllAckEvent;
+use App\Events\MqttEvents\PlayCrtlAckEvent;
 use App\Events\MqttEvents\RegisterEvent;
 use App\Events\MqttEvents\ReportDataEvent;
 use http\Env\Request;
@@ -36,6 +37,7 @@ class IndexController extends AbstractController
             $payload = $content['payload'];
             $payload = substr($payload, 8);
             $payload = json_decode($payload, true);
+
             switch ($payload['command']) {
                 case 'report_data':
                     $this->eventDispatcher->dispatch(new ReportDataEvent($content));
@@ -44,9 +46,14 @@ class IndexController extends AbstractController
                 case 'register':
                     $this->eventDispatcher->dispatch(new RegisterEvent($content));
                     break;
-                    // 获取设备数据或设备设备响应
+                    // 获取设备数据
                 case 'get_data_all_ack':
                     $this->eventDispatcher->dispatch(new GetDataAllAckEvent($content));
+                    break;
+                    // 控制指令回复
+                case 'play_crtl_ack':
+                    var_dump("hell\n");
+                    $this->eventDispatcher->dispatch(new PlayCrtlAckEvent($content));
                     break;
             }
         }

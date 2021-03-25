@@ -1,32 +1,32 @@
 version: '3'
 
 services:
-  hyperf:
-    image: hyperf/hyperf:7.4-alpine-v3.11-swoole
-    ports:
-      - "9602:9602"
-      - "9604:9604"
-    volumes:
-      - ./hyperf/:/opt/www/
-      - ./.env:/opt/www/.env
-    privileged: true
-    working_dir: /opt/www/
-    restart: always
-    container_name: hyperf
-    depends_on:
-      - mysql
-    networks:
-      - default
-    command:
-      - /bin/sh
-      - -c
-      - |
-        composer install
-        php bin/hyperf.php tryCreateDatabaseAndSeeder:true
-        php bin/hyperf.php start
+#  hyperf:
+#    image: hyperf/hyperf:7.4-alpine-v3.11-swoole
+#    ports:
+#      - "9602:9602"
+#      - "9604:9604"
+#    volumes:
+#      - ./hyperf/:/opt/www/
+#      - ./.env:/opt/www/.env
+#    privileged: true
+#    working_dir: /opt/www/
+#    restart: always
+#    container_name: hyperf
+#    depends_on:
+#      - mysql
+#    networks:
+#      - default
+#    command:
+#      - /bin/sh
+#      - -c
+#      - |
+#        composer install
+#        php bin/hyperf.php tryCreateDatabaseAndSeeder:true
+#        php bin/hyperf.php start
 
   broker:
-    image: emqx/emqx
+    image: emqx/emqx:v3.2.8
     ports:
       - 1883:1883
       - 8081:8081
@@ -36,7 +36,7 @@ services:
       - 18083:18083
     container_name: broker
     volumes:
-      - "./broker/emqx_web_hook.conf:/opt/emqx/etc/plugins/emqx_web_hook.conf"
+      - ./broker/emqx_web_hook.conf:/opt/emqx/etc/plugins/emqx_web_hook.conf
 
   redis:
     image: redis:${REDIS_VERSION}

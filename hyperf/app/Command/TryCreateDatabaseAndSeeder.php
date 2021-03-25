@@ -37,8 +37,9 @@ class TryCreateDatabaseAndSeeder extends HyperfCommand
         $db_user = env('HYPERF_DB_USERNAME');
         $db_password = env('HYPERF_DB_PASSWORD');
         $db = env('HYPERF_DB_DATABASE');
+        $db_port = env('HYPERF_DB_PORT');
         try {
-            $dbh = new \PDO("mysql:host=$db_host", $db_user, $db_password);
+            $dbh = new \PDO("mysql:host=$db_host;port=$db_port", $db_user, $db_password);
         } catch (PDOException $e) {
             $this->line($e->getMessage(), 'error');
             die();

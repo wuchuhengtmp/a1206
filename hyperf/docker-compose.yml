@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  hyperf:
+    image: hyperf/hyperf:7.4-alpine-v3.11-swoole
+    ports:
+      - "9602:9602"
+      - "9604:9604"
+    volumes:
+      - ./:/opt/www/
+      - ../.env:/opt/www/.env
+    privileged: true
+    working_dir: /opt/www/
+    restart: always
+    container_name: hyperf
+    command:
+      - /bin/sh
+      - -c
+      - |
+        php bin/hyperf.php tryCreateDatabaseAndSeeder:true
+        php watch.php
