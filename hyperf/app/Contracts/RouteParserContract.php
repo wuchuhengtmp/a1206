@@ -65,4 +65,17 @@ interface RouteParserContract
      * @return ReportFormat
      */
     static public function run(int $fd, $currentRoute, array $routes): ReportFormat;
+
+    /**
+     * @param array $routes
+     * @return static
+     */
+    static public function group(array ...$routes): self;
+
+    /**
+     * 验证组
+     * @param array $validations
+     * @return array
+     */
+    public function validations(array $validations): array;
 }

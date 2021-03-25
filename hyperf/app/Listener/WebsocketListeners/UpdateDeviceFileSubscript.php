@@ -110,7 +110,7 @@ class UpdateDeviceFileSubscript implements EventSubscriberInterface
                 'deviceid' => '',
                 'msgid' => $device['device_id'] . time(),
                 'command' => 'updata_file',
-                'updata_file' => [
+                'content' => [
                     'op_mode' => 1,
                     'http_root' => $file['url'],
                     'file_check_sum' => $file->size,

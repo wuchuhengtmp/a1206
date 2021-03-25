@@ -25,12 +25,14 @@ class WsMessage
     {
         $res = new ReportFormat();
         $server = ApplicationContext::getContainer()->get(Server::class);
+        $msgid = self::getMsgByEvent($event)->res['msgid'];
         $server->push($event->fd, json_encode(
             [
                 'url' => $event->url,
                 'method' => strtoupper($event->method),
                 'isSuccess' => true,
-                'data' => $data
+                'data' => $data,
+                'msgid' => $msgid
             ]
         ));
         $res->isError = false;

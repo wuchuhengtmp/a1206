@@ -12,9 +12,12 @@ use App\Contracts\RouteParserContract;
 use App\Contracts\ValidationContract;
 use App\Dispatcher;
 use App\Exception\WsExceptions\FrontEndException;
+use function Qiniu\setWithoutEmpty;
 
 class WsRouteParser implements RouteParserContract
 {
+    private $_routes = [];
+
     /**
      * @param string $method
      * @param string $url
@@ -190,4 +193,29 @@ class WsRouteParser implements RouteParserContract
         return $report;
     }
 
+    /**
+     * 路由组
+     * @param array ...$routes
+     * @return RouteParserContract
+     */
+    static public function group(array ...$routes): RouteParserContract
+    {
+        $instance = new self();
+        $instance->_routes = $routes;
+        return $instance;
+    }
+
+    /**
+     *  验证组
+     * @param array $validations
+     * @return array
+     */
+    public function validations(array $validations): array
+    {
+        $routes = &$this->_routes;
+        foreach ($routes as &$route) {
+            $route['validates'] = array_merge($validations, $route['validates']);
+        }
+        return $this->_routes;
+    }
 }

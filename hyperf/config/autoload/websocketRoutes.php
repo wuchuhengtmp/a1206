@@ -35,8 +35,9 @@ use \App\Validations\WsValidations\{
     DeviceFileMustBeExistsValidation,
     PlayFilesValidation
 };
-return [
-    // 登录
+return
+Router::group(
+// 登录
     Router::post('/users/authorizations', LoginEvent::class, [LoginValidation::class] ),
     // 注册
     Router::post('/users', RegisterEvent::class, [RegisterValidation::class]),
@@ -61,7 +62,8 @@ return [
 //    // 更新设备文件
     Router::patch('/me/devices/:id/files', UpdateDeviceFileEvent::class, [
         AuthValidation::class,
-        MsgIdMustBeExistsValidation::class,
+// todo 这个验证要添加
+//        MsgIdMustBeExistsValidation::class,
         UserDeviceMustBeExistsValidation::class,
     ]),
     // 设备播放
@@ -96,5 +98,7 @@ return [
         AuthValidation::class,
         MsgIdMustBeExistsValidation::class,
         UserDeviceMustBeExistsValidation::class,
-    ]),
-];
+    ])
+)->validations([
+    MsgIdMustBeExistsValidation::class
+]);
