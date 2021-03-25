@@ -37,7 +37,6 @@ class IndexController extends AbstractController
             $payload = $content['payload'];
             $payload = substr($payload, 8);
             $payload = json_decode($payload, true);
-
             switch ($payload['command']) {
                 case 'report_data':
                     $this->eventDispatcher->dispatch(new ReportDataEvent($content));
@@ -52,7 +51,6 @@ class IndexController extends AbstractController
                     break;
                     // 控制指令回复
                 case 'play_crtl_ack':
-                    var_dump("hell\n");
                     $this->eventDispatcher->dispatch(new PlayCrtlAckEvent($content));
                     break;
             }

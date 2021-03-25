@@ -15,7 +15,7 @@ use Psr\Log\LogLevel;
 return [
     'app_name' => env('HYPERF_APP_NAME', 'skeleton'),
     'app_env' => env('HYPERF_APP_ENV', 'dev'),
-    'scan_cacheable' => env('SCAN_CACHEABLE', true),
+    'scan_cacheable' => env('SCAN_CACHEABLE', false),
     StdoutLoggerInterface::class => [
         'log_level' => [
             LogLevel::ALERT,
