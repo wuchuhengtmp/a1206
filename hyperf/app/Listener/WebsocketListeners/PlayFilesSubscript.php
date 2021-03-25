@@ -34,6 +34,7 @@ class PlayFilesSubscript implements EventSubscriberInterface
     {
         $status = $event->routeParams['status'];
         $content = ['play_file' => (int) $status];
-        (new SendControllerCommadToDevice())->send($event, $content);
+        $msgid = (int) WsMessage::getMsgByEvent($event)->res['msgid'];
+        (new SendControllerCommadToDevice())->send($event, $content, $msgid);
     }
 }
