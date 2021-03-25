@@ -33,7 +33,8 @@ use \App\Validations\WsValidations\{
     UserDeviceMustBeExistsValidation,
     UploadFileValidation,
     DeviceFileMustBeExistsValidation,
-    PlayFilesValidation
+    PlayFilesValidation,
+    DeviceMustBeOnlineValidation
 };
 return
 Router::group(
@@ -59,46 +60,50 @@ Router::group(
 //        UserDeviceMustBeExistsValidation::class,
 //        DeviceFileMustBeExistsValidation::class
 //    ]),
-//    // 更新设备文件
-    Router::patch('/me/devices/:id/files', UpdateDeviceFileEvent::class, [
-        AuthValidation::class,
-// todo 这个验证要添加
-//        MsgIdMustBeExistsValidation::class,
-        UserDeviceMustBeExistsValidation::class,
-    ]),
-    // 设备播放
-    Router::put('/me/devices/:id/play', DevicePlayDevent::class, [
-        AuthValidation::class,
-        \App\Validations\WsValidations\DevicePlayValidation::class,
-        MsgIdMustBeExistsValidation::class,
-        UserDeviceMustBeExistsValidation::class,
-    ]),
-    // 设备设备声音
-    Router::put('/me/devices/:id/sounds', SetDeviceSoundEvent::class, [
-        AuthValidation::class,
-        \App\Validations\WsValidations\LimitSoundValidation::class,
-        UserDeviceMustBeExistsValidation::class,
-        MsgIdMustBeExistsValidation::class,
-    ]),
-    // 上/下一曲
-    Router::put('/me/devices/:id/playFiles/:status', PlayFilesEvent::class, [
-        AuthValidation::class,
-        PlayFilesValidation::class,
-        MsgIdMustBeExistsValidation::class,
-        UserDeviceMustBeExistsValidation::class,
-    ]),
-    // 播放模式
-    Router::put('/me/devices/:id/playMode', PlayModeEvent::class, [
-        AuthValidation::class,
-        MsgIdMustBeExistsValidation::class,
-        UserDeviceMustBeExistsValidation::class,
-    ]),
-    // 添加设备定时
-    Router::post('/me/devices/:id/configTimes', AddConfigTimeEvent::class, [
-        AuthValidation::class,
-        MsgIdMustBeExistsValidation::class,
-        UserDeviceMustBeExistsValidation::class,
-    ])
+
+    // 设备在线才可操作集合
+    ...Router::group(
+    // 更新设备文件
+        Router::patch('/me/devices/:id/files', UpdateDeviceFileEvent::class, [
+            AuthValidation::class,
+    // todo 这个验证要添加
+    //        MsgIdMustBeExistsValidation::class,
+            UserDeviceMustBeExistsValidation::class,
+        ]),
+        // 设备播放
+        Router::put('/me/devices/:id/play', DevicePlayDevent::class, [
+            AuthValidation::class,
+            \App\Validations\WsValidations\DevicePlayValidation::class,
+            MsgIdMustBeExistsValidation::class,
+            UserDeviceMustBeExistsValidation::class,
+        ]),
+        // 设备设备声音
+        Router::put('/me/devices/:id/sounds', SetDeviceSoundEvent::class, [
+            AuthValidation::class,
+            \App\Validations\WsValidations\LimitSoundValidation::class,
+            UserDeviceMustBeExistsValidation::class,
+            MsgIdMustBeExistsValidation::class,
+        ]),
+        // 上/下一曲
+        Router::put('/me/devices/:id/playFiles/:status', PlayFilesEvent::class, [
+            AuthValidation::class,
+            PlayFilesValidation::class,
+            MsgIdMustBeExistsValidation::class,
+            UserDeviceMustBeExistsValidation::class,
+        ]),
+        // 播放模式
+        Router::put('/me/devices/:id/playMode', PlayModeEvent::class, [
+            AuthValidation::class,
+            MsgIdMustBeExistsValidation::class,
+            UserDeviceMustBeExistsValidation::class,
+        ]),
+        // 添加设备定时
+        Router::post('/me/devices/:id/configTimes', AddConfigTimeEvent::class, [
+            AuthValidation::class,
+            MsgIdMustBeExistsValidation::class,
+            UserDeviceMustBeExistsValidation::class,
+        ])
+    )->validations([DeviceMustBeOnlineValidation::class]),
 )->validations([
     MsgIdMustBeExistsValidation::class
 ]);
