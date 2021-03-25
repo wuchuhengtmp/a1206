@@ -6,11 +6,15 @@ namespace App\Listener\MqttListener;
 
 use App\CacheModel\RedisCasheModel;
 use App\Events\MqttEvents\DisconnectEvent;
+use App\Events\WebsocketEvents\BaseEvent;
+use App\Model\DevicesModel;
 use App\Model\UsersModel;
+use Cassandra\DefaultSession;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Utils\ApplicationContext;
 use Psr\Container\ContainerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
+use Swoole\Server;
 use Utils\WsMessage;
 
 /**
@@ -38,8 +42,37 @@ class DisconnectListener implements ListenerInterface
     public function process(object $event)
     {
         $data = $event->data;
+        $deviceId = $data['client_id'];
         $redis = ApplicationContext::getContainer()->get(RedisCasheModel::class);
-        $hasUser = UsersModel::query()->where('username', $data['username'])->first();
-        var_dump($hasUser, $data);
+        $isUser = UsersModel::query()->where('username', $data['username'])->get()->isNotEmpty();
+        $isDevice = DevicesModel::query()->where('device_id', $deviceId)->get()->isNotEmpty();
+        if ($isUser && $isDevice) {
+            // 更新设备状态
+            $device = DevicesModel::query()->where('device_id', $deviceId)->first();
+            $device->status = 'offline';
+            $device->save();
+            $user = UsersModel::query()->where('username', $data['username'])->first();
+            // 设备列表推送给在线的用户
+            $devicves = DevicesModel::query()->where('user_id', $user->id)->get();
+            $pushData = [];
+            foreach ($devicves as $devicve) {
+                $tmp = [];
+                $tmp['id'] = $devicve->id;
+                $tmp['category_id'] = $devicve->category_id;
+                $tmp['status'] = $devicve->status;
+                $tmp['alias'] = $devicve->alias;
+                $tmp['last_ack_at'] = $devicve->last_ack_at;
+                $tmp['category_name'] = $devicve->category->name;
+                $pushData[] = $tmp;
+            }
+            $fds = $redis->getFdByUid($user->id);
+            $server = ApplicationContext::getContainer()->get(Server::class);
+            foreach ($fds as $fd) {
+                $event = new BaseEvent($fd, 'get', '/me/devcies');
+                if ($server->isEstablished($fd)) {
+                    WsMessage::resSuccess($event, $pushData, '00000000000');
+                }
+            }
+        }
     }
 }

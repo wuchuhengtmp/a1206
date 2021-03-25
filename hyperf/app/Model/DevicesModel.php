@@ -94,4 +94,9 @@ class DevicesModel extends Model
     {
         return json_decode($value);
     }
+
+    public function category()
+    {
+        return $this->hasOne(CategoriesModel::class, 'id', 'category_id');
+    }
 }
