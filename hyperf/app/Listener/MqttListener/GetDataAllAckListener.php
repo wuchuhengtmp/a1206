@@ -59,15 +59,17 @@ class GetDataAllAckListener implements ListenerInterface
         $msgid = $payload['msgid'];
         $devcie = DevicesModel::query()->where('device_id', $devcieId)->first();
         $redis = ApplicationContext::getContainer()->get(RedisCasheModel::class);
-        $fd = $redis->getFdByUid($user->id);
         $server = ApplicationContext::getContainer()->get(Server::class);
-         if ($server->isEstablished($fd)) {
-             $redisModel = ApplicationContext::getContainer()->get(RedisCasheModel::class);
-             $msg = $redisModel->getControllerMessage($devcieId, (int) $msgid);
-             $msg = json_decode(substr($msg, 8), true);
-             $url = sprintf('/me/devices/%d', $devcie['id']);
-             $event = new BaseEvent($fd, 'put', $url);
-             WsMessage::resSuccess($event, $payload['content'], $msg['msgid']);
-         }
+        $redisModel = ApplicationContext::getContainer()->get(RedisCasheModel::class);
+        $msg = $redisModel->getControllerMessage($devcieId, (int) $msgid);
+        $msg = json_decode(substr($msg, 8), true);
+        $fds = $redis->getFdByUid($user->id);
+        foreach ($fds as $fd) {
+            if ($server->isEstablished($fd)) {
+                $url = sprintf('/me/devices/%d', $devcie['id']);
+                $event = new BaseEvent($fd, 'put', $url);
+                WsMessage::resSuccess($event, $payload['content'], $msg['msgid']);
+            }
+        }
     }
 }

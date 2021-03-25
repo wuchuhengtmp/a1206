@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Events\MqttEvents\ClientConnectedEvent;
+use App\Events\MqttEvents\DisconnectEvent;
 use App\Events\MqttEvents\GetDataAllAckEvent;
 use App\Events\MqttEvents\PlayCrtlAckEvent;
 use App\Events\MqttEvents\RegisterEvent;
@@ -59,6 +60,9 @@ class IndexController extends AbstractController
             // 设备连接
             case 'client_connected':
                 $this->eventDispatcher->dispatch(new ClientConnectedEvent($content));
+                break;
+            case 'client_disconnected':
+                $this->eventDispatcher->dispatch(new DisconnectEvent($content));
                 break;
         }
 

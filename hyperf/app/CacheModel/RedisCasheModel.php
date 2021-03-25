@@ -94,14 +94,24 @@ class RedisCasheModel extends BaseAbstract
 
     public function uidBindFd(int $uid, int $fd): void
     {
+        $uid = (string) $uid;
         $redis = $this->_getClient();
-        $redis->hset($this->prefix . ":uidBindFd", (string) $uid, (string) $fd);
+        $fkey = $this->prefix . ":uidBindFd";
+        $data = [];
+        if ($redis->hExists($fkey, $uid)) {
+            $data = json_decode($redis->hGet( $fkey, $uid), true);
+        }
+        $data[] = $fd;
+        $data = array_unique($data);
+        $redis->hset($fkey, (string) $uid, json_encode($data));
     }
 
-    public function getFdByUid(int $uid): int
+    public function getFdByUid(int $uid): array
     {
         $redis = $this->_getClient();
-        return (int) $redis->hget($this->prefix . ":uidBindFd", (string) $uid);
+        $fkey = $this->prefix . ':uidBindFd';
+        $fds = $redis->hget($fkey, (string) $uid);
+        return json_decode($fds);
     }
 
     /**
