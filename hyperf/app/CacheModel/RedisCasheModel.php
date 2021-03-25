@@ -109,7 +109,7 @@ class RedisCasheModel extends BaseAbstract
      * @param string $devcieId
      * @param $msg
      */
-    public function setControMessageQueue(string $devcieId, $msg)
+    public function setControMessage(string $devcieId, int $msgid,  $msg)
     {
         $redis = $this->_getClient();
         $key = $this->prefix . ":devcieMessageQueue";
@@ -117,10 +117,10 @@ class RedisCasheModel extends BaseAbstract
         $data = [];
         if ($redis->hExists($key, $hkey)) {
             $oldData = json_decode($redis->hGet($key, $hkey), true);
-            $oldData[] = $msg;
+            $oldData[$msgid] = $msg;
             $data = $oldData;
         } else {
-            $data[] = $msg;
+            $data[$msgid] = $msg;
         }
         $redis->hSet($key, $hkey, json_encode($data));
     }
@@ -130,13 +130,14 @@ class RedisCasheModel extends BaseAbstract
      * @param string $devcieId
      * @return mixed
      */
-    public function getControllerMessageQueue(string $devcieId)
+    public function getControllerMessage(string $devcieId, int $msgid)
     {
         $redis = $this->_getClient();
         $key = $this->prefix . ":devcieMessageQueue";
         $hkey = $devcieId;
         $queue = json_decode($redis->hGet($key, $hkey), true);
-        $e = array_shift($queue);
+        $e = $queue[$msgid];
+        unset($queue[$msgid]);
         $redis->hSet($key, $hkey, json_encode($queue));
         return $e;
     }

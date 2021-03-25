@@ -17,15 +17,16 @@ use Utils\MqttClient;
 
 class SendControllerCommadToDevice
 {
-    function send(BaseEvent $event, $content = null)
+    function send(BaseEvent $event, $content = null, int $msgid)
     {
+        $msgid = (string) $msgid;
         $deviceId = (int) $event->routeParams['id'];
         $device = (new DevicesModel())->getOneById($deviceId);
-        $message = (function () use($device, $deviceId, $content) {
+        $message = (function () use($device, $deviceId, $content, $msgid) {
             $c = [
                 'type' => 'JRBJQ_AIR724',
                 'deviceid' => $device['device_id'],
-                'msgid' => $device['device_id'] . time(),
+                'msgid' => $msgid,
                 'command' => 'play_crtl',
                 'content' => $content
             ];
@@ -34,6 +35,6 @@ class SendControllerCommadToDevice
         $topic = Helper::formatTopicByDeviceId($device['device_id']);
         (new MqttClient())->getClient()->publish($topic, $message, 1);
         $redisModel = ApplicationContext::getContainer()->get(RedisCasheModel::class);
-        $redisModel->setControMessageQueue($device['device_id'],  $message);
+        $redisModel->setControMessage($device['device_id'], (int) $msgid, $message);
     }
 }

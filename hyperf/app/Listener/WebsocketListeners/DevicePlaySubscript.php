@@ -13,6 +13,7 @@ use App\Events\WebsocketEvents\BaseEvent;
 use App\Events\WebsocketEvents\DevicePlayDevent;
 use App\Model\DevicesModel;
 use App\Model\FilesModel;
+use App\Servics\SendControllerCommadToDevice;
 use Hyperf\Utils\ApplicationContext;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Utils\Context;
@@ -31,23 +32,7 @@ class DevicePlaySubscript implements EventSubscriberInterface
     public function handle(BaseEvent $event): void
     {
         $play_status = WsMessage::getMsgByEvent($event)->res['data']['play_status'];
-        $deviceId = (int) $event->routeParams['id'];
-        $device = (new DevicesModel())->getOneById($deviceId);
-        $message = (function () use($device, $deviceId, $play_status) {
-            $c = [
-                'type' => 'JRBJQ_AIR724',
-                'deviceid' => $device['device_id'],
-                'msgid' => $device['device_id'] . time(),
-                'command' => 'play_crtl',
-                'content' => [
-                    'play_state' => (int) $play_status
-                ]
-            ];
-            return Helper::fMqttMsg($c);
-        })();
-        $topic = Helper::formatTopicByDeviceId($device['device_id']);
-        (new MqttClient())->getClient()->publish($topic, $message, 1);
-        $redisModel = ApplicationContext::getContainer()->get(RedisCasheModel::class);
-        $redisModel->setControMessageQueue($device['device_id'],  $message);
+        $mgsid = WsMessage::getMsgByEvent($event)->res['data']['msgid'];
+        (new SendControllerCommadToDevice())->send($event,[ 'play_state' => (int) $play_status ], (int) $mgsid);
     }
 }

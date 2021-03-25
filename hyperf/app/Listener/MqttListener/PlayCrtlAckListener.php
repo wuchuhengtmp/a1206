@@ -55,15 +55,17 @@ class PlayCrtlAckListener implements ListenerInterface
         $username = $data['from_username'];
         $user = UsersModel::where('username', $username)->first();
         $devcieId = $payload['deviceid'];
+        $msgid = $payload['msgid'];
         $devcie = DevicesModel::query()->where('device_id', $devcieId)->first();
         $redis = ApplicationContext::getContainer()->get(RedisCasheModel::class);
         $fd = $redis->getFdByUid($user->id);
         $server = ApplicationContext::getContainer()->get(Server::class);
         if ($server->isEstablished($fd)) {
             $redisModel = ApplicationContext::getContainer()->get(RedisCasheModel::class);
-            $msg = $redisModel->getControllerMessageQueue($devcieId);
+            $msg = $redisModel->getControllerMessage($devcieId, (int) $msgid);
             $msg = json_decode(substr($msg, 8), true);
             $data = $msg['content'];
+            $data['msgid'] = $payload['msgid'];
             $url = sprintf('/me/devices/%d', $devcie['id']);
             $event = new BaseEvent($fd, 'put', $url);
             WsMessage::resSuccess($event, $data);
