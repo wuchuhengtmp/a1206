@@ -21,11 +21,11 @@ class WsMessage
      * @param array $data
      * @return ReportFormat
      */
-    static public function resSuccess(BaseEvent $event, array $data = []): ReportFormat
+    static public function resSuccess(BaseEvent $event, array $data = [], $msgid = null): ReportFormat
     {
         $res = new ReportFormat();
         $server = ApplicationContext::getContainer()->get(Server::class);
-        $msgid = self::getMsgByEvent($event)->res['msgid'];
+        $msgid = $msgid ?? self::getMsgByEvent($event)->res['msgid'];
         $server->push($event->fd, json_encode(
             [
                 'url' => $event->url,

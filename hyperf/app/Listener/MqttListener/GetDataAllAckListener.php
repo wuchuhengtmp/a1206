@@ -44,14 +44,7 @@ class GetDataAllAckListener implements ListenerInterface
     public function process(object $event)
     {
         $data = $event->data;
-        $payload =  json_decode(substr($data['payload'], 8), true);
-        $content = $payload['content'];
-        // 消息回复
-        if (count($content) === 1) {
-            $this->_replyUser($data);
-        } else if (count($content) > 1) {
-            // 设备数据查询回复
-        }
+        $this->_replyUser($data);
     }
 
     /**
@@ -72,10 +65,9 @@ class GetDataAllAckListener implements ListenerInterface
              $redisModel = ApplicationContext::getContainer()->get(RedisCasheModel::class);
              $msg = $redisModel->getControllerMessage($devcieId, (int) $msgid);
              $msg = json_decode(substr($msg, 8), true);
-             $data = $msg['content'];
              $url = sprintf('/me/devices/%d', $devcie['id']);
              $event = new BaseEvent($fd, 'put', $url);
-             WsMessage::resSuccess($event, $data);
+             WsMessage::resSuccess($event, $payload['content'], $msg['msgid']);
          }
     }
 }

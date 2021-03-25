@@ -14,6 +14,7 @@ use App\Model\DevicesModel;
 use Hyperf\Utils\ApplicationContext;
 use Utils\Helper;
 use Utils\MqttClient;
+use Utils\WsMessage;
 
 class SendQueryCommandToDevice extends BaseAbstract
 {
@@ -21,11 +22,12 @@ class SendQueryCommandToDevice extends BaseAbstract
     {
         $deviceId = (int) $event->routeParams['id'];
         $device = (new DevicesModel())->getOneById($deviceId);
-        $message = (function () use($device, $deviceId, $content) {
+        $msgid = (int) WsMessage::getMsgByEvent($event)->res['msgid'];
+        $message = (function () use($device, $deviceId, $content, $msgid) {
             $c = [
                 'type' => 'JRBJQ_AIR724',
                 'deviceid' => $device['device_id'],
-                'msgid' => $device['device_id'] . time(),
+                'msgid' => (string) $msgid,
                 'command' => 'get_data_all',
                 'content' => $content
             ];
@@ -34,6 +36,6 @@ class SendQueryCommandToDevice extends BaseAbstract
         $topic = Helper::formatTopicByDeviceId($device['device_id']);
         (new MqttClient())->getClient()->publish($topic, $message, 1);
         $redisModel = ApplicationContext::getContainer()->get(RedisCasheModel::class);
-        $redisModel->setControMessageQueue($device['device_id'],  $message);
+        $redisModel->setControMessage($device['device_id'], $msgid, $message);
     }
 }
