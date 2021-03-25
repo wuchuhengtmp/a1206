@@ -71,7 +71,7 @@ class UpdateDeviceFileSubscript implements EventSubscriberInterface
         // 要删除的文件
         foreach ($unSelectIds as $fileId ) {
             // todo: 这里需要写删除设备的业务代码
-//            $this->delDeviceFile($event, (int) $fileId);
+            $this->_delDeviceFile($event, (int) $fileId);
         }
     }
 
@@ -134,22 +134,20 @@ class UpdateDeviceFileSubscript implements EventSubscriberInterface
      */
     private function _deldeviceFile(BaseEvent $event, int $fileId): void
     {
+        $msgid = (int) WsMessage::getMsgByEvent($event)->res['msgid'];
         $fileModel = new FilesModel();
         $deviceId = (int) $event->routeParams['id'];
         $device = (new DevicesModel())->getOneById($deviceId);
         $file = $fileModel->where('id', $fileId)->first();
-        $content = (function () use($device, $file) {
+        $content = (function () use($device, $file, $msgid) {
             $c = [
                 'type' => 'JRBJQ_AIR724',
                 'deviceid' => '',
-                'msgid' => $device['device_id'] . time(),
+                'msgid' => $msgid,
                 'command' => 'updata_file',
-                'updata_file' => [
-                    'op_mode' => 1,
-                    'http_root' => $file['url'],
-                    'file_check_sum' => $file->size,
-                    'file_lenth' => $file->size,
-                    'del_file' => -1
+                'content' => [
+                    'op_mode' => 2,
+                    'del_file' => 2
                 ]
             ];
 
@@ -158,8 +156,8 @@ class UpdateDeviceFileSubscript implements EventSubscriberInterface
             $c = str_replace('\/', '/', $c);
             return $c;
         })();
-        var_dump($content);
-//        $topic = Helper::formatTopicByDeviceId($device['device_id']);
-//        (new \Utils\MqttClient())->getClient()->publish($topic, $content, 1);
+        var_dump($fileId);
+        $topic = Helper::formatTopicByDeviceId($device['device_id']);
+        (new \Utils\MqttClient())->getClient()->publish($topic, $content, 1);
     }
 }

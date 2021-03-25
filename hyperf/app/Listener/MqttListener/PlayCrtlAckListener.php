@@ -65,7 +65,6 @@ class PlayCrtlAckListener implements ListenerInterface
             $msg = $redisModel->getControllerMessage($devcieId, (int) $msgid);
             $msg = json_decode(substr($msg, 8), true);
             $data = $msg['content'];
-            $data['msgid'] = $payload['msgid'];
             $url = sprintf('/me/devices/%d', $devcie['id']);
             $event = new BaseEvent($fd, 'put', $url);
             WsMessage::resSuccess($event, $data, $msgid);

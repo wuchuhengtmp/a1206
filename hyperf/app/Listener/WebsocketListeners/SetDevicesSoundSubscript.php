@@ -28,7 +28,7 @@ class SetDevicesSoundSubscript implements EventSubscriberInterface
     public function handle(BaseEvent $event): void
     {
         $play_sound = WsMessage::getMsgByEvent($event)->res['data']['play_sound'];
-        $msgid = (int) WsMessage::getMsgByEvent($event)->res['data']['msgid'];
+        $msgid = (int) WsMessage::getMsgByEvent($event)->res['msgid'];
         $content = ['play_sound' => (int) $play_sound];
         (new SendControllerCommadToDevice())->send($event,   $content, $msgid);
     }
