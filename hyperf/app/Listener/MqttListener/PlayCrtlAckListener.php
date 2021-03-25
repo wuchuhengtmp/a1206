@@ -17,6 +17,7 @@ use App\Model\{
     DevicesModel
 };
 use Utils\WsMessage;
+use function PHPUnit\Framework\objectEquals;
 
 /**
  * @Listener
@@ -60,11 +61,21 @@ class PlayCrtlAckListener implements ListenerInterface
         $redis = ApplicationContext::getContainer()->get(RedisCasheModel::class);
         $fd = $redis->getFdByUid($user->id);
         $server = ApplicationContext::getContainer()->get(Server::class);
-        if ($server->isEstablished($fd)) {
             $redisModel = ApplicationContext::getContainer()->get(RedisCasheModel::class);
             $msg = $redisModel->getControllerMessage($devcieId, (int) $msgid);
             $msg = json_decode(substr($msg, 8), true);
             $data = $msg['content'];
+        // 更新设备参数
+        $devices = DevicesModel::query()->where('device_id', $devcieId)->get();
+        foreach ($devices as $device) {
+            foreach ($data as $field => $v) {
+                if (in_array($field, ['play_sound', 'play_state'])) {
+                    $device->$field = $v;
+                }
+            }
+            $device->save();
+        }
+        if ($server->isEstablished($fd)) {
             $url = sprintf('/me/devices/%d', $devcie['id']);
             $event = new BaseEvent($fd, 'put', $url);
             WsMessage::resSuccess($event, $data, $msgid);

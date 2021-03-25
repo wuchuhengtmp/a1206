@@ -156,7 +156,6 @@ class UpdateDeviceFileSubscript implements EventSubscriberInterface
             $c = str_replace('\/', '/', $c);
             return $c;
         })();
-        var_dump($fileId);
         $topic = Helper::formatTopicByDeviceId($device['device_id']);
         (new \Utils\MqttClient())->getClient()->publish($topic, $content, 1);
     }
