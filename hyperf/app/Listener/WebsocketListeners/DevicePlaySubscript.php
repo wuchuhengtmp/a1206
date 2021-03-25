@@ -32,7 +32,7 @@ class DevicePlaySubscript implements EventSubscriberInterface
     public function handle(BaseEvent $event): void
     {
         $play_status = WsMessage::getMsgByEvent($event)->res['data']['play_status'];
-        $mgsid = WsMessage::getMsgByEvent($event)->res['data']['msgid'];
+        $mgsid = WsMessage::getMsgByEvent($event)->res['msgid'];
         (new SendControllerCommadToDevice())->send($event,[ 'play_state' => (int) $play_status ], (int) $mgsid);
     }
 }

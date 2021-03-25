@@ -16,6 +16,7 @@ use App\Model\DeviceFilesModel;
 use App\Model\DevicesModel;
 use App\Model\FilesModel;
 use FastRoute\DataGenerator;
+use parallel\Runtime\Error\IllegalVariable;
 use Simps\Client\MQTTClient;
 use Swoole\Coroutine\Redis;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -114,10 +115,13 @@ class UpdateDeviceFileSubscript implements EventSubscriberInterface
                     'op_mode' => 1,
                     'http_root' => $file['url'],
                     'file_check_sum' => $file->size,
+                    'file_lenth' => $file->size,
                     'del_file' => -1
                 ]
             ];
-            return Helper::fMqttMsg($c);
+            $content = \json_encode($c, JSON_UNESCAPED_SLASHES);
+            $c = sprintf('%04d', strlen($content)) . 'XCWL' . $content;
+            return $c;
         })();
         $topic = Helper::formatTopicByDeviceId($device['device_id']);
         (new \Utils\MqttClient())->getClient()->publish($topic, $message, 1);
@@ -144,12 +148,18 @@ class UpdateDeviceFileSubscript implements EventSubscriberInterface
                     'op_mode' => 1,
                     'http_root' => $file['url'],
                     'file_check_sum' => $file->size,
+                    'file_lenth' => $file->size,
                     'del_file' => -1
                 ]
             ];
-            return Helper::fMqttMsg($c);
+
+            $content = \json_encode($c, JSON_UNESCAPED_SLASHES);
+            $c = sprintf('%04d', strlen($content)) . 'XCWL' . $content;
+            $c = str_replace('\/', '/', $c);
+            return $c;
         })();
-        $topic = Helper::formatTopicByDeviceId($device['device_id']);
-        (new \Utils\MqttClient())->getClient()->publish($topic, $content, 1);
+        var_dump($content);
+//        $topic = Helper::formatTopicByDeviceId($device['device_id']);
+//        (new \Utils\MqttClient())->getClient()->publish($topic, $content, 1);
     }
 }

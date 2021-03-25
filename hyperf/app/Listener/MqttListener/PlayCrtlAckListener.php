@@ -68,7 +68,7 @@ class PlayCrtlAckListener implements ListenerInterface
             $data['msgid'] = $payload['msgid'];
             $url = sprintf('/me/devices/%d', $devcie['id']);
             $event = new BaseEvent($fd, 'put', $url);
-            WsMessage::resSuccess($event, $data);
+            WsMessage::resSuccess($event, $data, $msgid);
         }
     }
 }
