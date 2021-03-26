@@ -61,12 +61,13 @@ class GetDataAllAckListener implements ListenerInterface
         $redis = ApplicationContext::getContainer()->get(RedisCasheModel::class);
         $server = ApplicationContext::getContainer()->get(Server::class);
         $redisModel = ApplicationContext::getContainer()->get(RedisCasheModel::class);
-        $msg = $redisModel->getControllerMessage($devcieId, (int) $msgid);
+        $data = $redisModel->getControllerMessage($devcieId, (int) $msgid);
+        $msg = $data['message'];
         $msg = json_decode(substr($msg, 8), true);
         $fds = $redis->getFdByUid($user->id);
+        $url = $data['url'];
         foreach ($fds as $fd) {
             if ($server->isEstablished($fd)) {
-                $url = sprintf('/me/devices/%d', $devcie['id']);
                 $event = new BaseEvent($fd, 'put', $url);
                 WsMessage::resSuccess($event, $payload['content'], $msg['msgid']);
             }

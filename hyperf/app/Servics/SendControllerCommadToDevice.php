@@ -14,6 +14,7 @@ use App\Model\DevicesModel;
 use Hyperf\Utils\ApplicationContext;
 use Utils\Helper;
 use Utils\MqttClient;
+use Utils\WsMessage;
 
 class SendControllerCommadToDevice
 {
@@ -32,9 +33,11 @@ class SendControllerCommadToDevice
             ];
             return Helper::fMqttMsg($c);
         })();
+        $data = WsMessage::getMsgByEvent($event)->res;
+        $data['message'] = $message;
         $topic = Helper::formatTopicByDeviceId($device['device_id']);
         (new MqttClient())->getClient()->publish($topic, $message, 1);
         $redisModel = ApplicationContext::getContainer()->get(RedisCasheModel::class);
-        $redisModel->setControMessage($device['device_id'], (int) $msgid, $message);
+        $redisModel->setControMessage($device['device_id'], (int) $msgid,json_encode($data));
     }
 }

@@ -60,9 +60,10 @@ class PlayCrtlAckListener implements ListenerInterface
         $devcie = DevicesModel::query()->where('device_id', $devcieId)->first();
         $redis = ApplicationContext::getContainer()->get(RedisCasheModel::class);
         $server = ApplicationContext::getContainer()->get(Server::class);
-            $redisModel = ApplicationContext::getContainer()->get(RedisCasheModel::class);
-            $msg = $redisModel->getControllerMessage($devcieId, (int) $msgid);
-            $msg = json_decode(substr($msg, 8), true);
+        $redisModel = ApplicationContext::getContainer()->get(RedisCasheModel::class);
+        $fullMessage = $redisModel->getControllerMessage($devcieId, (int) $msgid);
+        $msg = $fullMessage['message'];
+        $msg = json_decode(substr($msg, 8), true);
             $data = $msg['content'];
         // 更新设备参数
         $devices = DevicesModel::query()->where('device_id', $devcieId)->get();
@@ -75,9 +76,9 @@ class PlayCrtlAckListener implements ListenerInterface
             $device->save();
         }
         $fds = $redis->getFdByUid($user->id);
+        $url = $fullMessage['url'];
         foreach ($fds as $fd) {
             if ($server->isEstablished($fd)) {
-                $url = sprintf('/me/devices/%d', $devcie['id']);
                 $event = new BaseEvent($fd, 'put', $url);
                 WsMessage::resSuccess($event, $data, $msgid);
             }

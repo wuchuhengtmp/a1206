@@ -149,6 +149,6 @@ class RedisCasheModel extends BaseAbstract
         $e = $queue[$msgid];
         unset($queue[$msgid]);
         $redis->hSet($key, $hkey, json_encode($queue));
-        return $e;
+        return  json_decode($e, true);
     }
 }

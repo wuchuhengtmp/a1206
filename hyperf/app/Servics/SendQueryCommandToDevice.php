@@ -36,6 +36,8 @@ class SendQueryCommandToDevice extends BaseAbstract
         $topic = Helper::formatTopicByDeviceId($device['device_id']);
         (new MqttClient())->getClient()->publish($topic, $message, 1);
         $redisModel = ApplicationContext::getContainer()->get(RedisCasheModel::class);
-        $redisModel->setControMessage($device['device_id'], $msgid, $message);
+        $data = WsMessage::getMsgByEvent($event)->res;
+        $data['message'] = $message;
+        $redisModel->setControMessage($device['device_id'], $msgid, json_encode($data));
     }
 }
