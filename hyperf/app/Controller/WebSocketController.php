@@ -9,7 +9,9 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Dispatcher;
 use App\Events\WebsocketEvents\BaseEvent;
+use App\Events\WebsocketEvents\DisconnectEvent;
 use App\Exception\WsExceptions\BaseException;
 use App\Exception\WsExceptions\ConnectBrokenException;
 use Hyperf\Contract\OnCloseInterface;
@@ -48,7 +50,7 @@ class WebSocketController implements OnMessageInterface, OnOpenInterface, OnClos
 
     public function onClose($server, int $fd, int $reactorId): void
     {
-        var_dump('closed');
+        Dispatcher::getInstance()->dispatch(new DisconnectEvent($fd, '', ''));
     }
 
     public function onOpen($server, Request $request): void

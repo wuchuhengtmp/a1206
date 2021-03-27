@@ -36,5 +36,6 @@ return [
     \App\Listener\WebsocketListeners\SetDevicesSoundSubscript::class,
     \App\Listener\WebsocketListeners\PlayFilesSubscript::class,
     \App\Listener\WebsocketListeners\PlayModeSubscript::class,
-    \App\Listener\WebsocketListeners\AddConfigTimeSubscript::class
+    \App\Listener\WebsocketListeners\AddConfigTimeSubscript::class,
+    \App\Listener\WebsocketListeners\DisconnectSubscript::class
 ];

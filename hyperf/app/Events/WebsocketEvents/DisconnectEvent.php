@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace App\Events\WebsocketEvents;
 
-class DiscloseEvent extends BaseEvent
+class DisconnectEvent extends BaseEvent
 {
 
 }

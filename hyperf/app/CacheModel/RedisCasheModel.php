@@ -104,6 +104,50 @@ class RedisCasheModel extends BaseAbstract
         $data[] = $fd;
         $data = array_unique($data);
         $redis->hset($fkey, (string) $uid, json_encode($data));
+        $this->fdBindUid($fd, (int) $uid);
+    }
+
+    /**
+     * @param int $fd
+     * @param int $uid
+     */
+    public function fdBindUid(int $fd, int $uid): void
+    {
+        $uid = (string) $uid;
+        $redis = $this->_getClient();
+        $fkey = $this->prefix . ":fdBindUid";
+        $redis->hset($fkey, (string) $fd, $uid);
+    }
+
+    /**
+     * 获取用户uid
+     * @param int $fd
+     * @return int
+     */
+    public function getUidByFd(int $fd): int
+    {
+        $fd = (string) $fd;
+        $redis = $this->_getClient();
+        $fkey = $this->prefix . ":fdBindUid";
+        $foo = $redis->hGet($fkey, $fd);
+        return (int) $foo;
+    }
+
+    /**
+     *  用户uid解绑fd
+     * @param int $uid
+     * @param int $fd
+     */
+    public function uidUnbindFd(int $uid, int $fd): void
+    {
+        $fds = $this->getFdByUid($uid);
+        $key = array_search($fd, $fds);
+        $fkey = $this->prefix . ':uidBindFd';
+        unset($fds[$key]);
+        $redis = $this->_getClient();
+        $redis->hSet($fkey, (string) $uid, json_encode($fds));
+        $fdKey = $this->prefix . ":fdBindUid";
+        $redis->hDel($fdKey, $fd);
     }
 
     public function getFdByUid(int $uid): array
@@ -111,7 +155,7 @@ class RedisCasheModel extends BaseAbstract
         $redis = $this->_getClient();
         $fkey = $this->prefix . ':uidBindFd';
         $fds = $redis->hget($fkey, (string) $uid);
-        return json_decode($fds);
+        return json_decode($fds, true);
     }
 
     /**
