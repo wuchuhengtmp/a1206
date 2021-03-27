@@ -29,4 +29,8 @@ hyperf/.DS_Store
 hyperf/.phpunit*
 hyperf/*.cache
 
+#
+# http api
+#
+http-api/vender
 
