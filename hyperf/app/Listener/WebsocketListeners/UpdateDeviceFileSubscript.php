@@ -63,10 +63,10 @@ class UpdateDeviceFileSubscript implements EventSubscriberInterface
         // 添加
         foreach ($selectIds as $fileId ) {
             $this->sendFileToMqttByFileId($event, (int) $fileId);
-            $fileModel = (new DeviceFilesModel());
-            $fileModel->file_id = $fileId;
-            $fileModel->device_id = $deviceId;
-            $fileModel->save();
+//            $fileModel = (new DeviceFilesModel());
+//            $fileModel->file_id = $fileId;
+//            $fileModel->device_id = $deviceId;
+//            $fileModel->save();
         }
         // 要删除的文件
         foreach ($unSelectIds as $fileId ) {

@@ -86,7 +86,6 @@ class BaseValidation implements ValidationContract
         }
         $data = WsMessage::getMsgByEvent($event)->res['data'];
         if (!array_key_exists($field, $data) || strlen($data[$field]) === 0) {
-            var_dump($field, $data);
             $message = $message === '' ? $field . '不能为空' : $message;
             $e = new UserException($message);
             $e->url = $event->url;
