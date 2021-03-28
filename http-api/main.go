@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
+	"strings"
 )
 
 func main() {
@@ -17,7 +18,16 @@ func main() {
 
 	router.Use(forceHTMLMiddleware)
 
-	http.ListenAndServe(":3000", router)
+	http.ListenAndServe(":3000", removeTrailingSlash(router))
+}
+
+func removeTrailingSlash(next http.Handler) http.Handler  {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/" {
+			r.URL.Path = strings.TrimSuffix(r.URL.Path, "/")
+		}
+		next.ServeHTTP(w, r)
+	})
 }
 
 // 首页
