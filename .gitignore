@@ -33,4 +33,6 @@ hyperf/*.cache
 # http api
 #
 http-api/vender
+http-api/tmp
+
 
