@@ -32,7 +32,7 @@ hyperf/*.cache
 #
 # http api
 #
-http-api/vender
+http-api/vendor
 http-api/tmp
 
 
