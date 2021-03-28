@@ -7,17 +7,17 @@ import (
 	"strings"
 )
 
+var router = mux.NewRouter().StrictSlash(true)
+
 func main() {
-	router := mux.NewRouter()
 	router.HandleFunc("/", homeHandle).Methods("GET").Name("home")
 	router.HandleFunc("/about", aboutHandler).Methods("GET").Name("about")
 	router.HandleFunc("/articles/{id:\\d+}", articlesShowHandler).Methods("GET").Name("article.show")
 	router.HandleFunc("/articles", articlesIndexHandler).Methods("GET").Name("articles.index")
-	router.HandleFunc("/articles", articleStoreHandler).Methods("POST").Name("articles.index")
+	router.HandleFunc("/articles/create", articlesCreateHandler).Methods("GET").Name("articles.create")
+	router.HandleFunc("/articles/store", articlesCreateHandler).Methods("POST").Name("articles.store")
 	router.NotFoundHandler = http.HandlerFunc(notFoundHandler)
-
 	router.Use(forceHTMLMiddleware)
-
 	http.ListenAndServe(":3000", removeTrailingSlash(router))
 }
 
@@ -68,4 +68,25 @@ func forceHTMLMiddleware(h http.Handler) http.Handler {
 		// 2. 继续处理请求
 		h.ServeHTTP(w, r)
 	})
+}
+
+// 添加博文
+func articlesCreateHandler(w http.ResponseWriter, r *http.Request)  {
+	html := `
+		<!DOCTYPE html>
+		<html lang="en">
+		<head>
+			<title>创建文章 —— 我的技术博客</title>
+		</head>
+		<body>
+			<form action="%s" method="post">
+				<p><input type="text" name="title"></p>
+				<p><textarea name="body" cols="30" rows="10"></textarea></p>
+				<p><button type="submit">提交</button></p>
+			</form>
+		</body>
+		</html>
+			`
+	storeURL, _ := router.Get("articles.store").URL()
+	fmt.Fprintf(w, html, storeURL)
 }
