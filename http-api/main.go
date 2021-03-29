@@ -15,7 +15,7 @@ func main() {
 	router.HandleFunc("/articles/{id:\\d+}", articlesShowHandler).Methods("GET").Name("article.show")
 	router.HandleFunc("/articles", articlesIndexHandler).Methods("GET").Name("articles.index")
 	router.HandleFunc("/articles/create", articlesCreateHandler).Methods("GET").Name("articles.create")
-	router.HandleFunc("/articles/store", articlesCreateHandler).Methods("POST").Name("articles.store")
+	router.HandleFunc("/articles/store", articleStoreHandler).Methods("POST").Name("articles.store")
 	router.NotFoundHandler = http.HandlerFunc(notFoundHandler)
 	router.Use(forceHTMLMiddleware)
 	http.ListenAndServe(":3000", removeTrailingSlash(router))
@@ -52,7 +52,15 @@ func articlesIndexHandler(w http.ResponseWriter, r *http.Request)  {
 
 // 添加文章
 func articleStoreHandler(w http.ResponseWriter, r *http.Request)  {
-	fmt.Fprintf(w, "stored the article" + r.RequestURI)
+	err := r.ParseForm()
+	if err != nil {
+		fmt.Fprintf(w, "请提供正确的数据")
+		return
+	}
+	fmt.Fprintf(w, "r.Form 中 title 的值为: %v <br>", r.FormValue("title"))
+	fmt.Fprintf(w, "r.PostForm 中 title 的值为: %v <br>", r.PostFormValue("title"))
+	fmt.Fprintf(w, "r.Form 中 test 的值为: %v <br>", r.FormValue("test"))
+	fmt.Fprintf(w, "r.PostForm 中 test 的值为: %v <br>", r.PostFormValue("test"))
 }
 
 // 404 错误
