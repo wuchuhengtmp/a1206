@@ -3,8 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"html/template"
 	"net/http"
+	"net/url"
 	"strings"
+	"unicode/utf8"
 )
 
 var router = mux.NewRouter().StrictSlash(true)
@@ -50,17 +53,48 @@ func articlesIndexHandler(w http.ResponseWriter, r *http.Request)  {
 	fmt.Fprintf(w, "articles")
 }
 
+type ArticlesFormData struct {
+	Title, Body string
+	URL 	*url.URL
+	Errors 	map[string]string
+}
+
 // 添加文章
 func articleStoreHandler(w http.ResponseWriter, r *http.Request)  {
-	err := r.ParseForm()
-	if err != nil {
-		fmt.Fprintf(w, "请提供正确的数据")
-		return
+	title := r.PostFormValue("title")
+	body := r.PostFormValue("body")
+	errors := make(map[string]string)
+
+	// 验证标题
+	if title == "" {
+		errors["title"] = "标题不能为空"
+	} else if len(title) < 3 || len(title) > 40 {
+		errors["title"] = "标题需介于3-40"
 	}
-	fmt.Fprintf(w, "r.Form 中 title 的值为: %v <br>", r.FormValue("title"))
-	fmt.Fprintf(w, "r.PostForm 中 title 的值为: %v <br>", r.PostFormValue("title"))
-	fmt.Fprintf(w, "r.Form 中 test 的值为: %v <br>", r.FormValue("test"))
-	fmt.Fprintf(w, "r.PostForm 中 test 的值为: %v <br>", r.PostFormValue("test"))
+	// 验证内容
+	if body == "" {
+		errors["body"] = "内容不能为空"
+	} else if utf8.RuneCountInString(body) < 10 {
+		errors["body"] = "内容长度需大于或等于10个字节"
+	}
+
+	if len(errors) != 0 {
+		storeURL, _ := router.Get("articles.store").URL()
+		data := ArticlesFormData{
+			Title: title,
+			Body: body,
+			URL: storeURL,
+			Errors: errors,
+		}
+		tmpl, err := template.ParseFiles("resources/views/articles/create.gohtml")
+		if err != nil {
+			panic(err)
+		}
+		tmpl.Execute(w, data)
+	} else {
+		fmt.Fprintf(w, "title: %v<br />", title)
+		fmt.Fprintf(w, "body: %v <br />", body)
+	}
 }
 
 // 404 错误
