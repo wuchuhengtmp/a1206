@@ -98,8 +98,31 @@ func aboutHandler(w http.ResponseWriter, r *http.Request)  {
 }
 
 // 文章详情
+type Article struct {
+	Title, Body string
+	ID 	int64
+}
 func articlesShowHandler(w http.ResponseWriter, r *http.Request)  {
-	fmt.Fprintf(w, "article detail" + r.RequestURI)
+	vars := mux.Vars(r)
+	id := vars["id"]
+	article := Article{}
+	query := "SELECT * FROM articles WHERE id = ?"
+	err := db.QueryRow(query, id).Scan(&article.ID, &article.Title, &article.Body)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			w.WriteHeader(http.StatusNotFound)
+			fmt.Fprintf(w, "404 文章未找到")
+		} else {
+			checkError(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "500 服务器内部错误")
+		}
+	} else {
+		tmpl, err := template.ParseFiles("resources/views/articles/show.gohtml")
+		checkError(err)
+		tmpl.Execute(w, article)
+	}
 }
 
 // 文章列表
