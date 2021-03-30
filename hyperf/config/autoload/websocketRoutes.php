@@ -34,7 +34,8 @@ use \App\Validations\WsValidations\{
     UploadFileValidation,
     DeviceFileMustBeExistsValidation,
     PlayFilesValidation,
-    DeviceMustBeOnlineValidation
+    DeviceMustBeOnlineValidation,
+    PlayModeValidation
 };
 return
 Router::group(
@@ -96,14 +97,15 @@ Router::group(
             AuthValidation::class,
             MsgIdMustBeExistsValidation::class,
             UserDeviceMustBeExistsValidation::class,
+            PlayModeValidation::class
         ]),
         // 添加设备定时
         Router::post('/me/devices/:id/configTimes', AddConfigTimeEvent::class, [
             AuthValidation::class,
             MsgIdMustBeExistsValidation::class,
-            UserDeviceMustBeExistsValidation::class,
+            UserDeviceMustBeExistsValidation::class
         ])
-    )->validations([DeviceMustBeOnlineValidation::class]),
+    )->validations([DeviceMustBeOnlineValidation::class])
 )->validations([
     MsgIdMustBeExistsValidation::class
 ]);
