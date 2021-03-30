@@ -24,10 +24,10 @@ class PlayModeSubscript implements EventSubscriberInterface
 
     public function handle(BaseEvent  $event)
     {
-         $play_status = WsMessage::getMsgByEvent($event)->res['data']['play_status'];
+         $play_status = WsMessage::getMsgByEvent($event)->res['data']['play_mode'];
          $msgid = WsMessage::getMsgByEvent($event)->res['msgid'];
         (new SendControllerCommadToDevice())->send($event, [
-            'play_status' => (int) $play_status
+            'play_mode' => (int) $play_status
         ], (int) $msgid);
     }
 }

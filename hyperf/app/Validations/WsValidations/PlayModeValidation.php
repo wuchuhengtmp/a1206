@@ -15,7 +15,7 @@ class PlayModeValidation extends BaseValidation
     public function getRules(): array
     {
         return [
-            'play_status' => [
+            'play_mode' => [
                 'required',
                 'in:0,1,2,3,4,5,6,7'
             ]
