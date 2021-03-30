@@ -126,7 +126,20 @@ func articlesShowHandler(w http.ResponseWriter, r *http.Request)  {
 
 // 文章列表
 func articlesIndexHandler(w http.ResponseWriter, r *http.Request)  {
-	fmt.Fprintf(w, "articles")
+	rows, err := db.Query("SELECT * FROM articles")
+	checkError(err)
+	defer rows.Close()
+	var articles []Article
+	for rows.Next() {
+		var article Article
+		err := rows.Scan(&article.ID, &article.Title, &article.Body)
+		checkError(err)
+		articles = append(articles, article)
+	}
+	err = rows.Err()
+	checkError(err)
+	tmpl, err := template.ParseGlob("resources/views/articles/index.gohtml")
+	tmpl.Execute(w, articles)
 }
 
 type ArticlesFormData struct {
@@ -134,6 +147,17 @@ type ArticlesFormData struct {
 	URL 	*url.URL
 	Errors 	map[string]string
 }
+
+func (a Article) Link() string {
+	showURL, err := router.Get("article.show").URL("id", strconv.FormatInt(a.ID, 10))
+	if err != nil {
+		checkError(err)
+		return ""
+	}
+	return showURL.String()
+}
+
+
 
 // 添加文章
 func articleStoreHandler(w http.ResponseWriter, r *http.Request)  {
