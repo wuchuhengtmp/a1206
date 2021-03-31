@@ -7,6 +7,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"html/template"
+	"http-api/pkg/route"
 	"log"
 	"net/http"
 	"net/url"
@@ -66,6 +67,8 @@ func createTables()  {
 
 func main() {
 	initDB()
+	route.Initialize()
+	router = route.Router
 	createTables()
 	router.HandleFunc("/", homeHandle).Methods("GET").Name("home")
 	router.HandleFunc("/about", aboutHandler).Methods("GET").Name("about")
@@ -118,7 +121,7 @@ func (a Article) Delete() (rowsAffected int64, err error) {
 }
 
 func articlesShowHandler(w http.ResponseWriter, r *http.Request)  {
-	id := getRouterVariable("id", r)
+	id := route.GetRouteVariable("id", r)
 	article, err := getArticleByID(id)
 
 	if err != nil {
@@ -132,7 +135,7 @@ func articlesShowHandler(w http.ResponseWriter, r *http.Request)  {
 		}
 	} else {
 		tmpl, err := template.New("show.gohtml").Funcs(template.FuncMap{
-			"RouteName2URL": RouteName2URL,
+			"RouteName2URL": route.Name2URL,
 			"Int64ToString": Int64ToString,
 		}).ParseFiles("resources/views/articles/show.gohtml")
 		checkError(err)
@@ -268,7 +271,7 @@ func saveArticleToDB(title string, body string) (int64, error) {
 
 //  编辑文章
 func articlesEditHandler(w http.ResponseWriter, r *http.Request) {
-	id := getRouterVariable("id", r)
+	id := route.GetRouteVariable("id", r)
 	article := Article{}
 	query := "SELECT * FROM articles WHERE id = ?"
 	err := db.QueryRow(query, id).Scan(&article.ID, &article.Title, &article.Body)
@@ -297,7 +300,7 @@ func articlesEditHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func articlesUpdateHandler(w http.ResponseWriter, r *http.Request)  {
-	id := getRouterVariable("id", r)
+	id := route.GetRouteVariable("id", r)
 	_, err := getArticleByID(id)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -340,12 +343,6 @@ func articlesUpdateHandler(w http.ResponseWriter, r *http.Request)  {
 	}
 }
 
-// 获取链接参数
-func getRouterVariable(parameterName string, r *http.Request) string  {
-	vars := mux.Vars(r)
-	return vars[parameterName]
-}
-
 // 获取博文
 func getArticleByID(id string) (Article, error) {
 	article := Article{}
@@ -372,7 +369,7 @@ func validateArticleFormData(title string, body string) map[string]string {
 
 // 文章删除
 func articlesDeleteHandler(w http.ResponseWriter, r *http.Request)  {
-	id := getRouterVariable("id", r)
+	id := route.GetRouteVariable("id", r)
 	article, err := getArticleByID(id)
 	if err != nil {
 		if err ==  sql.ErrNoRows {
@@ -399,16 +396,6 @@ func articlesDeleteHandler(w http.ResponseWriter, r *http.Request)  {
 			}
 		}
 	}
-}
-
-//  路由名转换为url
-func RouteName2URL(routeName string, pairs ...string) string  {
-	url, err :=  router.Get(routeName).URL(pairs ...)
-	if err != nil {
-		checkError(err)
-		return ""
-	}
-	return url.String()
 }
 
 // int64转字符
