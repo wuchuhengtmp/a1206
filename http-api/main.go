@@ -73,7 +73,7 @@ func main() {
 	router.HandleFunc("/articles", articlesIndexHandler).Methods("GET").Name("articles.index")
 	router.HandleFunc("/articles/create", articlesCreateHandler).Methods("GET").Name("articles.create")
 	router.HandleFunc("/articles/{id:[0-9]+}/edit", articlesEditHandler).Methods("GET").Name("articles.edit")
-	router.HandleFunc("/articles/store", articleStoreHandler).Methods("POST").Name("articles.store")
+	router.HandleFunc("/articles", articleStoreHandler).Methods("POST").Name("articles.store")
 	router.HandleFunc("/articles/{id:[0-9]+}", articlesUpdateHandler).Methods("POST").Name("articles.update")
 	router.HandleFunc("/articles/{id:[0-9]+}/delete", articlesDeleteHandler).Methods("POST").Name("articles.delete")
 	router.NotFoundHandler = http.HandlerFunc(notFoundHandler)
@@ -208,6 +208,7 @@ func articleStoreHandler(w http.ResponseWriter, r *http.Request)  {
 
 // 404 错误
 func notFoundHandler(w http.ResponseWriter, r *http.Request)  {
+	w.WriteHeader(http.StatusNotFound)
 	fmt.Fprintf(w, "404")
 }
 
