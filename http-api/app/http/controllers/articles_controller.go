@@ -11,10 +11,7 @@ import (
 	"net/http"
 )
 
-type ArticlesController struct {
-
-}
-
+type ArticlesController struct {}
 
 func (*ArticlesController) Show(w http.ResponseWriter, r *http.Request)  {
 	id := route.GetRouteVariable("id", r)
@@ -36,5 +33,18 @@ func (*ArticlesController) Show(w http.ResponseWriter, r *http.Request)  {
 		}).ParseFiles("resources/views/articles/show.gohtml")
 		logger.LogError(err)
 		tmpl.Execute(w, article)
+	}
+}
+
+func (*ArticlesController) Index(w http.ResponseWriter, r *http.Request)  {
+	articles, err := articleModel.GetAll()
+	if err != nil {
+		logger.LogError(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "500 服务器内部错误")
+	} else {
+		tmpl, err := template.ParseFiles("resources/views/articles/index.gohtml")
+		logger.LogError(err)
+		tmpl.Execute(w, articles)
 	}
 }
