@@ -36,6 +36,8 @@ func createTables()  {
 func main() {
 	database.InitDB()
 	db = database.DB
+	bootstrap.SetupDB()
+
 	router = bootstrap.SetupRoute()
 	createTables()
 	router.HandleFunc("/articles", articlesIndexHandler).Methods("GET").Name("articles.index")
