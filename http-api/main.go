@@ -40,8 +40,6 @@ func main() {
 	route.Initialize()
 	router = route.Router
 	createTables()
-	router.HandleFunc("/", homeHandle).Methods("GET").Name("home")
-	router.HandleFunc("/about", aboutHandler).Methods("GET").Name("about")
 	router.HandleFunc("/articles/{id:[0-9]+}", articlesShowHandler).Methods("GET").Name("article.show")
 	router.HandleFunc("/articles", articlesIndexHandler).Methods("GET").Name("articles.index")
 	router.HandleFunc("/articles/create", articlesCreateHandler).Methods("GET").Name("articles.create")
@@ -49,7 +47,6 @@ func main() {
 	router.HandleFunc("/articles", articleStoreHandler).Methods("POST").Name("articles.store")
 	router.HandleFunc("/articles/{id:[0-9]+}", articlesUpdateHandler).Methods("POST").Name("articles.update")
 	router.HandleFunc("/articles/{id:[0-9]+}/delete", articlesDeleteHandler).Methods("POST").Name("articles.delete")
-	router.NotFoundHandler = http.HandlerFunc(notFoundHandler)
 	router.Use(forceHTMLMiddleware)
 	http.ListenAndServe(":3000", removeTrailingSlash(router))
 }
@@ -61,16 +58,6 @@ func removeTrailingSlash(next http.Handler) http.Handler  {
 		}
 		next.ServeHTTP(w, r)
 	})
-}
-
-// 首页
-func homeHandle(w http.ResponseWriter, r *http.Request)  {
-	fmt.Fprint(w, "文章首页")
-}
-
-// 关于
-func aboutHandler(w http.ResponseWriter, r *http.Request)  {
-	fmt.Fprintf(w, "about")
 }
 
 // 文章详情
