@@ -9,6 +9,7 @@ import (
 	"html/template"
 	"http-api/pkg/logger"
 	"http-api/pkg/route"
+	"http-api/pkg/types"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -130,7 +131,7 @@ func articlesShowHandler(w http.ResponseWriter, r *http.Request)  {
 	} else {
 		tmpl, err := template.New("show.gohtml").Funcs(template.FuncMap{
 			"RouteName2URL": route.Name2URL,
-			"Int64ToString": Int64ToString,
+			"Int64ToString": types.Int64ToString,
 		}).ParseFiles("resources/views/articles/show.gohtml")
 		logger.LogError(err)
 		tmpl.Execute(w, article)
@@ -390,9 +391,4 @@ func articlesDeleteHandler(w http.ResponseWriter, r *http.Request)  {
 			}
 		}
 	}
-}
-
-// int64转字符
-func Int64ToString(num int64) string {
-	return strconv.FormatInt(num, 10)
 }
