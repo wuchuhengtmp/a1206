@@ -3,10 +3,10 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"github.com/go-sql-driver/mysql"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"html/template"
+	"http-api/pkg/database"
 	"http-api/pkg/logger"
 	"http-api/pkg/route"
 	"http-api/pkg/types"
@@ -14,7 +14,6 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"time"
 	"unicode/utf8"
 )
 
@@ -22,31 +21,6 @@ var router = mux.NewRouter().StrictSlash(true)
 
 var db *sql.DB
 
-func initDB()  {
-	 config := mysql.Config{
-		User: "wuchuheng_tmp",
-		Passwd: "wuchuheng_tmp",
-		Addr: "192.168.0.42",
-		Net: "tcp",
-		DBName: "wuchuheng_tmp",
-		AllowNativePasswords: true,
-	}
-	// 准备数据库连接池
-	var err error
-	db, err = sql.Open("mysql", config.FormatDSN())
-	logger.LogError(err)
-
-	// 设置最大连接数
-	db.SetMaxOpenConns(25)
-	// 设置最大空闲连接数
-	db.SetMaxIdleConns(25)
-	// 设置每个链接的过期时间
-	db.SetConnMaxLifetime(5 * time.Minute)
-
-	// 尝试连接，失败会报错
-	err = db.Ping()
-	logger.LogError(err)
-}
 
 func createTables()  {
 	createArticlesSQL := `
@@ -61,7 +35,8 @@ func createTables()  {
 }
 
 func main() {
-	initDB()
+	database.InitDB()
+	db = database.DB
 	route.Initialize()
 	router = route.Router
 	createTables()
