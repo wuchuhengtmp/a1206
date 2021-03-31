@@ -6,10 +6,9 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"html/template"
+	"http-api/bootstrap"
 	"http-api/pkg/database"
 	"http-api/pkg/logger"
-	"http-api/pkg/route"
-	"http-api/pkg/types"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -37,10 +36,8 @@ func createTables()  {
 func main() {
 	database.InitDB()
 	db = database.DB
-	route.Initialize()
-	router = route.Router
+	router = bootstrap.SetupRoute()
 	createTables()
-	router.HandleFunc("/articles/{id:[0-9]+}", articlesShowHandler).Methods("GET").Name("article.show")
 	router.HandleFunc("/articles", articlesIndexHandler).Methods("GET").Name("articles.index")
 	router.HandleFunc("/articles/create", articlesCreateHandler).Methods("GET").Name("articles.create")
 	router.HandleFunc("/articles/{id:[0-9]+}/edit", articlesEditHandler).Methods("GET").Name("articles.edit")
@@ -75,29 +72,6 @@ func (a Article) Delete() (rowsAffected int64, err error) {
 		return n, nil
 	}
 	return 0, nil
-}
-
-func articlesShowHandler(w http.ResponseWriter, r *http.Request)  {
-	id := route.GetRouteVariable("id", r)
-	article, err := getArticleByID(id)
-
-	if err != nil {
-		if err == sql.ErrNoRows {
-			w.WriteHeader(http.StatusNotFound)
-			fmt.Fprintf(w, "404 文章未找到")
-		} else {
-			logger.LogError(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			fmt.Fprintf(w, "500 服务器内部错误")
-		}
-	} else {
-		tmpl, err := template.New("show.gohtml").Funcs(template.FuncMap{
-			"RouteName2URL": route.Name2URL,
-			"Int64ToString": types.Int64ToString,
-		}).ParseFiles("resources/views/articles/show.gohtml")
-		logger.LogError(err)
-		tmpl.Execute(w, article)
-	}
 }
 
 // 文章列表
@@ -228,7 +202,7 @@ func saveArticleToDB(title string, body string) (int64, error) {
 
 //  编辑文章
 func articlesEditHandler(w http.ResponseWriter, r *http.Request) {
-	id := route.GetRouteVariable("id", r)
+	id := getRouteVariable("id", r)
 	article := Article{}
 	query := "SELECT * FROM articles WHERE id = ?"
 	err := db.QueryRow(query, id).Scan(&article.ID, &article.Title, &article.Body)
@@ -257,7 +231,7 @@ func articlesEditHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func articlesUpdateHandler(w http.ResponseWriter, r *http.Request)  {
-	id := route.GetRouteVariable("id", r)
+	id := getRouteVariable("id", r)
 	_, err := getArticleByID(id)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -326,7 +300,7 @@ func validateArticleFormData(title string, body string) map[string]string {
 
 // 文章删除
 func articlesDeleteHandler(w http.ResponseWriter, r *http.Request)  {
-	id := route.GetRouteVariable("id", r)
+	id := getRouteVariable("id", r)
 	article, err := getArticleByID(id)
 	if err != nil {
 		if err ==  sql.ErrNoRows {
@@ -354,3 +328,9 @@ func articlesDeleteHandler(w http.ResponseWriter, r *http.Request)  {
 		}
 	}
 }
+
+func getRouteVariable(parameterName string, r *http.Request) string {
+	vars := mux.Vars(r)
+	return vars[parameterName]
+}
+
