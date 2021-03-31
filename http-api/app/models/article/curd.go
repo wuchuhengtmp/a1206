@@ -1,6 +1,7 @@
 package article
 
 import (
+	"http-api/pkg/logger"
 	"http-api/pkg/model"
 	"http-api/pkg/types"
 )
@@ -20,4 +21,13 @@ func GetAll() ([] Article, error)  {
 		return articles, err
 	}
 	return articles, nil
+}
+
+func (article *Article) Create() (err error) {
+	result := model.DB.Create(&article)
+	if err = result.Error; err != nil {
+		logger.LogError(err)
+		return err
+	}
+	return nil
 }

@@ -9,6 +9,8 @@ import (
 	"http-api/pkg/route"
 	"http-api/pkg/types"
 	"net/http"
+	"strconv"
+	"unicode/utf8"
 )
 
 type ArticlesController struct {}
@@ -48,3 +50,81 @@ func (*ArticlesController) Index(w http.ResponseWriter, r *http.Request)  {
 		tmpl.Execute(w, articles)
 	}
 }
+
+func (* ArticlesController) Create(w http.ResponseWriter, r *http.Request)  {
+	html := `
+		<!DOCTYPE html>
+		<html lang="en">
+		<head>
+			<title>创建文章 —— 我的技术博客</title>
+		</head>
+		<body>
+			<form action="%s" method="post">
+				<p><input type="text" name="title"></p>
+				<p><textarea name="body" cols="30" rows="10"></textarea></p>
+				<p><button type="submit">提交</button></p>
+			</form>
+		</body>
+		</html>
+			`
+	storeURL := route.Name2URL("articles.store")
+	fmt.Fprintf(w, html, storeURL)
+}
+
+type ArticlesFormData struct {
+	Title, Body string
+	URL 	string
+	Errors 	map[string]string
+}
+
+func (*ArticlesController)Store(w http.ResponseWriter, r *http.Request) {
+
+	title := r.PostFormValue("title")
+	body := r.PostFormValue("body")
+	errors := validateArticleFormData(title, body)
+
+	if len(errors) != 0 {
+		storeURL := route.Name2URL("articles.store")
+		data := ArticlesFormData{
+			Title:  title,
+			Body:   body,
+			URL:    storeURL,
+			Errors: errors,
+		}
+		tmpl, err := template.ParseFiles("resources/views/articles/create.gohtml")
+		if err != nil {
+			panic(err)
+		}
+		tmpl.Execute(w, data)
+	} else {
+		newArticle := articleModel.Article{
+			Title: title,
+			Body: body,
+		}
+		err := newArticle.Create()
+		if newArticle.ID > 0 {
+			fmt.Fprintf(w, "插入成功， ID为 "+strconv.FormatInt(newArticle.ID, 10))
+		} else {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "500 服务器内容错误")
+			logger.LogError(err)
+		}
+	}
+}
+
+func validateArticleFormData(title string, body string) map[string]string {
+	errors := make(map[string]string)
+	if title == "" {
+		errors["title"] = "标题不能为空"
+	} else if utf8.RuneCountInString(title) < 3 || utf8.RuneCountInString(title) > 40 {
+		errors["title"]  = "标题长度需介于 3-40"
+	}
+	// 验证内容
+	if body == "" {
+		errors["body"] = "内容不能为空"
+	} else if utf8.RuneCountInString(body) < 10 {
+		errors["body"] = "内容长度需大于或等于 10 个字节"
+	}
+	return errors
+}
+
