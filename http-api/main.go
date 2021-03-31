@@ -2,14 +2,12 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"http-api/bootstrap"
 	"http-api/pkg/database"
 	"http-api/pkg/logger"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
@@ -37,7 +35,6 @@ func main() {
 
 	router = bootstrap.SetupRoute()
 	createTables()
-	router.HandleFunc("/articles/{id:[0-9]+}/delete", articlesDeleteHandler).Methods("POST").Name("articles.delete")
 	router.Use(forceHTMLMiddleware)
 	http.ListenAndServe(":3000", removeTrailingSlash(router))
 }
@@ -57,17 +54,6 @@ type Article struct {
 	ID 	int64
 }
 
-func (a Article) Delete() (rowsAffected int64, err error) {
-	rs, err := db.Exec("DELETE FROM articles WHERE id = " + strconv.FormatInt(a.ID, 10))
-	if err != nil {
-		return 0, err
-	}
-	if n, _ := rs.RowsAffected(); n > 0 {
-		return n, nil
-	}
-	return 0, nil
-}
-
 // 中间件
 func forceHTMLMiddleware(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -76,45 +62,6 @@ func forceHTMLMiddleware(h http.Handler) http.Handler {
 		// 2. 继续处理请求
 		h.ServeHTTP(w, r)
 	})
-}
-
-// 获取博文
-func getArticleByID(id string) (Article, error) {
-	article := Article{}
-	query := "SELECT * FROM articles WHERE id = ?"
-	err := db.QueryRow(query, id).Scan(&article.ID, &article.Title, &article.Body)
-	return article, err
-}
-
-// 文章删除
-func articlesDeleteHandler(w http.ResponseWriter, r *http.Request)  {
-	id := getRouteVariable("id", r)
-	article, err := getArticleByID(id)
-	if err != nil {
-		if err ==  sql.ErrNoRows {
-			w.WriteHeader(http.StatusNotFound)
-			fmt.Fprintf(w, "文章未找到")
-		} else {
-			logger.LogError(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			fmt.Fprintf(w, "500 服务器内部错误")
-		}
-	} else {
-		rowAffected, err := article.Delete()
-		if err != nil {
-			 logger.LogError(err)
-			 w.WriteHeader(http.StatusInternalServerError)
-			 fmt.Fprintf(w, "500 服务器内部错误")
-		} else {
-			if rowAffected > 0 {
-				indexURL, _ := router.Get("articles.index").URL()
-				http.Redirect(w, r, indexURL.String(), http.StatusFound)
-			} else {
-				w.WriteHeader(http.StatusNotFound)
-				fmt.Fprintf(w, "404 文章未找到")
-			}
-		}
-	}
 }
 
 func getRouteVariable(parameterName string, r *http.Request) string {

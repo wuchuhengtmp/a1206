@@ -202,3 +202,34 @@ func (*ArticlesController) Edit(w http.ResponseWriter, r *http.Request) {
 		tmpl.Execute(w, data)
 	}
 }
+
+func (*ArticlesController) Delete(w http.ResponseWriter, r *http.Request) {
+	id := route.GetRouteVariable("id", r)
+	article, err := articleModel.Get(id)
+	if err != nil {
+		if err ==  sql.ErrNoRows {
+			w.WriteHeader(http.StatusNotFound)
+			fmt.Fprintf(w, "文章未找到")
+		} else {
+			logger.LogError(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "500 服务器内部错误")
+		}
+	} else {
+		rowAffected, err := article.Delete()
+		if err != nil {
+			logger.LogError(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "500 服务器内部错误")
+		} else {
+			if rowAffected > 0 {
+				indexURL := route.Name2URL("articles.index")
+				http.Redirect(w, r, indexURL, http.StatusFound)
+			} else {
+				w.WriteHeader(http.StatusNotFound)
+				fmt.Fprintf(w, "404 文章未找到")
+			}
+		}
+	}
+}
+
