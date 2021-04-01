@@ -24,7 +24,7 @@ func TestAllPages(t *testing.T)  {
 		{"GET", "/articles/3/edit", 200},
 		{"POST", "/articles/3", 200},
 		{"POST", "/articles", 200},
-		{"POST", "/articles/1/delete", 404},
+		{"POST", "/articles/3/delete", 404},
 	}
 
 	for _, test := range tests {

@@ -34,5 +34,4 @@ hyperf/*.cache
 #
 http-api/vendor
 http-api/tmp
-
-
+http-api/.env

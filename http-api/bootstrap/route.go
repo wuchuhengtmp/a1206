@@ -2,6 +2,7 @@ package bootstrap
 
 import (
 	"github.com/gorilla/mux"
+	"http-api/pkg/config"
 	"http-api/pkg/model"
 	"http-api/pkg/route"
 	"http-api/routes"
@@ -20,9 +21,9 @@ func SetupDB() {
 	sqlDB, _ := db.DB()
 
 	// 设置最大连接
-	sqlDB.SetMaxOpenConns(100)
+	sqlDB.SetMaxOpenConns(config.GetInt("database.mysql.max_open_connections"))
 	// 设置最大空闲连接
-	sqlDB.SetMaxIdleConns(25)
+	sqlDB.SetMaxIdleConns(config.GetInt("database.mysql.max_idle_connections"))
 	// 设置每个链接的过期时间
-	sqlDB.SetConnMaxLifetime(5 * time.Minute)
+	sqlDB.SetConnMaxLifetime(time.Duration(config.GetInt("database.mysql.max_life_seconds")) * time.Second)
 }

@@ -5,10 +5,15 @@ import (
 	"github.com/gorilla/mux"
 	"http-api/app/http/middlewares"
 	"http-api/bootstrap"
+	"http-api/config"
 	"net/http"
 )
 
 var router = mux.NewRouter().StrictSlash(true)
+
+func init()  {
+	config.Initialize()
+}
 
 func main() {
 	bootstrap.SetupDB()
