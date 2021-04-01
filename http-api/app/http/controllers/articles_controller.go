@@ -6,12 +6,12 @@ import (
 	"gorm.io/gorm"
 	"html/template"
 	articleModel "http-api/app/models/article"
+	"http-api/app/requests"
 	"http-api/pkg/logger"
 	"http-api/pkg/route"
 	"http-api/pkg/types"
 	"net/http"
 	"strconv"
-	"unicode/utf8"
 )
 
 type ArticlesController struct {}
@@ -75,14 +75,18 @@ func (* ArticlesController) Create(w http.ResponseWriter, r *http.Request)  {
 type ArticlesFormData struct {
 	Title, Body string
 	URL 	string
-	Errors 	map[string]string
+	Errors 	map[string][]string
 }
 
 func (*ArticlesController)Store(w http.ResponseWriter, r *http.Request) {
 
 	title := r.PostFormValue("title")
 	body := r.PostFormValue("body")
-	errors := validateArticleFormData(title, body)
+
+	errors := requests.ValidateArticleForm(articleModel.Article{
+		Title: title,
+		Body: body,
+	})
 
 	if len(errors) != 0 {
 		storeURL := route.Name2URL("articles.store")
@@ -113,22 +117,6 @@ func (*ArticlesController)Store(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func validateArticleFormData(title string, body string) map[string]string {
-	errors := make(map[string]string)
-	if title == "" {
-		errors["title"] = "标题不能为空"
-	} else if utf8.RuneCountInString(title) < 3 || utf8.RuneCountInString(title) > 40 {
-		errors["title"]  = "标题长度需介于 3-40"
-	}
-	// 验证内容
-	if body == "" {
-		errors["body"] = "内容不能为空"
-	} else if utf8.RuneCountInString(body) < 10 {
-		errors["body"] = "内容长度需大于或等于 10 个字节"
-	}
-	return errors
-}
-
 func (*ArticlesController)Update(w http.ResponseWriter, r *http.Request)  {
 	id := route.GetRouteVariable("id", r)
 	article, err := articleModel.Get(id)
@@ -143,7 +131,10 @@ func (*ArticlesController)Update(w http.ResponseWriter, r *http.Request)  {
 	} else {
 		title := r.PostFormValue("title")
 		body := r.PostFormValue("body")
-		errors := validateArticleFormData(title, body)
+		errors := requests.ValidateArticleForm(articleModel.Article{
+			Title: title,
+			Body: body,
+		})
 		// 验证标题
 		if len(errors) == 0 {
 			article.Title = title
