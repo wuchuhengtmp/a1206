@@ -35,3 +35,38 @@ hyperf/*.cache
 http-api/vendor
 http-api/tmp
 http-api/.env
+
+
+#
+# admin-template
+#
+admin-template/node_modules
+# roadhog-api-doc ignore
+admin-template/src/utils/request-temp.js
+admin-template/_roadhog-api-doc
+
+# production
+admin-template/dist
+admin-template/.vscode
+
+# misc
+.DS_Store
+admin-template/npm-debug.log*
+admin-template/yarn-error.log
+
+admin-template/coverage
+admin-template/.idea
+admin-template/*bak
+admin-template/.vscode
+admin-template/.history
+admin-template/*.log
+admin-template/functions/*
+admin-template/.temp/**
+
+admin-template/.umi
+admin-template/.umi-production
+# screenshot
+admin-template/screenshot
+admin-template/.firebase
+admin-template/.eslintcache
+admin-template/build
