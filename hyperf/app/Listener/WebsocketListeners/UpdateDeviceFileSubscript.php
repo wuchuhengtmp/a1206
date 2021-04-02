@@ -123,29 +123,12 @@ class UpdateDeviceFileSubscript implements EventSubscriberInterface
      */
     private function _deldeviceFile(BaseEvent $event, int $fileId): void
     {
-        $msgid = (int) WsMessage::getMsgByEvent($event)->res['msgid'];
-        $fileModel = new FilesModel();
-        $deviceId = (int) $event->routeParams['id'];
-        $device = (new DevicesModel())->getOneById($deviceId);
-        $file = $fileModel->where('id', $fileId)->first();
-        $content = (function () use($device, $file, $msgid) {
-            $c = [
-                'type' => 'JRBJQ_AIR724',
-                'deviceid' => '',
-                'msgid' => $msgid,
-                'command' => 'updata_file',
-                'content' => [
-                    'op_mode' => 2,
-                    'del_file' => 2
-                ]
-            ];
-
-            $content = \json_encode($c, JSON_UNESCAPED_SLASHES);
-            $c = sprintf('%04d', strlen($content)) . 'XCWL' . $content;
-            $c = str_replace('\/', '/', $c);
-            return $c;
-        })();
-        $topic = Helper::formatTopicByDeviceId($device['device_id']);
-        (new \Utils\MqttClient())->getClient()->publish($topic, $content, 1);
+        $file = FilesModel::where('id', $fileId)->first();
+        $fileInfo = pathinfo($file->path);
+        $content = [
+            'op_mode' => 2,
+            'del_file' => $fileInfo['basename']
+        ];
+        (new SendCreateFileCommandToDevice())->send($event, $content);
     }
 }

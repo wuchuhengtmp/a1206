@@ -77,6 +77,6 @@ class PlayCrtlAckListener implements ListenerInterface
         // 把消息广播给用户的所有连接
         ApplicationContext::getContainer()
             ->get(WebsocketBroad2User::class)
-            ->sendSuccessMsg($event, $data, $msgid, $user->id);
+            ->sendSuccessMsg($event, $payload["content"], $msgid, $user->id);
     }
 }

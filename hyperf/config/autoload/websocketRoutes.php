@@ -22,10 +22,12 @@ use App\Events\WebsocketEvents\{
     UpdateDeviceFileEvent,
     DevicePlayDevent,
     PlayFilesEvent,
-    AddConfigTimeEvent
+    AddConfigTimeEvent,
+    UpdateMeEnvent
 };
 //
 use \App\Validations\WsValidations\{
+    UpdateMeRequestValidation,
     AuthValidation,
     MsgIdMustBeExistsValidation,
     RegisterValidation,
@@ -61,6 +63,8 @@ Router::group(
 //        UserDeviceMustBeExistsValidation::class,
 //        DeviceFileMustBeExistsValidation::class
 //    ]),
+    // 更新用户属性
+    Router::put('/me', UpdateMeEnvent::class, [ AuthValidation::class, UpdateMeRequestValidation::class ]),
 
     // 设备在线才可操作集合
     ...Router::group(
@@ -75,7 +79,6 @@ Router::group(
         Router::put('/me/devices/:id/play', DevicePlayDevent::class, [
             AuthValidation::class,
             \App\Validations\WsValidations\DevicePlayValidation::class,
-            MsgIdMustBeExistsValidation::class,
             UserDeviceMustBeExistsValidation::class,
         ]),
         // 设备设备声音
@@ -83,26 +86,22 @@ Router::group(
             AuthValidation::class,
             \App\Validations\WsValidations\LimitSoundValidation::class,
             UserDeviceMustBeExistsValidation::class,
-            MsgIdMustBeExistsValidation::class,
         ]),
         // 上/下一曲
         Router::put('/me/devices/:id/playFiles/:status', PlayFilesEvent::class, [
             AuthValidation::class,
             PlayFilesValidation::class,
-            MsgIdMustBeExistsValidation::class,
             UserDeviceMustBeExistsValidation::class,
         ]),
         // 播放模式
         Router::put('/me/devices/:id/playMode', PlayModeEvent::class, [
             AuthValidation::class,
-            MsgIdMustBeExistsValidation::class,
             UserDeviceMustBeExistsValidation::class,
             PlayModeValidation::class
         ]),
         // 添加设备定时
         Router::post('/me/devices/:id/configTimes', AddConfigTimeEvent::class, [
             AuthValidation::class,
-            MsgIdMustBeExistsValidation::class,
             UserDeviceMustBeExistsValidation::class
         ])
     )->validations([DeviceMustBeOnlineValidation::class])

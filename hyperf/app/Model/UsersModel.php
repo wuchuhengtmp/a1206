@@ -11,6 +11,8 @@ use Utils\ReportFormat;
  */
 class UsersModel extends Model
 {
+    protected $hidden = [ 'password' ];
+
     /**
      * The table associated with the model.
      *
@@ -22,7 +24,12 @@ class UsersModel extends Model
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'password',
+        'username',
+        'avatar',
+        'nickname'
+    ];
     /**
      * The attributes that should be cast to native types.
      *

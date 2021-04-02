@@ -54,6 +54,7 @@ class UpdataFleAckListener implements ListenerInterface
         $url = $fullMessage['url'];
         $method = $fullMessage['method'];
         $content = $payload['content'];
+        $e = new \App\Events\WebsocketEvents\BaseEvent(0, $method, $url);
 
         // 文件操作失败
         if ($content['recode'] != 0) {
@@ -66,7 +67,6 @@ class UpdataFleAckListener implements ListenerInterface
             $key = "{$content['recode']}";
             $errMsg = key_exists($key, $recodeMapTitle) ? $recodeMapTitle[$key] : "未知设备发生了错误";
             // 广播失败的消息给当前用户所有连接
-            $e = new \App\Events\WebsocketEvents\BaseEvent(0, $method, $url);
             ApplicationContext::getContainer()
                 ->get(WebsocketBroad2User::class)
                 ->sendErrorMsg($e, ['errorCode' => WsMessage::BACK_END_ERROR_CODE, 'errorMsg' => $errMsg], $msgid, $user->id );
@@ -74,6 +74,12 @@ class UpdataFleAckListener implements ListenerInterface
             // 文件操作成功
             $data = $fullMessage['data'];
             (new DeviceFilesModel())->updateDeviceFile($data,$devcieId);
+            $device = DevicesModel::where('device_id', $devcieId)->first();
+            $newDeviceFiles = (new DevicesModel())->getFilesByDeviceId($device->id);
+            // 把最新的文件列表广播给当前用户
+            ApplicationContext::getContainer()
+                ->get(WebsocketBroad2User::class)
+                ->sendSuccessMsg($e, $newDeviceFiles, $msgid, $user->id);
         }
     }
 }

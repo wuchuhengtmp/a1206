@@ -18,6 +18,8 @@ class CreateUsersTable extends Migration
             $table->string('username', 255)->comment('用户名');
             $table->string('password', 255)->comment('密码');
             $table->string('role', 20)->default('user')->comment('角色');
+            $table->string('avatar', 255)->default('')->comment('头像');
+            $table->string('nickname', 40)->default('')->comment('昵称');
             $table->timestamps();
         });
     }
