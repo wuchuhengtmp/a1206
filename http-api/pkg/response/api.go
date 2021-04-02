@@ -28,11 +28,12 @@ func (e *Errors) ResponseByHttpWriter(w http.ResponseWriter)  {
 }
 
 type Success struct {
-	IsSuccess bool `bool:,true`
-	Data interface{}
+	IsSuccess 	bool 		`json:"isSuccess"`
+	Data 		interface{} `json:"data"`
 }
 
 func (e *Success) ResponseByHttpWriter(w http.ResponseWriter)  {
+	e.IsSuccess = true
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	repStr, _ := json.Marshal(e)
 	fmt.Fprint(w, string(repStr))

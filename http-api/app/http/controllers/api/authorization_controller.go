@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"http-api/app/models/users"
 	"http-api/app/requests/api"
 	"http-api/pkg/jwt"
@@ -25,12 +24,12 @@ func (*AuthorizationController) Create(w http.ResponseWriter, r *http.Request) {
 			Password: r.PostFormValue("password"),
 		}
 		user.GetUser()
-		//jwtToken,_ := jwt.GenerateTokenByUID(user.ID)
-		//response.Success{
-		//	Data: struct {
-		//		AccessToken string
-		//
-		//	}{}
-		//}
+		jwtToken,_ := jwt.GenerateTokenByUID(user.ID)
+		var resData struct { AccessToken string 	`json:"accessToken"` }
+		resData.AccessToken = jwtToken
+		res := response.Success{
+			Data: resData,
+		}
+		res.ResponseByHttpWriter(w)
 	}
 }
