@@ -5,7 +5,6 @@ import (
 	"http-api/app/models/article"
 )
 
-//
 func ValidateArticleForm(data article.Article) map[string][]string {
 	message := govalidator.MapData{
 		"title": []string {

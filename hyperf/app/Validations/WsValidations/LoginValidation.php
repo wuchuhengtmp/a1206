@@ -14,7 +14,6 @@ use App\Model\UsersModel;
 
 class LoginValidation extends BaseValidation implements ValidationContract
 {
-
     /**
      * @return array
      */

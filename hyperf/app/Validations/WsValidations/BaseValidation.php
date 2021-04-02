@@ -63,6 +63,7 @@ class BaseValidation implements ValidationContract
                         $e = new UserException($errorMsg);
                         $e->url = $event->url;
                         $e->method = $event->method;
+                        $e->event = $event;
                         throw $e;
                     });
                 }

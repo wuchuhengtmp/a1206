@@ -85,7 +85,7 @@ class Helper
      */
     static public function fMqttMsg(array $content): string
     {
-        $content = \json_encode($content);
+        $content = \json_encode($content, JSON_UNESCAPED_SLASHES);
         return sprintf('%04d', strlen($content)) . 'XCWL' . $content;
     }
 

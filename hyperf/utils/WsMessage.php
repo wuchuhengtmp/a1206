@@ -15,6 +15,10 @@ use Swoole\Server;
 
 class WsMessage
 {
+    const USER_ERROR_CODE       =  1; // 用户操作错误码
+    const FRONT_END_ERROR_CODE  =  2; // 前端操作错误
+    const BACK_END_ERROR_CODE   =  3; // 后端操作错误码（系统错误）
+
     /**
      *  成功响应
      * @param BaseEvent $event
@@ -45,10 +49,12 @@ class WsMessage
      * @param array $data
      * @return ReportFormat
      */
-    static public function resError(BaseEvent $event, array $data = []): ReportFormat
+    static public function resError(BaseEvent $event, array $data = [], $msgid = null): ReportFormat
     {
         $res = new ReportFormat();
         $hasServer = Context::getServer($event->fd);
+        $msgid = $msgid ?? time();
+
         if ($hasServer->isError) return $res;
         $server = $hasServer->res;
         $resData = [
@@ -56,7 +62,8 @@ class WsMessage
             'method' => $event->method,
             'isSuccess' => false,
             'errorCode' => array_key_exists('errorCode', $data) ? $data['errorCode'] : 1,
-            'errorMsg' => array_key_exists('errorMsg', $data) ? $data['errorMsg'] : 'the action was failed'
+            'errorMsg' => array_key_exists('errorMsg', $data) ? $data['errorMsg'] : 'the action was failed',
+            'msgid' => $msgid
         ];
         $server->push($event->fd, json_encode($resData));
         $res->isError = false;

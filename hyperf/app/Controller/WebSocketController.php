@@ -41,7 +41,8 @@ class WebSocketController implements OnMessageInterface, OnOpenInterface, OnClos
                 // todo: ...
             } else if ($e instanceof BaseException) {
                 $event = new BaseEvent($frame->fd, $e->method, $e->url);
-                WsMessage::resError($event, ['errorCode' => $e->errorCode, 'errorMsg' => $e->errorMsg]);
+                $data = json_decode($frame->data, true);
+                WsMessage::resError($event, ['errorCode' => $e->errorCode, 'errorMsg' => $e->errorMsg], $data['msgid']);
             } else {
                 throw  $e;
             }

@@ -7,6 +7,7 @@ namespace App\Listener\MqttListener;
 use App\CacheModel\RedisCasheModel;
 use App\Events\MqttEvents\PlayCrtlAckEvent;
 use App\Events\WebsocketEvents\BaseEvent;
+use App\Servics\WebsocketBroad2User;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Utils\ApplicationContext;
 use Psr\Container\ContainerInterface;
@@ -57,9 +58,6 @@ class PlayCrtlAckListener implements ListenerInterface
         $user = UsersModel::where('username', $username)->first();
         $devcieId = $payload['deviceid'];
         $msgid = $payload['msgid'];
-        $devcie = DevicesModel::query()->where('device_id', $devcieId)->first();
-        $redis = ApplicationContext::getContainer()->get(RedisCasheModel::class);
-        $server = ApplicationContext::getContainer()->get(Server::class);
         $redisModel = ApplicationContext::getContainer()->get(RedisCasheModel::class);
         $fullMessage = $redisModel->getControllerMessage($devcieId, (int) $msgid);
         $msg = $fullMessage['message'];
@@ -75,13 +73,10 @@ class PlayCrtlAckListener implements ListenerInterface
             }
             $device->save();
         }
-        $fds = $redis->getFdByUid($user->id);
-        $url = $fullMessage['url'];
-        foreach ($fds as $fd) {
-            if ($server->isEstablished($fd)) {
-                $event = new BaseEvent($fd, 'put', $url);
-                WsMessage::resSuccess($event, $data, $msgid);
-            }
-        }
+        $event = new BaseEvent(0, $fullMessage["method"], $fullMessage["url"]);
+        // 把消息广播给用户的所有连接
+        ApplicationContext::getContainer()
+            ->get(WebsocketBroad2User::class)
+            ->sendSuccessMsg($event, $data, $msgid, $user->id);
     }
 }

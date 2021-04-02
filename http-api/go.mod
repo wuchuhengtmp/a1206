@@ -3,11 +3,13 @@ module http-api
 go 1.15
 
 require (
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gorilla/mux v1.8.0
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
+	github.com/pascaldekloe/jwt v1.10.0 // indirect
 	github.com/pelletier/go-toml v1.8.1 // indirect
 	github.com/spf13/afero v1.6.0 // indirect
 	github.com/spf13/cast v1.3.1

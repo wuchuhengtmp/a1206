@@ -20,6 +20,8 @@ class BaseException extends \Exception implements \Throwable
 
     public $method = "";
 
+    public $event;
+
     public function __construct($message = "", $code = 0, Throwable $previous = null)
     {
         $this->errorMsg = strlen($message) === 0 ? $this->errorMsg : $message;

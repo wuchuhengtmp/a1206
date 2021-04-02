@@ -10,6 +10,6 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 return [
-    \App\CacheModel\RedisCasheModel::class => \App\CacheModel\RedisCasheModel::class
-
+    \App\CacheModel\RedisCasheModel::class => \App\CacheModel\RedisCasheModel::class,
+    \App\Servics\WebsocketBroad2User::class => \App\Servics\WebsocketBroad2User::class
 ];

@@ -8,7 +8,10 @@ declare(strict_types=1);
 
 namespace App\Listener\WebsocketListeners;
 
+use App\CacheModel\RedisCasheModel;
 use App\Events\WebsocketEvents\BaseEvent;
+use App\Servics\SendCreateFileCommandToDevice;
+use Hyperf\Utils\ApplicationContext;
 use App\Events\WebsocketEvents\UpdateDeviceFileEvent;
 use App\Events\WebsocketEvents\UploadDeviceFileEvent;
 use App\GlobalChannel;
@@ -97,34 +100,20 @@ class UpdateDeviceFileSubscript implements EventSubscriberInterface
     }
 
     /**
-     * @param int $fileId
+     * 新增文件
      */
     public function sendFileToMqttByFileId(BaseEvent $event, int $fileId): void
     {
         $fileModel = new FilesModel();
-        $deviceId = (int) $event->routeParams['id'];
-        $device = (new DevicesModel())->getOneById($deviceId);
         $file = $fileModel->where('id', $fileId)->first();
-        $message = (function () use($device, $file) {
-            $c = [
-                'type' => 'JRBJQ_AIR724',
-                'deviceid' => '',
-                'msgid' => $device['device_id'] . time(),
-                'command' => 'updata_file',
-                'content' => [
-                    'op_mode' => 1,
-                    'http_root' => $file['url'],
-                    'file_check_sum' => $file->size,
-                    'file_lenth' => $file->size,
-                    'del_file' => -1
-                ]
-            ];
-            $content = \json_encode($c, JSON_UNESCAPED_SLASHES);
-            $c = sprintf('%04d', strlen($content)) . 'XCWL' . $content;
-            return $c;
-        })();
-        $topic = Helper::formatTopicByDeviceId($device['device_id']);
-        (new \Utils\MqttClient())->getClient()->publish($topic, $message, 1);
+        $content = [
+            'op_mode' => 1,
+            'http_root' => $file['url'],
+            'file_check_sum' => $file->size,
+            'file_lenth' => $file->size,
+            'del_file' => -1
+        ];
+        (new SendCreateFileCommandToDevice())->send($event, $content);
     }
 
     /**

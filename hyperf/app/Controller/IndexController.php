@@ -17,6 +17,7 @@ use App\Events\MqttEvents\GetDataAllAckEvent;
 use App\Events\MqttEvents\PlayCrtlAckEvent;
 use App\Events\MqttEvents\RegisterEvent;
 use App\Events\MqttEvents\ReportDataEvent;
+use App\Events\MqttEvents\UpdataFileAckEvent;
 use http\Env\Request;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -42,17 +43,21 @@ class IndexController extends AbstractController
                 case 'report_data':
                     $this->eventDispatcher->dispatch(new ReportDataEvent($content));
                     break;
-                    // 注册
+                // 注册
                 case 'register':
                     $this->eventDispatcher->dispatch(new RegisterEvent($content));
                     break;
-                    // 获取设备数据
+                // 获取设备数据
                 case 'get_data_all_ack':
                     $this->eventDispatcher->dispatch(new GetDataAllAckEvent($content));
                     break;
-                    // 控制指令回复
+                // 控制指令回复
                 case 'play_crtl_ack':
                     $this->eventDispatcher->dispatch(new PlayCrtlAckEvent($content));
+                    break;
+                // 文件curd回复
+                case 'updata_file_ack':
+                    $this->eventDispatcher->dispatch(new UpdataFileAckEvent($content));
                     break;
             }
         }

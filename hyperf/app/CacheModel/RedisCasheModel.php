@@ -10,7 +10,6 @@ namespace App\CacheModel;
 
 use Hyperf\Redis\Redis;
 use Hyperf\Utils\ApplicationContext;
-use phpDocumentor\Reflection\Types\Mixed_;
 use Utils\Helper;
 
 class RedisCasheModel extends BaseAbstract
