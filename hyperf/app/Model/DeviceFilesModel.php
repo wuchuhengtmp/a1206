@@ -42,7 +42,7 @@ class DeviceFilesModel extends Model
         $devices = DevicesModel::query()->where('device_id', $deviceId)->get();
         $device = $devices->first();
         foreach ($curdInfo as $e) {
-            $files = self::query()->where('file_id', $e['id'])->where('device_id', $deviceId)->get();
+            $files = self::query()->where('file_id', $e['id'])->where('device_id', $device->id)->get();
             //添加
             if ($e['isSelect']) {
                 if ($files->isEmpty()) {
