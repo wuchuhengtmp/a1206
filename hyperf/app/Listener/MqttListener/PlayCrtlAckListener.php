@@ -13,10 +13,7 @@ use Hyperf\Utils\ApplicationContext;
 use Psr\Container\ContainerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Swoole\Server;
-use App\Model\{
-    UsersModel,
-    DevicesModel
-};
+use App\Model\{FilesModel, UsersModel, DevicesModel};
 use Utils\WsMessage;
 use function PHPUnit\Framework\objectEquals;
 
@@ -74,6 +71,11 @@ class PlayCrtlAckListener implements ListenerInterface
             $device->save();
         }
         $event = new BaseEvent(0, $fullMessage["method"], $fullMessage["url"]);
+        $fileCurlName = $payload["content"]['file_cur_name'];
+        $fileCurlName = str_replace("mp3", '.mp3',  strtolower($fileCurlName));
+        $fileCurlName = str_replace(' ', '', $fileCurlName);
+        $file = FilesModel::where('path', 'like', "%" . $fileCurlName)->first()->url;
+        $payload["content"]['file_cur_name'] = $file;
         // 把消息广播给用户的所有连接
         ApplicationContext::getContainer()
             ->get(WebsocketBroad2User::class)
