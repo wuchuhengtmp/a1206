@@ -11,6 +11,7 @@ namespace App\Validations\WsValidations;
 use App\Contracts\ValidationContract;
 use App\Events\WebsocketEvents\BaseEvent;
 use App\Exception\WsExceptions\UserException;
+use Hyperf\DbConnection\Db;
 use Utils\ReportFormat;
 use Utils\WsMessage;
 
@@ -135,10 +136,37 @@ class BaseValidation implements ValidationContract
                 $e->url = $event->url;
                 $e->method = $event->method;
                 throw $e;
-
             }
         }
     }
+
+    /**
+     *  表有这个数据
+     * @param BaseEvent $event
+     * @param string $field
+     * @param string $message
+     * @param string $params
+     */
+    static private function _exists(BaseEvent $event, string $field, string $message = '', string $params): void
+    {
+         $data = WsMessage::getMsgByEvent($event)->res;
+        if (array_key_exists('data', $data) && array_key_exists($field, $data['data'])) {
+            $value = $data['data'][$field];
+            $params = explode(',', $params);
+            list($model, $tableField) = count($params) === 2 ? $params : [$params[0], 'id'];
+            $isExists = class_exists($model) ?
+                (new $model())->where($tableField, $value)->get()->isNotEmpty() :
+                Db::table($model)->where($tableField, $field)->get()->isNotEmpty();
+            if (!$isExists) {
+                $message = $message === '' ? $field . ' 没有这个 ' . $params[0] . ' 参数' : $message;
+                $e = new UserException($message);
+                $e->url = $event->url;
+                $e->method = $event->method;
+                throw $e;
+            }
+        }
+    }
+
 
     /**
      * @return array

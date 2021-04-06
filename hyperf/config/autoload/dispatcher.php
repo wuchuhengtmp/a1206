@@ -38,5 +38,6 @@ return [
     \App\Listener\WebsocketListeners\PlayModeSubscript::class,
     \App\Listener\WebsocketListeners\AddConfigTimeSubscript::class,
     \App\Listener\WebsocketListeners\DisconnectSubscript::class,
-    \App\Listener\WebsocketListeners\UpdateMeSubscript::class
+    \App\Listener\WebsocketListeners\UpdateMeSubscript::class,
+    \App\Listener\WebsocketListeners\UpdateDevicePropertySubscript::class,
 ];
