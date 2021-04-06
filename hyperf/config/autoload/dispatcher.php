@@ -40,4 +40,5 @@ return [
     \App\Listener\WebsocketListeners\DisconnectSubscript::class,
     \App\Listener\WebsocketListeners\UpdateMeSubscript::class,
     \App\Listener\WebsocketListeners\UpdateDevicePropertySubscript::class,
+    \App\Listener\WebsocketListeners\AboutSubscript::class
 ];

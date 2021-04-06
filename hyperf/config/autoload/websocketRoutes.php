@@ -12,6 +12,7 @@ use App\Events\WebsocketEvents\{
     ShowDeviceDetailEvent,
     PlayModeEvent,
     LoginEvent,
+    AboutEvent,
     RegisterEvent,
     PingEvent,
     ShowCategoriesEvent,
@@ -42,7 +43,9 @@ use \App\Validations\WsValidations\{
     PlayModeValidation
 };
 return Router::group(
-// 登录
+    // 关于我们
+    Router::get('/about', AboutEvent::class),
+    // 登录
     Router::post('/users/authorizations', LoginEvent::class, [LoginValidation::class] ),
     // 注册
     Router::post('/users', RegisterEvent::class, [RegisterValidation::class]),

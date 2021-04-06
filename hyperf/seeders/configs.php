@@ -21,5 +21,6 @@ class Configs extends Seeder
         Db::insert("INSERT INTO `configs`(`id`, `name`, `value`, `created_at`, `updated_at`) VALUES (5, 'DEFAULT_AUDIO_9', '9', '2021-03-19 09:31:05', '2021-03-19 09:31:13')");
         Db::insert("INSERT INTO `configs`(`id`, `name`, `value`, `created_at`, `updated_at`) VALUES (6, 'DEFAULT_AUDIO_10', '10', '2021-03-19 09:31:07', '2021-03-19 09:31:14')");
         Db::insert("INSERT INTO `configs`(`id`, `name`, `value`, `created_at`, `updated_at`) VALUES (7, 'DEFAULT_AUDIO_11', '11', '2021-03-19 09:31:08', '2021-03-19 09:31:15')");
+        Db::insert("INSERT INTO `configs`(`id`, `name`, `value`, `created_at`, `updated_at`) VALUES (8, 'ABOUT', '<p>关于我们</p>', NULL, NULL)");
     }
 }
