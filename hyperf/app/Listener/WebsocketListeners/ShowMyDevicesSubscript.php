@@ -35,7 +35,7 @@ class ShowMyDevicesSubscript implements EventSubscriberInterface
         $devices = (new DevicesModel())->getDevicesByUid((int) $me['id']);
         $cm = new CategoriesModel();
         $resd = [];
-        foreach ($devices as &$device) {
+        foreach ($devices as $device) {
             $c = $cm->getById((int) $device['category_id']);
             $tmp = [];
             $tmp['id'] = $device['id'];
