@@ -56,7 +56,7 @@ class FilesModel extends Model
             $disk = make(\Hyperf\Filesystem\FilesystemFactory::class)->get($diskName)->getAdapter();
             $size = $disk->getSize($path)['size'];
             $fileModel = new self();
-            $id  = $this->attributes['id'];
+            $id = $this->attributes['id'];
             $file = $fileModel->where('id', $id)->first();
             $file->size = $size;
             $file->save();
@@ -70,5 +70,12 @@ class FilesModel extends Model
         $path = $this->attributes['path'];
         $disk = make(\Hyperf\Filesystem\FilesystemFactory::class)->get($diskName)->getAdapter();
         $this->attributes['size'] = $disk->getSize($path)['size'];
+    }
+
+    public function getUrlByName(string $fileCurlName): string
+    {
+        $fileCurlName = str_replace("mp3", '.mp3',  strtolower($fileCurlName));
+        $fileCurlName = str_replace(' ', '', $fileCurlName);
+        return self::where('path', 'like', "%" . $fileCurlName)->first()->url;
     }
 }

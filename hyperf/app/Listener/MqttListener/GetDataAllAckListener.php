@@ -8,6 +8,7 @@ use App\CacheModel\RedisCasheModel;
 use App\Events\MqttEvents\GetDataAllAckEvent;
 use App\Events\WebsocketEvents\BaseEvent;
 use App\Model\DevicesModel;
+use App\Model\FilesModel;
 use App\Model\UsersModel;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Utils\ApplicationContext;
@@ -65,6 +66,8 @@ class GetDataAllAckListener implements ListenerInterface
         $msg = $data['message'];
         $msg = json_decode(substr($msg, 8), true);
         $fds = $redis->getFdByUid($user->id);
+        $fileCurlName = $payload["content"]['file_cur_name'];
+        $payload["content"]['file_cur_name'] = (new FilesModel())->getUrlByName($fileCurlName);
         $url = $data['url'];
         foreach ($fds as $fd) {
             if ($server->isEstablished($fd)) {

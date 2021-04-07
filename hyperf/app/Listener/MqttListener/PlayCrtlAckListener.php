@@ -72,10 +72,7 @@ class PlayCrtlAckListener implements ListenerInterface
         }
         $event = new BaseEvent(0, $fullMessage["method"], $fullMessage["url"]);
         $fileCurlName = $payload["content"]['file_cur_name'];
-        $fileCurlName = str_replace("mp3", '.mp3',  strtolower($fileCurlName));
-        $fileCurlName = str_replace(' ', '', $fileCurlName);
-        $file = FilesModel::where('path', 'like', "%" . $fileCurlName)->first()->url;
-        $payload["content"]['file_cur_name'] = $file;
+        $payload["content"]['file_cur_name'] = (new FilesModel())->getUrlByName($fileCurlName);
         // 把消息广播给用户的所有连接
         ApplicationContext::getContainer()
             ->get(WebsocketBroad2User::class)
