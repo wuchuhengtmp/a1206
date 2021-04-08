@@ -98,4 +98,14 @@ class Helper
     {
         return sprintf("JRBJQ_AIR724_%s", $deviceId);
     }
+
+    /**
+     *  解析消息
+     * @param string $payload
+     * @return array
+     */
+    static public function decodeMsgByStr(string $payload): array
+    {
+        return json_decode(substr($payload, 8), true);
+    }
 }

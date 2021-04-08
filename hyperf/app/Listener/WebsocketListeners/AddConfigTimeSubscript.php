@@ -10,7 +10,9 @@ namespace App\Listener\WebsocketListeners;
 
 use App\Events\WebsocketEvents\AddConfigTimeEvent;
 use App\Events\WebsocketEvents\BaseEvent;
+use App\Servics\SendCreateConfigTimeCommadToDevice;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Utils\WsMessage;
 
 class AddConfigTimeSubscript implements EventSubscriberInterface
 {
@@ -24,6 +26,12 @@ class AddConfigTimeSubscript implements EventSubscriberInterface
 
     public function handle(BaseEvent  $event)
     {
-        var_dump("hello\n". __FUNCTION__);
+        $data = WsMessage::getMsgByEvent($event)->res['data'];
+        $msgid = WsMessage::getMsgByEvent($event)->res['msgid'];
+        $content['type_time'] = (int) $data['type_time'];
+        $content['stime'] = (int) $data['stime'];
+        $content['etime'] = (int) $data['etime'];
+        $content['ctime'] = time();
+        (new SendCreateConfigTimeCommadToDevice())->send($event,$content, (int) $msgid);
     }
 }

@@ -28,9 +28,10 @@ class LoginValidation extends BaseValidation implements ValidationContract
     /**
      * @param BaseEvent $event
      * @param array $data
+     * @param string $fieldName
      * @param callable $reportError
      */
-    public function checkAccount(BaseEvent $event, array $data, callable $reportError)
+    public function checkAccount(BaseEvent $event, array $data, string $fieldName, callable $reportError)
     {
         $map = [
             'username' => $data['username'],

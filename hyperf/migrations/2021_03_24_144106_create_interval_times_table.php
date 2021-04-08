@@ -20,7 +20,7 @@ class CreateIntervalTimesTable extends Migration
         $dbh->exec("
         CREATE TABLE `{$this->_tableName}` (
           `id` int(11) NOT NULL AUTO_INCREMENT,
-          `devce_id` int(11) DEFAULT NULL COMMENT '设备表主键',
+          `device_id` int(11) DEFAULT NULL COMMENT '设备表主键',
           `type_time` int(7) NOT NULL COMMENT '频率',
           `stime` int(11) DEFAULT NULL COMMENT '开始时间戳',
           `etime` int(11) DEFAULT NULL COMMENT '结束时间戳',

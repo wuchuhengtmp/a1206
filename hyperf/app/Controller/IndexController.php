@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Events\MqttEvents\ClientConnectedEvent;
+use App\Events\MqttEvents\ConfigTimeAckEvent;
 use App\Events\MqttEvents\DisconnectEvent;
 use App\Events\MqttEvents\GetDataAllAckEvent;
 use App\Events\MqttEvents\PlayCrtlAckEvent;
@@ -58,6 +59,10 @@ class IndexController extends AbstractController
                 // 文件curd回复
                 case 'updata_file_ack':
                     $this->eventDispatcher->dispatch(new UpdataFileAckEvent($content));
+                    break;
+                // 添加定时回复
+                case 'config_time_ack':
+                    $this->eventDispatcher->dispatch(new ConfigTimeAckEvent($content));
                     break;
             }
         }

@@ -52,11 +52,9 @@ class WsMessage
     static public function resError(BaseEvent $event, array $data = [], $msgid = null): ReportFormat
     {
         $res = new ReportFormat();
-        $hasServer = Context::getServer($event->fd);
         $msgid = $msgid ?? time();
 
-        if ($hasServer->isError) return $res;
-        $server = $hasServer->res;
+        $server = ApplicationContext::getContainer()->get(Server::class);
         $resData = [
             'url' => $event->url,
             'method' => $event->method,

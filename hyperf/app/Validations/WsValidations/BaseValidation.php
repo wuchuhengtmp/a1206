@@ -54,7 +54,7 @@ class BaseValidation implements ValidationContract
                 } else if (method_exists(static::class, $rule)) {
                     // 扩展验证方法
                     $data = WsMessage::getMsgByEvent($event)->res['data'];
-                    (new static())->$rule($event, $data, function ($errorMsg = '') use ($field, $rule, $event) {
+                    (new static())->$rule($event, $data, $field, function ($errorMsg = '') use ($field, $rule, $event) {
                         // 错误消息
                         if ($errorMsg === '') {
                             $messages = $this->getMessages();
