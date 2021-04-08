@@ -106,8 +106,11 @@ class BaseValidation implements ValidationContract
     {
         $res = WsMessage::getMsgByEvent($event)->res;
         if (array_key_exists($field, $res['data'])) {
-            $newParams  = explode(',', $params);
-            if (!array_key_exists((string) $res['data'][$field], $newParams)) {
+            // 元素'000000'和 参数 0 比较会默认为相等，需要加个非数字进去才可以正确比较
+            $prefix = "a";
+            $newParams  = array_map(function ($e) use($prefix) { return $e . $prefix; }, explode(',', $params));
+            $isOk = !in_array((string) $res['data'][$field] . $prefix, $newParams);
+            if ($isOk) {
                 $message = $message === '' ? $field . '必须是集合元素 ' . $params . ' 中的1个'  : $message;
                 $e = new UserException($message);
                 $e->url = $event->url;
