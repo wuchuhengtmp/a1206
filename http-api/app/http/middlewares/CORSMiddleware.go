@@ -1,10 +1,22 @@
+/**
+ * 跨域中间件
+ */
 package middlewares
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
-func ForceHTML(next http.Handler) http.Handler {
+func CORSMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+		fmt.Print(r.Method)
+		if r.Method == "OPTIONS" {
+			return
+		}
 		next.ServeHTTP(w, r)
 	})
 }

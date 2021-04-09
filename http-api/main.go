@@ -18,5 +18,7 @@ func init()  {
 func main() {
 	bootstrap.SetupDB()
 	router = bootstrap.SetupRoute()
-	http.ListenAndServe(":3000", middlewares.RemoveTrailingSlash(router))
+	http.ListenAndServe(":3000",
+		middlewares.CORSMiddleware( middlewares.RemoveTrailingSlash(router) ),
+	)
 }
