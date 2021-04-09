@@ -13,16 +13,26 @@ import (
 	"net/http"
 )
 
-type Errors map[string][]string
+type Error struct {
+	Errors map[string][]string
+	ErrorCode int
+}
 
-func (e *Errors) ResponseByHttpWriter(w http.ResponseWriter)  {
+var ErrorCodes = struct {
+	LoginFail int
+}{
+	LoginFail: 50004, // 登录失败
+}
+
+func (e *Error) ResponseByHttpWriter(w http.ResponseWriter)  {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	var res struct{
-		IsSuccess bool
-		ErrorCode int
-		ErrorMessage interface{}
+		IsSuccess bool `json:"isSuccess"`
+		ErrorCode int  `json:"errorCode"`
+		ErrorMsg interface{} `json:"errorMsg"`
 	}
-	res.ErrorMessage = &e
+	res.ErrorMsg = e.Errors
+	res.ErrorCode = e.ErrorCode
 	repStr, _ := json.Marshal(res)
 	fmt.Fprint(w, string(repStr))
 }

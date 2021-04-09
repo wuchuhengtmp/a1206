@@ -17,7 +17,10 @@ func (*AuthorizationController) Create(w http.ResponseWriter, r *http.Request) {
 	decoder.Decode(&account)
 	errors := api.ValidateAuthorizationCreateRequest(account)
 	if len(errors) > 0 {
-		var errRes response.Errors = errors
+		var errRes  =  response.Error{
+			Errors: errors,
+			ErrorCode: response.ErrorCodes.LoginFail,
+		}
 		errRes.ResponseByHttpWriter(w)
 	} else {
 		var user = users.User{
