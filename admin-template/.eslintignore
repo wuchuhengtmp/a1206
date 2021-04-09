@@ -1,4 +1,4 @@
-node_modules
-dist
-.next
-.cache
+dist/*.js
+src/assets
+tests/unit/coverage
+public/**/*.js

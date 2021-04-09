@@ -1,29 +1,54 @@
 module.exports = {
-  parser: '@typescript-eslint/parser',
+  root: true,
+  env: {
+    node: true
+  },
   extends: [
-    'plugin:react/recommended',
-    'plugin:@typescript-eslint/recommended',
-    'prettier/@typescript-eslint',
-    'plugin:prettier/recommended',
+    'plugin:vue/essential',
+    '@vue/standard',
+    '@vue/typescript/recommended'
   ],
   parserOptions: {
-    ecmaVersion: 2018,
-    sourceType: 'module',
-    ecmaFeatures: {
-      jsx: true,
-    },
+    ecmaVersion: 2020
   },
   rules: {
-    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_|^req|^next' }],
-    '@typescript-eslint/no-explicit-any': 0,
-    '@typescript-eslint/explicit-function-return-type': 0,
+    '@typescript-eslint/ban-types': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
-    'react/prop-types': 0,
-    'no-empty-function': 'off',
+    '@typescript-eslint/member-delimiter-style': ['error',
+      {
+        multiline: {
+          delimiter: 'none'
+        },
+        singleline: {
+          delimiter: 'comma'
+        }
+      }],
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-var-requires': 'off',
+    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'space-before-function-paren': ['error', 'never'],
+    'vue/array-bracket-spacing': 'error',
+    'vue/arrow-spacing': 'error',
+    'vue/block-spacing': 'error',
+    'vue/brace-style': 'error',
+    'vue/camelcase': 'error',
+    'vue/comma-dangle': 'error',
+    'vue/component-name-in-template-casing': ['error', 'kebab-case'],
+    'vue/eqeqeq': 'error',
+    'vue/key-spacing': 'error',
+    'vue/match-component-file-name': 'error',
+    'vue/object-curly-spacing': 'error'
   },
-  settings: {
-    react: {
-      version: 'detect',
-    },
-  },
-};
+  overrides: [
+    {
+      files: [
+        '**/__tests__/*.{j,t}s?(x)',
+        '**/tests/unit/**/*.spec.{j,t}s?(x)'
+      ],
+      env: {
+        jest: true
+      }
+    }
+  ]
+}
