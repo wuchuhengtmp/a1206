@@ -31,7 +31,10 @@ func ParseByTokenStr(tokenString string) (*MyCustomClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &MyCustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(config.GetString("jwt.secret")), nil
 	})
-	logger.LogError(err)
+	if err != nil {
+		logger.LogError(err)
+		return nil, err
+	}
 	if claims, ok := token.Claims.(*MyCustomClaims); ok && token.Valid {
 		return claims, nil
 	}

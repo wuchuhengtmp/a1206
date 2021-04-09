@@ -20,8 +20,11 @@ type Error struct {
 
 var ErrorCodes = struct {
 	LoginFail int
+	InvalidToken int
 }{
 	LoginFail: 50004, // 登录失败
+	InvalidToken: 50005, // 无效token
+
 }
 
 func (e *Error) ResponseByHttpWriter(w http.ResponseWriter)  {
