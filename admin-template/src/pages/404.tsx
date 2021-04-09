@@ -1,18 +1,42 @@
-import { Button, Result } from 'antd';
 import React from 'react';
-import { history } from 'umi';
+import { Card, CardBody } from '@paljs/ui/Card';
+import { ButtonLink } from '@paljs/ui/Button';
+import { useRouter } from 'next/router';
+import styled from 'styled-components';
 
-const NoFoundPage: React.FC = () => (
-  <Result
-    status="404"
-    title="404"
-    subTitle="Sorry, the page you visited does not exist."
-    extra={
-      <Button type="primary" onClick={() => history.push('/')}>
-        Back Home
-      </Button>
-    }
-  />
-);
+import Layout from 'Layouts';
 
-export default NoFoundPage;
+const ErrorStyle = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+  small {
+    margin-bottom: 3rem;
+  }
+  h1 {
+    margin-bottom: 0.5rem;
+  }
+  a {
+    max-width: 20rem;
+  }
+`;
+export default function Error(): JSX.Element {
+  const router = useRouter();
+  return (
+    <Layout title="404 Page Not Found">
+      <Card>
+        <CardBody>
+          <ErrorStyle>
+            <h1>404 Page Not Found</h1>
+            <small>The page you were looking for doesn&apos;t exist</small>
+            <ButtonLink fullWidth appearance="hero" onClick={() => router.push('/')} shape="Rectangle">
+              Take me home
+            </ButtonLink>
+          </ErrorStyle>
+        </CardBody>
+      </Card>
+    </Layout>
+  );
+}
