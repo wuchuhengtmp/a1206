@@ -27,7 +27,7 @@ func init()  {
 		var account AuthorizationCreateRequest
 		json.Unmarshal([]byte(accountJson), &account)
 
-		user := users.User{
+		user := users.Users{
 			Password: account.Password,
 			Username: account.Username,
 		}

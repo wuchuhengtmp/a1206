@@ -8,23 +8,23 @@
 package api
 
 import (
-	"http-api/app/models/users"
+	"http-api/app/models/devices"
 	"http-api/pkg/response"
 	"net/http"
 	"strconv"
 )
 
-type UsersController struct {}
+type DevicesController struct {}
 
 /**
- * 展示当前用户列表
+ * 展示设备列表
  */
-func (*UsersController) Show(w http.ResponseWriter, r *http.Request) {
+func (*DevicesController) Show(w http.ResponseWriter, r *http.Request) {
 	page, _ := strconv.Atoi(r.URL.Query().Get("page"))
-	userModel := users.Users{}
-	userList, _ := userModel.GetUsersByPage(page)
+	devicesModel := devices.Devices{}
+	deviceListPage, _ := devicesModel.GetDevicesByPage(page)
 	res := response.Success{
-		Data: userList,
+		Data: deviceListPage,
 	}
 	res.ResponseByHttpWriter(w)
 }

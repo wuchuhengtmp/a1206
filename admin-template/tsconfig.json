@@ -14,8 +14,9 @@
     "types": [
       "node",
       "jest",
-      "webpack-env"
+      "webpack-env",
     ],
+    "typeRoots": ["src/typings.d.ts"],
     "paths": {
       "@/*": [
         "src/*"

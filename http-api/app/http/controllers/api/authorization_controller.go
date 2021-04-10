@@ -23,7 +23,7 @@ func (*AuthorizationController) Create(w http.ResponseWriter, r *http.Request) {
 		}
 		errRes.ResponseByHttpWriter(w)
 	} else {
-		var user = users.User{
+		var user = users.Users{
 			Username: r.PostFormValue("username"),
 			Password: r.PostFormValue("password"),
 		}
