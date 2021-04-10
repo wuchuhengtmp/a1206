@@ -17,7 +17,7 @@ func RegisterApiRoutes(r *mux.Router) {
 	// 获取token
 	rp.HandleFunc("/authorizations", a.Create).Methods("POST").Name("authorization.create")
 	// 获取当前用户信息
-	rp.HandleFunc("/me",
-		middlewares.Auth( (new (api.MeController)).Show),
-	).Methods("GET").Name("me.show")
+	rp.HandleFunc("/me", middlewares.Auth( (new (api.MeController)).Show)).Methods("GET").Name("me.show")
+	// 展示用户列表
+	rp.HandleFunc("/users", middlewares.Auth((new (api.UsersController)).Show)).Methods("GET").Name("users.show")
 }
