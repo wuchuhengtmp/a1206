@@ -21,8 +21,10 @@ type DevicesController struct {}
  */
 func (*DevicesController) Show(w http.ResponseWriter, r *http.Request) {
 	page, _ := strconv.Atoi(r.URL.Query().Get("page"))
+	username := r.URL.Query().Get("username")
+	status := r.URL.Query().Get("status")
 	devicesModel := devices.Devices{}
-	deviceListPage, _ := devicesModel.GetDevicesByPage(page)
+	deviceListPage, _ := devicesModel.GetDevicesByPage(page, username, status)
 	res := response.Success{
 		Data: deviceListPage,
 	}

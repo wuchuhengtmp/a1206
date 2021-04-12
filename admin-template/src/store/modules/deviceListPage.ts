@@ -8,8 +8,9 @@
 
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
 import store from '../index'
-import type {DeviceListPageType} from '@/typings'
-import {getDeviceListPage} from "@/api/devices";
+import type { DeviceListPageType, DeviceQueryType } from '@/typings'
+import { getDeviceListPage } from '@/api/devices'
+import page from '@/views/permission/page.vue'
 
 export interface DevicesState {
   deviceListPage: DeviceListPageType
@@ -21,7 +22,7 @@ class Devices extends VuexModule implements DevicesState {
 
   @Mutation
   private SET_DEVICE_LIST_PAGE(deviceListPage: DeviceListPageType): void {
-    this.deviceListPage = {...this.deviceListPage, ...deviceListPage}
+    this.deviceListPage = { ...this.deviceListPage, ...deviceListPage }
   }
 
   /**
@@ -30,11 +31,10 @@ class Devices extends VuexModule implements DevicesState {
    * @constructor
    */
   @Action
-  public async GetDeviceListPage(page: number): Promise<void> {
-    const { data } = await getDeviceListPage(page)
-    this.SET_DEVICE_LIST_PAGE( { page, ...data })
+  public async GetDeviceListPage(query: DeviceQueryType): Promise<void> {
+    const { data } = await getDeviceListPage(query)
+    this.SET_DEVICE_LIST_PAGE({ page: parseInt(query.page), ...data })
   }
 }
 
 export const DevicesModule = getModule(Devices)
-

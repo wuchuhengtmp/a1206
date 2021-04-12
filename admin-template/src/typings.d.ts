@@ -46,3 +46,12 @@ declare type DeviceListPageType = {
   total: number
   page: number
 }
+
+/**
+ * 设备查询参数枚举类型
+ */
+declare type DeviceQueryType = {
+  page: string
+  username: string
+  status: string
+}

@@ -66,3 +66,38 @@ export const Message = () => {
     }
   }
 }
+
+/**
+ *  对象转请求链接参数
+ *
+ * @param obj
+ */
+export const obj2Query = (obj: Record<string, number | string>): string => {
+  let res = ''
+  for (const e in obj) {
+    if (obj[e] !== '') {
+      res += `${e}=${obj[e]}&`
+    }
+  }
+  if (res === '') return ''
+  res = res.substr(0, res.length - 1)
+  return '?' + res
+}
+
+/**
+ * query 转obj
+ * @param query
+ */
+export const query2Obj = (query: string): Record<string, string> => {
+  const res: Record<string, string> = {}
+  if (query.length === 0) {
+    return res
+  }
+  query = query.substr(1, query.length - 1)
+
+  for (const e of query.split('&')) {
+    const [k, v] = e.split('=')
+    res[k] = v
+  }
+  return res
+}

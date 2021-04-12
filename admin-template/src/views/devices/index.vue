@@ -1,5 +1,20 @@
 <template>
    <div class="app-container">
+     <el-form :inline="true" :model="form" class="demo-form-inline">
+       <el-form-item label="账号">
+         <el-input v-model="form.username" placeholder="账号"></el-input>
+       </el-form-item>
+       <el-form-item label="设备状态">
+         <el-select v-model="form.status" placeholder="状态">
+           <el-option label="全部" value="all"></el-option>
+           <el-option label="在线" value="online"></el-option>
+           <el-option label="离线" value="offline"></el-option>
+         </el-select>
+       </el-form-item>
+       <el-form-item>
+         <el-button type="primary" @click="handleSearch" >查找</el-button>
+       </el-form-item>
+     </el-form>
      <el-row :gutter="30">
        <el-col :span="24">
          <el-table
@@ -51,6 +66,7 @@
            layout="prev, pager, next"
            v-show="listPageInfo.total > 0"
            :total="listPageInfo.total"
+           :current-page="listPageInfo.page"
            @current-change="handlePageChange"
          />
       </el-col>
@@ -59,9 +75,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import { DevicesModule } from '@/store/modules/deviceListPage'
-import { DeviceListPageType } from '@/typings'
+import { DeviceListPageType, DeviceQueryType } from '@/typings'
+import { Route } from 'vue-router'
+import { getHash, obj2Query, query2Obj } from '@/utils/helper'
 @Component({
   name: 'devices'
 })
@@ -72,22 +90,42 @@ export default class extends Vue {
 
   private loading = false
 
+  private form: DeviceQueryType = {
+    username: '',
+    status: 'all',
+    page: '1'
+  }
+
   /**
    *  获取数据
    * @param page
    * @private
    */
-  private fetchData(page: number): void {
+  private fetchData(): void {
     this.loading = true
+    // 初始化查询参数
+    for (const v in this.$route.query) {
+      if (v in this.form) {
+        this.form[v as keyof DeviceQueryType] = this.$route.query[v] as string
+      }
+    }
     try {
-      DevicesModule.GetDeviceListPage(page)
+      DevicesModule.GetDeviceListPage(this.form)
     } finally {
       this.loading = false
     }
   }
 
+  @Watch('$route')
+  private onRouteChange(route: Route) {
+    const path = route.path
+    if (path === '/devices/index') {
+      this.fetchData()
+    }
+  }
+
   mounted() {
-    this.fetchData(this.listPageInfo.page)
+    this.fetchData()
   }
 
   /**
@@ -96,11 +134,27 @@ export default class extends Vue {
    * @private
    */
   private handlePageChange(page: number): void {
-    this.fetchData(page)
+    this.form.page = page + ''
+    this.handleSearch()
+  }
+
+  /**
+   *
+   * @private
+   */
+  private handleSearch() {
+    this.form.page = 1 + ''
+    const query = query2Obj(obj2Query(this.form))
+    if (JSON.stringify(this.$route.query) !== JSON.stringify(query)) {
+      this.$router.push({ path: this.$route.path, query })
+    } else {
+      // 刷新
+      this.$router.push({ path: this.$route.path, query: { ...query, refresh: Date.now() + '' } })
+    }
   }
 }
 </script>
-
+0
 <style scoped>
 
 </style>
