@@ -1,6 +1,7 @@
 export default {
   route: {
     users: '用户管理',
+    about: '关于我们',
     device: '设备管理',
     dashboard: '首页',
     documentation: '文档',

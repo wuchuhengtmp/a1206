@@ -2,7 +2,9 @@ package bootstrap
 
 import (
 	"github.com/gorilla/mux"
+	"http-api/app/models/users"
 	"http-api/pkg/config"
+	"http-api/app/models/configs"
 	"http-api/pkg/model"
 	"http-api/pkg/route"
 	"http-api/routes"
@@ -27,4 +29,10 @@ func SetupDB() {
 	sqlDB.SetMaxIdleConns(config.GetInt("database.mysql.max_idle_connections"))
 	// 设置每个链接的过期时间
 	sqlDB.SetConnMaxLifetime(time.Duration(config.GetInt("database.mysql.max_life_seconds")) * time.Second)
+
+	// 迁移结构
+	db.AutoMigrate(
+		users.Users{},
+		configs.Configs{},
+	)
 }
