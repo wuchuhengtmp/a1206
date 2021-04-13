@@ -19,7 +19,13 @@ use Utils\WsMessage;
 class SendCreateFileCommandToDevice extends BaseAbstract
 {
 
-    public function send(BaseEvent $event, $content = null): void
+    /**
+     * @param BaseEvent $event
+     * @param null $content
+     * @param null $fileId 文件id
+     * @throws \App\Exception\WsExceptions\ConnectBrokenException
+     */
+    public function send(BaseEvent $event, $content = null, $fileId = null): void
     {
         $msgid = WsMessage::getMsgByEvent($event)->res['msgid'];
         $deviceId = (int) $event->routeParams['id'];
@@ -35,6 +41,7 @@ class SendCreateFileCommandToDevice extends BaseAbstract
             return Helper::fMqttMsg($c);
         })();
         $data = WsMessage::getMsgByEvent($event)->res;
+        if ($fileId !== null) {$data['fileId'] = $fileId ;}
         $data['message'] = $message;
         $topic = Helper::formatTopicByDeviceId($device['device_id']);
         (new MqttClient())->getClient()->publish($topic, $message, 1);

@@ -164,6 +164,7 @@ class RedisCasheModel extends BaseAbstract
      */
     public function setControMessage(string $devcieId, int $msgid,  $msg)
     {
+        var_dump($msgid);
         $redis = $this->_getClient();
         $key = $this->prefix . ":devcieMessageQueue";
         $hkey = $devcieId;

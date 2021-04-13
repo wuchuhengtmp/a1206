@@ -13,7 +13,11 @@ use App\Events\WebsocketEvents\UploadDeviceFileEvent;
 use App\Model\FilesModel;
 use App\Model\DeviceFilesModel;
 use App\Model\UsersModel;
+use App\Servics\SendCreateFileCommandToDevice;
 use App\Storages\Storage;
+use Hyperf\Utils\ApplicationContext;
+use League\Flysystem\Filesystem;
+use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Utils\WsMessage;
 
@@ -32,23 +36,27 @@ class UploadDeviceFileSubscript implements EventSubscriberInterface
 
     public function handle(BaseEvent  $event)
     {
+        $dotenv = new Dotenv();
+        $dotenv->load(BASE_PATH . '/.env');
         $msg = WsMessage::getMsgByEvent($event)->res;
         $name = $msg['data']['name'];
         $fileBase64 = $msg['data']['file'];
         $fileCon = base64_decode($fileBase64);
-        $disk = config('filesystems')['default'];
-        $diskInstance = (new Storage())->disk($disk);
-        $path = $diskInstance->put(sprintf("%s/%s.mp3", date('Y-m-d', time()), $name), $fileCon);
-        $fId = (new FilesModel($event->fd))->createOne($path, $disk);
-        $me = $event->getAuth()->res;
-        $deviceId = (int) $event->routeParams['id'];
-        // 把文件添加到设备中
-        $dfid = (new DeviceFilesModel($event->fd))->createDeviceFile($deviceId, $fId);
-        // todo 这里要把新的上传的文件报告给设备
-        WsMessage::resSuccess($event, [
-            'id' => $dfid,
-            'name' => $name,
-            'url' => $diskInstance->url($path)
-        ]);
+        $defaultDisk = env('HYPERF_DEFAULT_DISK' );
+        $diskInstance = ApplicationContext::getContainer()->get(\League\Flysystem\Filesystem::class);
+        $path = sprintf("%s/%s%s.mp3", date('Y-m-d', time()), date('ymdhis', time()),  $name);
+        $diskInstance->write($path, $fileCon);
+        $file = new FilesModel();
+        $file->path = $path;
+        $file->disk = $defaultDisk;
+        $file->save();
+        $content = [
+            'op_mode' => 1,
+            'http_root' => $file['url'],
+            'file_check_sum' => $file->size,
+            'file_lenth' => $file->size,
+            'del_file' => -1
+        ];
+        (new SendCreateFileCommandToDevice())->send($event, $content, $file->id);
     }
 }

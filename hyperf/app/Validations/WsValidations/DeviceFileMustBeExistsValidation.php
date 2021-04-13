@@ -18,7 +18,8 @@ class DeviceFileMustBeExistsValidation extends BaseValidation
     {
         $deviceId = (int) $event->routeParams['id'];
         $fileId = (int) $event->routeParams['fileId'];
-        if (!(new DeviceFilesModel($event->fd))->hasDeviceFile($deviceId, $fileId)) {
+        $file = DeviceFilesModel::query()->where('device_id', $deviceId)->where('id', $fileId)->first();
+        if (!$file) {
             $e = new UserException('没有这个设备文件');
             $e->url = $event->url;
             $e->method = $event->method;

@@ -18,7 +18,10 @@ use Hyperf\Event\Annotation\Listener;
 use Hyperf\Utils\ApplicationContext;
 use Psr\Container\ContainerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
+use Utils\Helper;
+use Utils\Message;
 use Utils\WsMessage;
+use function PHPUnit\Framework\objectEquals;
 
 /**
  * @Listener
@@ -46,7 +49,7 @@ class UpdataFleAckListener implements ListenerInterface
     {
         $data = $event->data;
         $user = UsersModel::query()->where('username', $data['from_username'])->first();
-        $payload = json_decode(substr($data['payload'], 8), true);
+        $payload = Helper::decodeMsgByStr($data['payload']);
         $msgid = $payload['msgid'];
         $devcieId = $payload['deviceid'];
         $redisModel = ApplicationContext::getContainer()->get(RedisCasheModel::class);
@@ -72,9 +75,26 @@ class UpdataFleAckListener implements ListenerInterface
                 ->sendErrorMsg($e, ['errorCode' => WsMessage::BACK_END_ERROR_CODE, 'errorMsg' => $errMsg], $msgid, $user->id );
         } else {
             // 文件操作成功
-            $data = $fullMessage['data'];
-            (new DeviceFilesModel())->updateDeviceFile($data,$devcieId);
+            $sourceMsg = Helper::decodeMsgByStr($fullMessage['message']);
             $device = DevicesModel::where('device_id', $devcieId)->first();
+            $fileId = $fullMessage['fileId'];
+            switch ($sourceMsg['content']['op_mode'])
+            {
+                // 设备添加文件成功
+                case 1:
+                    $df = new DeviceFilesModel();
+                    $df->device_id = $device->id;
+                    $df->file_id = $fileId;
+                    $df->save();
+                    break;
+                // 设备删除文件成功
+                case 2:
+                    DeviceFilesModel::query()
+                        ->where('device_id', $device->id)
+                        ->where('id', $fileId)
+                        ->delete();
+                    break;
+            }
             $newDeviceFiles = (new DevicesModel())->getFilesByDeviceId($device->id);
             // 把最新的文件列表广播给当前用户
             ApplicationContext::getContainer()
