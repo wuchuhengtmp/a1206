@@ -11,7 +11,7 @@
     >
       <div
         class="card-panel"
-        @click="handleSetLineChartData('newVisitis')"
+        @click="handleSetLineChartData('user')"
       >
         <div class="card-panel-icon-wrapper icon-people">
           <svg-icon
@@ -20,13 +20,11 @@
           />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">
-            New Visits
-          </div>
+          <div class="card-panel-text">用户总数</div>
           <count-to
             :start-val="0"
-            :end-val="102400"
-            :duration="2600"
+            :end-val="dashboard.user.total"
+            :duration="2550"
             class="card-panel-num"
           />
         </div>
@@ -40,21 +38,21 @@
     >
       <div
         class="card-panel"
-        @click="handleSetLineChartData('messages')"
+        @click="handleSetLineChartData('userForWeek')"
       >
         <div class="card-panel-icon-wrapper icon-message">
           <svg-icon
-            name="message"
+            name="newUser"
             class="card-panel-icon"
           />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            Messages
+            新增用户
           </div>
           <count-to
             :start-val="0"
-            :end-val="81212"
+            :end-val="dashboard.userForWeek.total"
             :duration="3000"
             class="card-panel-num"
           />
@@ -69,21 +67,21 @@
     >
       <div
         class="card-panel"
-        @click="handleSetLineChartData('purchases')"
+        @click="handleSetLineChartData('onlineDevices')"
       >
         <div class="card-panel-icon-wrapper icon-money">
           <svg-icon
-            name="money"
+            name="deviceOnline"
             class="card-panel-icon"
           />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            Purchases
+            在线设备
           </div>
           <count-to
             :start-val="0"
-            :end-val="9280"
+            :end-val="dashboard.onlineDevices.total"
             :duration="3200"
             class="card-panel-num"
           />
@@ -98,21 +96,21 @@
     >
       <div
         class="card-panel"
-        @click="handleSetLineChartData('shoppings')"
+        @click="handleSetLineChartData('devices')"
       >
         <div class="card-panel-icon-wrapper icon-shopping">
           <svg-icon
-            name="shopping"
+            name="device"
             class="card-panel-icon"
           />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            Shoppings
+            全部设备
           </div>
           <count-to
             :start-val="0"
-            :end-val="13600"
+            :end-val="dashboard.devices.total"
             :duration="3600"
             class="card-panel-num"
           />
@@ -125,6 +123,8 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import CountTo from 'vue-count-to'
+import { DashboardType } from '@/typings'
+import { DashboardModule } from '@/store/modules/dashboard'
 
 @Component({
   name: 'PanelGroup',
@@ -133,8 +133,24 @@ import CountTo from 'vue-count-to'
   }
 })
 export default class extends Vue {
-  private handleSetLineChartData(type: string) {
+  private handleSetLineChartData(type: keyof DashboardType) {
     this.$emit('handle-set-line-chart-data', type)
+  }
+
+  get dashboard(): DashboardType {
+    return DashboardModule.dashboard
+  }
+
+  get totalUser(): number {
+    return DashboardModule.dashboard.user.total
+  }
+
+  public fetchData() {
+    DashboardModule.getDashboard()
+  }
+
+  mounted() {
+    this.fetchData()
   }
 }
 </script>

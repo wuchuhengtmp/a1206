@@ -8,9 +8,11 @@
 package users
 
 import (
+	"fmt"
 	"http-api/pkg/encrypt"
 	"http-api/pkg/model"
 	"http-api/pkg/types"
+	"time"
 )
 
 // 有没有这个用户
@@ -61,4 +63,70 @@ func (u *Users) GetUsersByPage(page int) (PageInfoType, error) {
 	}
 	model.DB.Table("users").Count(&pageInfo.Total)
 	return pageInfo, nil
+}
+
+/**
+ * 用户总数
+ */
+func (u *Users) GetTotalUser () (total int64) {
+	model.DB.Model(&Users{}).Count(&total)
+	return total
+}
+
+/*
+ * 周用户总数
+*/
+func (u *Users) GetTotalUserForWeek () (total int64) {
+	now := time.Now().Format(time.RFC3339)
+	lastWeek := time.Unix( time.Now().Unix() - 60 * 60 * 24 * 7, 0).Format(time.RFC3339)
+	model.DB.Model(&Users{}).Where("created_at BETWEEN ? AND ?", lastWeek, now).Count(&total)
+	return total
+}
+
+type UserTotalListType []int64
+
+/**
+ * 翻转slice
+ */
+func (u *UserTotalListType) ReversSlice() UserTotalListType {
+	s := *u
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
+	return s
+}
+
+/*
+ * 周用户列表
+ */
+func (u *Users) GetUserForWeek () UserTotalListType {
+	userList := UserTotalListType{0, 0, 0, 0, 0, 0, 0}
+	 t := time.Now().Unix()
+	for i, _ := range userList {
+		t = t - 60 * 60 * 24
+		nt := time.Unix(t, 0)
+		s := fmt.Sprintf("%d-%02d-%02d 00:00:00",  nt.Year(), nt.Month(), nt.Day())
+		e := fmt.Sprintf("%d-%02d-%02d 23:59:59",  nt.Year(), nt.Month(), nt.Day())
+		model.DB.Model(&Users{}).Where("created_at BETWEEN ? AND ?", s, e).Count(&userList[i])
+	}
+	return userList.ReversSlice()
+}
+
+/**
+  ＊ 月用戶
+ */
+func (u *Users) GetUserForMonth () UserTotalListType {
+	userList := UserTotalListType{}
+	for  i := 0; i < 30; i++ {
+		userList = append(userList, 0)
+	}
+	t := time.Now().Unix()
+	for i, _ := range userList {
+		t = t - 60 * 60 * 24
+		nt := time.Unix(t, 0)
+		s := fmt.Sprintf("%d-%02d-%02d 00:00:00",  nt.Year(), nt.Month(), nt.Day())
+		e := fmt.Sprintf("%d-%02d-%02d 23:59:59",  nt.Year(), nt.Month(), nt.Day())
+		model.DB.Model(&Users{}).Where("created_at BETWEEN ? AND ?", s, e).Count(&userList[i])
+	}
+	return userList.ReversSlice()
 }

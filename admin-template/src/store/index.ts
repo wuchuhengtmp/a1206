@@ -8,6 +8,7 @@ import { IPermissionState } from './modules/permission'
 import { ISettingsState } from './modules/settings'
 import { DevicesState } from './modules/deviceListPage'
 import { AboutState } from '@/store/modules/about'
+import { DashboardState } from '@/store/modules/dashboard'
 
 Vue.use(Vuex)
 
@@ -20,6 +21,7 @@ export interface IRootState {
   settings: ISettingsState
   devices: DevicesState
   about: AboutState
+  dashboard: DashboardState
 }
 
 // Declare empty store first, dynamically register all modules later.

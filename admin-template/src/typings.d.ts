@@ -55,3 +55,14 @@ declare type DeviceQueryType = {
   username: string
   status: string
 }
+
+type DashboardItemType = {
+  list: number[]
+  total: number
+}
+declare type DashboardType = {
+  user: DashboardItemType
+  userForWeek: DashboardItemType
+  onlineDevices: DashboardItemType
+  devices: DashboardItemType
+}

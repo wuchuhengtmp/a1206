@@ -7,6 +7,7 @@ import (
 	"http-api/bootstrap"
 	"http-api/config"
 	"net/http"
+	"os"
 )
 
 var router = mux.NewRouter().StrictSlash(true)
@@ -17,6 +18,7 @@ func init()  {
 
 func main() {
 	bootstrap.SetupDB()
+	os.Setenv("TZ", "Asia/Shanghai")
 	router = bootstrap.SetupRoute()
 	http.ListenAndServe(":3000",
 		middlewares.CORSMiddleware( middlewares.RemoveTrailingSlash(router) ),

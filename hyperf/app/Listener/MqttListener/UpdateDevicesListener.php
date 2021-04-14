@@ -50,7 +50,7 @@ class UpdateDevicesListener implements ListenerInterface
         $device->status = 'online';
         $device->version = $registerInfo['content']['version'];
         $device->last_ack_at = date("Y-m-d H:i:s", time());
-        $device->connected_at = date("Y-m-d H:i:s", time());
+//        $device->connected_at = date("Y-m-d H:i:s", time());
         $device->client_id = $connectInfo['client_id'];
         $device->clean_session = 0;
         $device->play_state = $payload['content']['play_state'];

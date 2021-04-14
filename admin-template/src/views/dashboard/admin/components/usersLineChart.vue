@@ -11,12 +11,10 @@ import { Component, Prop, Watch } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
 import ResizeMixin from '@/components/Charts/mixins/resize'
 
-export interface ILineChartData {
-  actualData: number[]
-}
+export type ILineChartData = number[]
 
 @Component({
-  name: 'LineChart'
+  name: 'UsersLineChart'
 })
 export default class extends mixins(ResizeMixin) {
   @Prop({ required: true }) private chartData!: ILineChartData
@@ -49,10 +47,19 @@ export default class extends mixins(ResizeMixin) {
   }
 
   private setOptions(chartData: ILineChartData) {
+    let c = Date.now()
+    let days: string[] = []
+    for (let i = 1; i <= 30; i++) {
+      const d = new Date(c)
+      days.push(`${d.getMonth() + 1}.${d.getDate()}`)
+      c -= 60 * 60 * 24 * 1000
+    }
+    days = days.reverse()
+
     if (this.chart) {
       this.chart.setOption({
         xAxis: {
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          data: days,
           boundaryGap: false,
           axisTick: {
             show: false
@@ -78,15 +85,15 @@ export default class extends mixins(ResizeMixin) {
           }
         },
         legend: {
-          data: ['用户']
+          data: ['用户总数']
         },
         series: [
           {
-            name: '用户',
+            name: '用户总数',
             smooth: true,
             type: 'line',
             itemStyle: {
-              color: '#3888fa',
+              color: '#40c9c6',
               lineStyle: {
                 color: '#3888fa',
                 width: 2
@@ -95,7 +102,7 @@ export default class extends mixins(ResizeMixin) {
                 color: '#f3f8ff'
               }
             },
-            data: chartData.actualData,
+            data: chartData,
             animationDuration: 2800,
             animationEasing: 'quadraticOut'
           }

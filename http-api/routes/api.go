@@ -26,4 +26,6 @@ func RegisterApiRoutes(r *mux.Router) {
 	rp.HandleFunc("/about", middlewares.Auth((new (api.AboutController)).Show)).Methods("GET").Name("about.show")
 	// 更新关于我们
 	rp.HandleFunc("/about", middlewares.Auth((new (api.AboutController)).Update)).Methods("POST").Name("about.post")
+	// 仪表盘
+	rp.HandleFunc("/dashboard", middlewares.Auth((new (api.DashboradController)).Show)).Methods("GET").Name("dashboard.get")
 }

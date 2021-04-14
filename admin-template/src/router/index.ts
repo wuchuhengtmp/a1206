@@ -478,6 +478,11 @@ export const asyncRoutes: RouteConfig[] = [
   //   }
   // },
   {
+    path: '/tmp',
+    component: () => import('@/views/tmp/index.vue'),
+    meta: { hidden: true }
+  },
+  {
     path: '*',
     redirect: '/404',
     meta: { hidden: true }

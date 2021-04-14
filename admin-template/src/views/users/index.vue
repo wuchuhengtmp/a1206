@@ -23,6 +23,7 @@
               <el-button
                 size="mini"
                 v-if="scope.row.totalDevice > 0"
+                @click="handleShowDeices(scope.row)"
               >查看设备</el-button>
             </template>
           </el-table-column>
@@ -46,7 +47,7 @@
 <script lang="ts">
 
 import { Component, Vue } from 'vue-property-decorator'
-import type { UserListPageType } from '@/typings'
+import type { DeviceType, UserListPageType, UserType } from '@/typings'
 import { UserModule } from '@/store/modules/user'
 
 @Component({
@@ -95,6 +96,10 @@ export default class extends Vue {
       return 'success-row'
     }
     return ''
+  }
+
+  public handleShowDeices(row: UserType) {
+    this.$router.push({ path: '/devices/index', query: { username: row.username } })
   }
 }
 

@@ -11,12 +11,10 @@ import { Component, Prop, Watch } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
 import ResizeMixin from '@/components/Charts/mixins/resize'
 
-export interface ILineChartData {
-  actualData: number[]
-}
+export type ILineChartData = number[]
 
 @Component({
-  name: 'LineChart'
+  name: 'DevicesWeekLineChart'
 })
 export default class extends mixins(ResizeMixin) {
   @Prop({ required: true }) private chartData!: ILineChartData
@@ -49,10 +47,29 @@ export default class extends mixins(ResizeMixin) {
   }
 
   private setOptions(chartData: ILineChartData) {
+    let c = Date.now()
+    const days: string[] = []
+    type weekNumMapStrKeyType = 0 | 1 | 2 | 3 | 4 | 5 | 6
+    const weekNumMapStr: Record<weekNumMapStrKeyType, string> = {
+      0: '周日',
+      1: '周一',
+      2: '周二',
+      3: '周三',
+      4: '周四',
+      5: '周五',
+      6: '周六'
+    }
+    for (let i = 1; i <= 7; i++) {
+      const k = (new Date(c)).getDay() as weekNumMapStrKeyType
+      const weekStr = weekNumMapStr[k]
+      days.push(weekStr)
+      c -= 60 * 60 * 24 * 1000
+    }
+    days.reverse()
     if (this.chart) {
       this.chart.setOption({
         xAxis: {
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          data: days,
           boundaryGap: false,
           axisTick: {
             show: false
@@ -78,15 +95,15 @@ export default class extends mixins(ResizeMixin) {
           }
         },
         legend: {
-          data: ['用户']
+          data: ['在线设备']
         },
         series: [
           {
-            name: '用户',
+            name: '在线设备',
             smooth: true,
             type: 'line',
             itemStyle: {
-              color: '#3888fa',
+              color: '#fa385f',
               lineStyle: {
                 color: '#3888fa',
                 width: 2
@@ -95,7 +112,7 @@ export default class extends mixins(ResizeMixin) {
                 color: '#f3f8ff'
               }
             },
-            data: chartData.actualData,
+            data: chartData,
             animationDuration: 2800,
             animationEasing: 'quadraticOut'
           }

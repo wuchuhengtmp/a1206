@@ -2,6 +2,7 @@ package bootstrap
 
 import (
 	"github.com/gorilla/mux"
+	"http-api/app/models/devices"
 	"http-api/app/models/users"
 	"http-api/pkg/config"
 	"http-api/app/models/configs"
@@ -34,5 +35,6 @@ func SetupDB() {
 	db.AutoMigrate(
 		users.Users{},
 		configs.Configs{},
+		devices.Devices{},
 	)
 }

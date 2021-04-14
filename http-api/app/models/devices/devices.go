@@ -7,9 +7,13 @@
  */
 package devices
 
-import "http-api/pkg/types"
+import (
+	"gorm.io/gorm"
+	"http-api/pkg/types"
+)
 
 type Devices struct {
+	gorm.Model
 	Id           int            `json:"id"`
 	DeviceId     string         `json:"deviceId"`  // 设备ID
 	IpAddress    string         `json:"ipAddress"` // 设备ip

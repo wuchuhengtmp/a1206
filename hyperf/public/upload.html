@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="box">
+        <input type="file" id="f">
+    </div>
+</body>
+
+</html>
+<style>
+    .box {
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+<script>
+    document.addEventListener('UniAppJSBridgeReady', function () {
+        console.log('加载完成，可以使用uni相关接口');
+        uni.postMessage({
+            data: {
+                action: '加载完成，可以使用uni相关接口'
+            }
+        });
+        uni.getEnv(function (res) {
+            console.log('当前环境：' + JSON.stringify(res));
+        });
+    });
+    window.onload = () => {
+        var f = document.getElementById("f");
+        console.log(f)
+        f.onchange = () => {
+            console.log(f.files[0])
+            uni.postMessage({
+                data: {
+                    action: f.file[0]
+                }
+            });
+        }
+    }
+
+
+
+</script>

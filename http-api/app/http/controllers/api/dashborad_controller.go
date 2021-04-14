@@ -1,39 +1,40 @@
+/**
+ * 仪表盘
+ */
 package api
 
 import (
-	"encoding/json"
+	"http-api/app/models/devices"
 	"http-api/app/models/users"
-	"http-api/app/requests/api"
-	"http-api/pkg/jwt"
 	"http-api/pkg/response"
 	"net/http"
 )
-type AuthorizationController struct {}
+type DashboradController struct {}
 
-// 生成token
-func (*AuthorizationController) Create(w http.ResponseWriter, r *http.Request) {
-	decoder := json.NewDecoder(r.Body)
-	var account api.AuthorizationCreateRequest
-	decoder.Decode(&account)
-	errors := api.ValidateAuthorizationCreateRequest(account)
-	if len(errors) > 0 {
-		var errRes  =  response.Error{
-			Errors: errors,
-			ErrorCode: response.ErrorCodes.LoginFail,
-		}
-		errRes.ResponseByHttpWriter(w)
-	} else {
-		var user = users.Users{
-			Username: r.PostFormValue("username"),
-			Password: r.PostFormValue("password"),
-		}
-		user.GetUser()
-		jwtToken,_ := jwt.GenerateTokenByUID(user.ID)
-		var resData struct { AccessToken string 	`json:"accessToken"` }
-		resData.AccessToken = jwtToken
-		res := response.Success{
-			Data: resData,
-		}
-		res.ResponseByHttpWriter(w)
+func (*DashboradController) Show(w http.ResponseWriter, r *http.Request) {
+	type groupType struct {
+		Total int64   `json:"total"`
+		List  []int64 `json:"list"`
 	}
+	var dashboard struct{
+		User          groupType `json:"user"`          // 用户总数和月用户量
+		UserForWeek   groupType `json:"userForWeek"`   // 周用户数用周添加量
+		OnlineDevices groupType `json:"onlineDevices"` // 周在线设备和周总量`
+		Devices       groupType `json:"devices"`       // 全部设备和月设备量
+	}
+	var users users.Users
+	dashboard.User.Total = users.GetTotalUser()
+	dashboard.UserForWeek.Total = users.GetTotalUserForWeek()
+	var devicesModel devices.Devices
+	dashboard.OnlineDevices.Total = devicesModel.GetTotalOnlineDevices()
+	dashboard.User.List = users.GetUserForMonth()
+	dashboard.Devices.Total = devicesModel.GetTotalDevices()
+	dashboard.UserForWeek.List = users.GetUserForWeek()
+	var device devices.Devices
+	dashboard.OnlineDevices.List = device.GetDeviceOnlineForWeek()
+	dashboard.Devices.List = device.GetDeviceForMonth()
+	res := response.Success{
+		Data: dashboard,
+	}
+	res.ResponseByHttpWriter(w)
 }
