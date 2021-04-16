@@ -13,8 +13,10 @@ class UpdateMeRequestValidation extends BaseValidation
     public function getRules(): array
     {
         return [
-            'avatar'   => ['required'],
-            'nickname' => ['required']
+            'avatar' => ['required'],
+            'nickname' => ['required'],
+//            'lng' => ['required'],
+//            'lat' => ['required'],
         ];
     }
 }

@@ -44,11 +44,14 @@ class UploadDeviceFileSubscript implements EventSubscriberInterface
         $fileCon = base64_decode($fileBase64);
         $defaultDisk = env('HYPERF_DEFAULT_DISK' );
         $diskInstance = ApplicationContext::getContainer()->get(\League\Flysystem\Filesystem::class);
-        $path = sprintf("%s/%s%s.mp3", date('Y-m-d', time()), date('ymdhis', time()),  $name);
-        $diskInstance->write($path, $fileCon);
+        $dir = date('Y-m-d/', time());
         $file = new FilesModel();
-        $file->path = $path;
+        $file->path = '';
         $file->disk = $defaultDisk;
+        $file->save();
+        $path = $dir . sprintf('%05d', $file->id) . '.mp3';
+        $diskInstance->write($path, $fileCon);
+        $file->path = $path;
         $file->save();
         $content = [
             'op_mode' => 1,
@@ -57,6 +60,6 @@ class UploadDeviceFileSubscript implements EventSubscriberInterface
             'file_lenth' => $file->size,
             'del_file' => -1
         ];
-        (new SendCreateFileCommandToDevice())->send($event, $content, $file->id);
+        (new SendCreateFileCommandToDevice())->send($event, $content, $file->id, $name);
     }
 }

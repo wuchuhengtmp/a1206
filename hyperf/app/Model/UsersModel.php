@@ -28,7 +28,9 @@ class UsersModel extends Model
         'password',
         'username',
         'avatar',
-        'nickname'
+        'nickname',
+        'fat',
+        'lng'
     ];
     /**
      * The attributes that should be cast to native types.

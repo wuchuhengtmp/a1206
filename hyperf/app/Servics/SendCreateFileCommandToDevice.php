@@ -25,7 +25,7 @@ class SendCreateFileCommandToDevice extends BaseAbstract
      * @param null $fileId 文件id
      * @throws \App\Exception\WsExceptions\ConnectBrokenException
      */
-    public function send(BaseEvent $event, $content = null, $fileId = null): void
+    public function send(BaseEvent $event, $content = null, $fileId = null, $name = null): void
     {
         $msgid = WsMessage::getMsgByEvent($event)->res['msgid'];
         $deviceId = (int) $event->routeParams['id'];
@@ -42,6 +42,7 @@ class SendCreateFileCommandToDevice extends BaseAbstract
         })();
         $data = WsMessage::getMsgByEvent($event)->res;
         if ($fileId !== null) {$data['fileId'] = $fileId ;}
+        if ($name !== null) {$data['name'] = $name ;}
         $data['message'] = $message;
         $topic = Helper::formatTopicByDeviceId($device['device_id']);
         (new MqttClient())->getClient()->publish($topic, $message, 1);

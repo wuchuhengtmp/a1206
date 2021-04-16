@@ -31,7 +31,10 @@ class UpdateMeSubscript implements EventSubscriberInterface
         $data = WsMessage::getMsgByEvent($event)->res['data'];
         $me->nickname = $data['nickname'];
         $me->avatar = $data['avatar'];
+//        $me->lng = $data['lng'];
+//        $me->lat = $data['lat'];
         $isOk = $me->save();
+        var_dump($me->lat);
         $isOk ? WsMessage::resSuccess($event, $me->toArray()) : WsMessage::resError($event);
     }
 }

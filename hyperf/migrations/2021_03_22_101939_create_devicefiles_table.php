@@ -22,6 +22,7 @@ class CreateDevicefilesTable extends Migration
               `id` int(11) NOT NULL AUTO_INCREMENT,
               `device_id` int(11) NOT NULL COMMENT '设备id',
               `file_id` int(11) NOT NULL COMMENT '文件id',
+              `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '文件名',
               `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
               `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
               PRIMARY KEY (`id`,`device_id`,`file_id`)

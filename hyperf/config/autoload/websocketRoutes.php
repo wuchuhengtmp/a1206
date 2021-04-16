@@ -9,6 +9,7 @@ use Utils\WsRouteParser as Router;
 
 use App\Events\WebsocketEvents\{
     SetDeviceSoundEvent,
+    CreateMsmCodeEvent,
     ShowDeviceDetailEvent,
     PlayModeEvent,
     LoginEvent,
@@ -25,11 +26,13 @@ use App\Events\WebsocketEvents\{
     PlayFilesEvent,
     AddConfigTimeEvent,
     UpdateMeEnvent,
-    UpdateDevicePropertyEvent
+    UpdateDevicePropertyEvent,
+    ResetMePasswordEvent
 };
 //
 use \App\Validations\WsValidations\{
     AddConfigTimeRequestValidation,
+    ResetPasswordRequestValidation,
     UpdateDevicePropertyRequestValidation,
     UpdateMeRequestValidation,
     AuthValidation,
@@ -41,11 +44,17 @@ use \App\Validations\WsValidations\{
     DeviceFileMustBeExistsValidation,
     PlayFilesValidation,
     DeviceMustBeOnlineValidation,
-    PlayModeValidation
+    PlayModeValidation,
+    CreateMsmCodeRequestValidation
 };
 return Router::group(
     // 关于我们
     Router::get('/about', AboutEvent::class),
+    // 短信验证码
+    Router::post('/smsCodes',CreateMsmCodeEvent::class, [ CreateMsmCodeRequestValidation::class ]),
+    Router::put('/me/password', ResetMePasswordEvent::class, [
+        ResetPasswordRequestValidation::class
+    ]),
     // 登录
     Router::post('/users/authorizations', LoginEvent::class, [LoginValidation::class] ),
     // 注册

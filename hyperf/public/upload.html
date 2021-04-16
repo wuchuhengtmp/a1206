@@ -5,50 +5,194 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title></title>
 </head>
 
 <body>
     <div class="box">
-        <input type="file" id="f">
+        <div>
+            <div class="title">文件上传</div>
+            <input type="file" id="f">
+            <div class="file_info">
+                <div class="file_box" id="file_box">
+                    <!-- <div class="error">未选择文件</div> -->
+                    <!-- <div class="error">文件大小超过限制</div> -->
+                    <!-- <div class="error">文件类型错误</div> -->
+                    <!-- <div>
+                       <div>文件名：jkdaljsfklaj.mp3</div>
+                       <div>文件大小：1M</div>
+                   </div> -->
+                </div>
+            </div>
+            <div class="btn_box">
+                <div class="btn" id="btn">选择文件</div>
+            </div>
+            <div class="mes">(请选择音频文件，文件大小不能超过1M)</div>
+        </div>
     </div>
 </body>
 
 </html>
 <style>
     .box {
-        height: 100vh;
+        height: calc(100vh - 120px);
         width: 100vw;
         display: flex;
         justify-content: center;
         align-items: center;
     }
-</style>
-<script>
-    document.addEventListener('UniAppJSBridgeReady', function () {
-        console.log('加载完成，可以使用uni相关接口');
-        uni.postMessage({
-            data: {
-                action: '加载完成，可以使用uni相关接口'
-            }
-        });
-        uni.getEnv(function (res) {
-            console.log('当前环境：' + JSON.stringify(res));
-        });
-    });
-    window.onload = () => {
-        var f = document.getElementById("f");
-        console.log(f)
-        f.onchange = () => {
-            console.log(f.files[0])
-            uni.postMessage({
-                data: {
-                    action: f.file[0]
-                }
-            });
-        }
+
+    .title {
+        width: 100%;
+        text-align: center;
+        font-size: 30px;
+        margin-bottom: 16px;
     }
 
+    #f {
+        display: none;
+    }
+
+    .file_info {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .file_box {
+        width: 260px;
+        height: 100px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .btn_box {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .btn {
+        border-radius: 4px;
+        width: 90px;
+        height: 36px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 15px;
+        color: white;
+        background: linear-gradient(180deg, #4b0ff7 0%, #660ff7 100%);
+    }
+
+    .mes {
+        width: 100%;
+        text-align: center;
+        font-size: 13px;
+        color: rgb(114, 111, 111);
+    }
+</style>
+<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+<script type="text/javascript" src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js"></script>
+<script type="text/javascript">
+    let maxSize = 1 * 1024 * 1024
+    window.onload = () => {
+        var id = getUrlParam('id')
+        var token =getUrlParam('token')
+        console.log(id,token)
+        document.addEventListener('UniAppJSBridgeReady', function () {
+            // console.log("uni准备就绪")
+            // uni.postMessage({
+            //     data: {
+            //         action: 'postMessage'
+            //     }
+            // });
+
+        })
+        // 添加节点
+        var box = document.getElementById("file_box")
+        box.innerHTML = '<div class="error">未选择文件</div>'
+
+        // input节点
+        var f = document.getElementById("f");
+
+        // 监听按钮点击
+        var btn = document.getElementById("btn")
+        btn.addEventListener("click", () => {
+            f.click()
+        })
+
+
+        f.onchange = () => {
+            let file = f.files[0]
+            console.log(f.files[0])
+            if (f.files[0].size > maxSize) {
+                box.innerHTML = '<div class="error">文件大小超过限制</div>'
+                alert("不能上传大于1M的文件")
+                return
+            }
+
+            let size = (f.files[0].size / 1024 / 1024).toFixed(2)
+            let name = f.files[0].name
+            box.innerHTML = `<div>
+                       <div>文件名：${name}</div>
+                       <div>文件大小：${size}M</div>
+                   </div> `
+            fileToBase64(f.files[0]).then(bash64 => {
+                console.log(bash64)
+                uni.postMessage({
+                    data: {
+                        action: id
+                    }
+                });
+                uni.postMessage({
+                    data: {
+                        action: token
+                    }
+                });
+                uni.postMessage({
+                    data: {
+                        action: name
+                    }
+                });
+                uni.postMessage({
+                    data: {
+                        action: bash64
+                    }
+                });
+                setTimeout(() => {
+                    uni.navigateBack()
+                }, 500)
+            })
+
+
+
+        }
+    }
+    // 获取小程序传递过来的参数
+    function getUrlParam(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)")
+        var r = window.location.search.substr(1).match(reg)
+        if (r != null) return unescape(r[2])
+        return null
+    }
+    // 文件转base64
+    function fileToBase64(file) {
+        return new Promise(function (resolve, reject) {
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+                typeof reader.result === 'string' && resolve(reader.result) || reject();
+            };
+            reader.onerror = function (error) { return reject(error); };
+        });
+    };
 
 
 </script>

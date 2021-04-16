@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Utils;
 
 use App\Events\MqttEvents\BaseEvent;
+use App\Model\ConfigsModel;
 
 class Helper
 {
@@ -108,4 +109,19 @@ class Helper
     {
         return json_decode(substr($payload, 8), true);
     }
+
+    static public function getConfByKey(string $key): string {
+        return ConfigsModel::query()->where('name', $key)->first()->value;
+    }
+
+    static public function randStr($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
+
 }

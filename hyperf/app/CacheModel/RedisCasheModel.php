@@ -10,11 +10,15 @@ namespace App\CacheModel;
 
 use Hyperf\Redis\Redis;
 use Hyperf\Utils\ApplicationContext;
+use PHPUnit\Util\Test;
 use Utils\Helper;
 
 class RedisCasheModel extends BaseAbstract
 {
-    public $prefix = "a1206";
+    const PREFIX = "a1206";
+
+    const MSGINFOKEY = self::PREFIX . ":msgInfo";
+
 
     private function _getClient(): Redis
     {
@@ -36,12 +40,12 @@ class RedisCasheModel extends BaseAbstract
                 'value' => $value
             ]);
         }
-        $redis->hSet($this->prefix . ":keys", $key, $value);
+        $redis->hSet(self::PREFIX . ":keys", $key, $value);
     }
 
     public function get(string $key)
     {
-        $v = $this->_getClient()->hGet($this->prefix . ":keys", $key);
+        $v = $this->_getClient()->hGet(self::PREFIX . ":keys", $key);
         if (Helper::isJson($v)) {
             $v = json_decode($v, true);
             switch ($v['type']) {
@@ -60,20 +64,20 @@ class RedisCasheModel extends BaseAbstract
     public function has(string $key): bool
     {
         $redis = $this->_getClient();
-        return $redis->hExists($this->prefix . ":kyes", $key);
+        return $redis->hExists(self::PREFIX . ":kyes", $key);
     }
 
     public function setConnectInfo(string $key, array $value)
     {
         $value = json_encode($value);
         $redis = $this->_getClient();
-        $redis->hset($this->prefix . ":clientIdMapConnectInfo", $key, $value);
+        $redis->hset(self::PREFIX . ":clientIdMapConnectInfo", $key, $value);
     }
 
     public function getConnectInfoByClientId(string $key): array
     {
         $redis = $this->_getClient();
-        $data = $redis->hget($this->prefix . ":clientIdMapConnectInfo", $key);
+        $data = $redis->hget(self::PREFIX . ":clientIdMapConnectInfo", $key);
         return json_decode($data, true);
     }
 
@@ -81,13 +85,13 @@ class RedisCasheModel extends BaseAbstract
     {
         $value = json_encode($value);
         $redis = $this->_getClient();
-        $redis->hset($this->prefix . ":clientIdMapRegisterInfo", $key, $value);
+        $redis->hset(self::PREFIX . ":clientIdMapRegisterInfo", $key, $value);
     }
 
     public function getRegisterInfoByClientId(string $key): array
     {
         $redis = $this->_getClient();
-        $data = $redis->hget($this->prefix . ":clientIdMapRegisterInfo", $key);
+        $data = $redis->hget(self::PREFIX . ":clientIdMapRegisterInfo", $key);
         return \json_decode($data, true);
     }
 
@@ -95,7 +99,7 @@ class RedisCasheModel extends BaseAbstract
     {
         $uid = (string) $uid;
         $redis = $this->_getClient();
-        $fkey = $this->prefix . ":uidBindFd";
+        $fkey = self::PREFIX . ":uidBindFd";
         $data = [];
         if ($redis->hExists($fkey, $uid)) {
             $data = json_decode($redis->hGet( $fkey, $uid), true);
@@ -114,7 +118,7 @@ class RedisCasheModel extends BaseAbstract
     {
         $uid = (string) $uid;
         $redis = $this->_getClient();
-        $fkey = $this->prefix . ":fdBindUid";
+        $fkey = self::PREFIX . ":fdBindUid";
         $redis->hset($fkey, (string) $fd, $uid);
     }
 
@@ -127,7 +131,7 @@ class RedisCasheModel extends BaseAbstract
     {
         $fd = (string) $fd;
         $redis = $this->_getClient();
-        $fkey = $this->prefix . ":fdBindUid";
+        $fkey = self::PREFIX . ":fdBindUid";
         $foo = $redis->hGet($fkey, $fd);
         return (int) $foo;
     }
@@ -141,18 +145,18 @@ class RedisCasheModel extends BaseAbstract
     {
         $fds = $this->getFdByUid($uid);
         $key = array_search($fd, $fds);
-        $fkey = $this->prefix . ':uidBindFd';
+        $fkey = self::PREFIX . ':uidBindFd';
         unset($fds[$key]);
         $redis = $this->_getClient();
         $redis->hSet($fkey, (string) $uid, json_encode($fds));
-        $fdKey = $this->prefix . ":fdBindUid";
+        $fdKey = self::PREFIX . ":fdBindUid";
         $redis->hDel($fdKey, $fd);
     }
 
     public function getFdByUid(int $uid): array
     {
         $redis = $this->_getClient();
-        $fkey = $this->prefix . ':uidBindFd';
+        $fkey = self::PREFIX . ':uidBindFd';
         $fds = $redis->hget($fkey, (string) $uid);
         return json_decode($fds, true);
     }
@@ -166,7 +170,7 @@ class RedisCasheModel extends BaseAbstract
     {
         var_dump($msgid);
         $redis = $this->_getClient();
-        $key = $this->prefix . ":devcieMessageQueue";
+        $key = self::PREFIX . ":devcieMessageQueue";
         $hkey = $devcieId;
         $data = [];
         if ($redis->hExists($key, $hkey)) {
@@ -187,12 +191,58 @@ class RedisCasheModel extends BaseAbstract
     public function getControllerMessage(string $devcieId, int $msgid)
     {
         $redis = $this->_getClient();
-        $key = $this->prefix . ":devcieMessageQueue";
+        $key = self::PREFIX . ":devcieMessageQueue";
         $hkey = $devcieId;
         $queue = json_decode($redis->hGet($key, $hkey), true);
         $e = $queue[$msgid];
         unset($queue[$msgid]);
         $redis->hSet($key, $hkey, json_encode($queue));
         return  json_decode($e, true);
+    }
+
+    /**
+     * 设置短信消息
+     * @param string $key
+     * @param array $data
+     */
+    public function setMsgInfo(string $key, array $data)
+    {
+        $redis = $this->_getClient();
+        $redis->hSet(self::MSGINFOKEY, $key, json_encode($data));
+    }
+
+
+    /**
+     * 获取短信短信验证码缓存
+     * @param string $key
+     * @return array
+     */
+    public function getMsgInfo(string $key): array
+    {
+        $redis = $this->_getClient();
+        $data = $redis->hget(self::MSGINFOKEY, $key);
+        return json_decode($data, true);
+    }
+
+    /***
+     *  是否有这个短信验证码缓存
+     * @param string $key
+     * @return bool
+     */
+    public function hasMsgInfoByKey(string $key): bool
+    {
+        $redis = $this->_getClient();
+        return (bool) $redis->hExists(self::MSGINFOKEY, $key);
+    }
+
+    /**
+     *  删除这个短信验证码缓存
+     * @param string $key
+     * @return bool
+     */
+    public function delMsgInfoByKey(string $key): bool
+    {
+        $redis = $this->_getClient();
+        return (bool) $redis->hDel(self::MSGINFOKEY, $key);
     }
 }

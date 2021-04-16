@@ -78,6 +78,7 @@ class UpdataFleAckListener implements ListenerInterface
             $sourceMsg = Helper::decodeMsgByStr($fullMessage['message']);
             $device = DevicesModel::where('device_id', $devcieId)->first();
             $fileId = $fullMessage['fileId'];
+            $name = $fullMessage['name'];
             switch ($sourceMsg['content']['op_mode'])
             {
                 // 设备添加文件成功
@@ -85,6 +86,7 @@ class UpdataFleAckListener implements ListenerInterface
                     $df = new DeviceFilesModel();
                     $df->device_id = $device->id;
                     $df->file_id = $fileId;
+                    $df->name = $name;
                     $df->save();
                     break;
                 // 设备删除文件成功

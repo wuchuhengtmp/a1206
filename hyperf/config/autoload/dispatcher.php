@@ -19,7 +19,7 @@ return [
 //    \App\Listens\MqttListens\UpdataFileSubscript::class,
 //    \App\Listens\MqttListens\UpdataFileResponseSubscript::class,
 //
-//    // websocket subscript
+    // websocket subscript
     \App\Listener\WebsocketListeners\LoginSubscript::class,
     \App\Listener\WebsocketListeners\RegisterSubscript::class,
 //    WsLogSubscript::class,
@@ -41,4 +41,6 @@ return [
     \App\Listener\WebsocketListeners\UpdateMeSubscript::class,
     \App\Listener\WebsocketListeners\UpdateDevicePropertySubscript::class,
     \App\Listener\WebsocketListeners\AboutSubscript::class,
+    \App\Listener\WebsocketListeners\CreateSmsCodeSubscript::class,
+    \App\Listener\WebsocketListeners\ResetMePasswordSubscript::class
     ];

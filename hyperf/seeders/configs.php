@@ -22,5 +22,9 @@ class Configs extends Seeder
         Db::insert("INSERT INTO `configs`(`id`, `name`, `value`, `created_at`, `updated_at`) VALUES (6, 'DEFAULT_AUDIO_10', '10', '2021-03-19 09:31:07', '2021-03-19 09:31:14')");
         Db::insert("INSERT INTO `configs`(`id`, `name`, `value`, `created_at`, `updated_at`) VALUES (7, 'DEFAULT_AUDIO_11', '11', '2021-03-19 09:31:08', '2021-03-19 09:31:15')");
         Db::insert("INSERT INTO `configs`(`id`, `name`, `value`, `created_at`, `updated_at`) VALUES (8, 'ABOUT', '<p>关于我们</p>', NULL, NULL)");
+        DB::insert("INSERT INTO `configs`(`id`, `name`, `value`, `created_at`, `updated_at`, `deleted_at`) VALUES (9, 'ALIYUN_SMS_TEMPLATE', 'SMS_199770686', NULL, NULL, NULL)");
+        DB::insert("INSERT INTO `configs`(`id`, `name`, `value`, `created_at`, `updated_at`, `deleted_at`) VALUES (10, 'ALIYUN_SMS_SIGN_NAME', '优亿生活', NULL, NULL, NULL)");
+        DB::insert("INSERT INTO `configs`(`id`, `name`, `value`, `created_at`, `updated_at`, `deleted_at`) VALUES (11, 'ALIYUN_SMS_ACCESS_KEY_SECRET', 'FiU9tYSRaWeJgbzVIm2V8dnxMYw4De', NULL, NULL, NULL)");
+        DB::insert("INSERT INTO `configs`(`id`, `name`, `value`, `created_at`, `updated_at`, `deleted_at`) VALUES (12, 'ALIYUN_SMS_ACCESS_KEY_ID', 'LTAI5tN4vQBjUzDgimwm6oTm', NULL, NULL, NULL)");
     }
 }

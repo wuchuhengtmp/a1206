@@ -30,22 +30,4 @@ class UploadFileValidation extends BaseValidation
             'file.required' => '文件不能为空'
         ];
     }
-
-    /**
-     * 验证文件是否存在
-     * @param BaseEvent $event
-     * @param array $data
-     * @param string $fieldName
-     * @param callable $reportErro
-     */
-    public function isExists(BaseEvent $event, array $data, string $fieldName, callable $reportError)
-    {
-        if (array_key_exists('name', $data)) {
-            $path = sprintf("%s/%s.mp3", date('Y-m-d', time()), $data['name']);
-             $disk = ApplicationContext::getContainer()->get(\League\Flysystem\Filesystem::class);
-             if ($disk->has($path)) {
-                 $reportError('文件已经存在');
-             }
-        }
-    }
 }

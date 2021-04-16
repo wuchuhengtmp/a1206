@@ -20,6 +20,8 @@ class CreateUsersTable extends Migration
             $table->string('role', 20)->default('user')->comment('角色');
             $table->string('avatar', 255)->default('')->comment('头像');
             $table->string('nickname', 40)->default('')->comment('昵称');
+            $table->float('lat', 10, 6)->default(0)->comment('经度');
+            $table->float('lnt', 10, 6)->default(0)->comment('纬度');
             $table->timestamps();
         });
     }

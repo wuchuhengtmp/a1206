@@ -67,6 +67,7 @@ class DevicesModel extends Model
             $tmp = [];
             $tmp['id'] = $dFile->id;
             $tmp['url'] = $dFile->file->url;
+            $tmp['name'] = $dFile->name;
             $res[] = $tmp;
         }
         return $res;
