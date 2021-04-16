@@ -1,4 +1,7 @@
 import request from '@/utils/request'
+import { ChangeUserType } from '@/typings'
+import data from '@/views/pdf/content'
+import { rejects } from 'assert'
 
 export const getUsers = (params: any) =>
   request({
@@ -58,3 +61,11 @@ export const getUserList = (page: number) =>
     url: `/users?page=${page}`,
     method: 'get'
   })
+
+export const updatePassword = (changeUserRow: ChangeUserType) => request({
+  url: `/users/${changeUserRow.id}/password`,
+  data: {
+    password: changeUserRow.password
+  },
+  method: 'PUT'
+})

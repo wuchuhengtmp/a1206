@@ -28,4 +28,10 @@ func RegisterApiRoutes(r *mux.Router) {
 	rp.HandleFunc("/about", middlewares.Auth((new (api.AboutController)).Update)).Methods("POST").Name("about.post")
 	// 仪表盘
 	rp.HandleFunc("/dashboard", middlewares.Auth((new (api.DashboradController)).Show)).Methods("GET").Name("dashboard.get")
+	// 修改密码
+	rp.HandleFunc("/users/{id:[0-9]+}/password", middlewares.Auth((new (api.UsersController)).UpdatePssword)).Methods("PUT").Name("users.update")
+	// 获取sms配置
+	rp.HandleFunc("/configs/sms", middlewares.Auth((new (api.ConfigController)).ShowSms)).Methods("GET").Name("config.sms.Show")
+	// 修改sms配置
+	rp.HandleFunc("/configs/sms", middlewares.Auth((new (api.ConfigController)).UpdateSms)).Methods("PUT").Name("config.sms.update")
 }

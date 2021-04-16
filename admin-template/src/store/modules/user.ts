@@ -1,11 +1,11 @@
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
-import { login, logout, getUserInfo, getUserList } from '@/api/users'
+import { login, logout, getUserInfo, getUserList, updatePassword } from '@/api/users'
 import { getToken, setToken, removeToken } from '@/utils/cookies'
 import router, { resetRouter } from '@/router'
 import { PermissionModule } from './permission'
 import { TagsViewModule } from './tags-view'
 import store from '@/store'
-import type { UserListPageType, UserType } from '@/typings'
+import type { ChangeUserType, UserIdType, UserListPageType, UserPasswordType, UserType } from '@/typings'
 
 export interface IUserState {
   token: string
@@ -135,6 +135,11 @@ class User extends VuexModule implements IUserState {
   public async GetUserList(page: number) {
     const { data } = await getUserList(page)
     this.SET_USER_LIST({ page, ...data })
+  }
+
+  @Action
+  public async UpdatePassword(changeUserRow: ChangeUserType) {
+    await updatePassword(changeUserRow)
   }
 }
 

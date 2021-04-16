@@ -24,6 +24,15 @@ Vue.use(ElementUI, {
   i18n: (key: string, value: string) => i18n.t(key, value)
 })
 
+// Vue.use(VueAMap)
+//
+// // 初始化vue-amap
+// VueAMap.initAMapApiLoader({
+//   key: 'b9ec8422cefaed1483796733ed761921',
+//   plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor'],
+//   v: '1.4.4'
+// })
+
 Vue.use(SvgIcon, {
   tagName: 'svg-icon',
   defaultWidth: '1em',

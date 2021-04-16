@@ -9,6 +9,7 @@ import { ISettingsState } from './modules/settings'
 import { DevicesState } from './modules/deviceListPage'
 import { AboutState } from '@/store/modules/about'
 import { DashboardState } from '@/store/modules/dashboard'
+import { ConfigType } from '@/typings'
 
 Vue.use(Vuex)
 
@@ -22,6 +23,7 @@ export interface IRootState {
   devices: DevicesState
   about: AboutState
   dashboard: DashboardState
+  config: ConfigType
 }
 
 // Declare empty store first, dynamically register all modules later.

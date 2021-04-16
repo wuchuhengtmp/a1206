@@ -6,14 +6,18 @@
  * @listen MIT
  */
 
+declare type UserIdType = number
+declare type UserPasswordType = string
 export type UserType = {
-  id: number
+  id: UserIdType
   createdAt: string
   nickname: string
   username: string
   avatar: string
   totalDevice: number
 }
+
+export type ChangeUserType = UserType & {password: UserPasswordType}
 
 /**
  * 用户列表分页
@@ -65,4 +69,14 @@ declare type DashboardType = {
   userForWeek: DashboardItemType
   onlineDevices: DashboardItemType
   devices: DashboardItemType
+}
+
+declare type ConfigSMSType = {
+  ALIYUN_SMS_TEMPLATE: string
+  ALIYUN_SMS_SIGN_NAME: string
+  ALIYUN_SMS_ACCESS_KEY_SECRET: string
+  ALIYUN_SMS_ACCESS_KEY_ID: string
+}
+declare type ConfigType = {
+  sms: ConfigSMSType
 }

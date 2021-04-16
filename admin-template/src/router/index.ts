@@ -188,6 +188,23 @@ export const asyncRoutes: RouteConfig[] = [
       }
     ]
   },
+  {
+    path: '/config',
+    component: Layout,
+    redirect: '/dashboard',
+    children: [
+      {
+        path: 'sms',
+        component: () => import(/* webpackChunkName: "dashboard" */ '@/views/config/smsConfig.vue'),
+        name: 'sms',
+        meta: {
+          title: 'sms',
+          icon: 'sms',
+          affix: true
+        }
+      }
+    ]
+  },
   // {
   //   path: '/permission',
   //   component: Layout,

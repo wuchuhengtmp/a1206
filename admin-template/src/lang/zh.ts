@@ -1,5 +1,6 @@
 export default {
   route: {
+    sms: '短信管理',
     users: '用户管理',
     about: '关于我们',
     device: '设备管理',

@@ -15,16 +15,33 @@
           </el-table-column>
           <el-table-column prop="nickname" label="昵称" />
           <el-table-column prop="totalDevice" label="设备量" />
+<!--          <el-table-column prop="totalDevice" label="用户坐标" >-->
+<!--            <template slot-scope="scope">-->
+<!--              <svg-icon-->
+<!--                name="location"-->
+<!--                class="card-panel-icon"-->
+<!--                :style="{color: '#4686FC'}"-->
+<!--                @click="() => handlerShowLocation(scope.row)"-->
+<!--              />-->
+<!--            </template>-->
+<!--          </el-table-column>-->
           <el-table-column prop="createdAt" label="创建时间" width="180" />
           <el-table-column
             label="操作"
             width="180">
             <template slot-scope="scope">
-              <el-button
-                size="mini"
-                v-if="scope.row.totalDevice > 0"
-                @click="handleShowDeices(scope.row)"
-              >查看设备</el-button>
+              <el-row :gutter="20">
+                <el-col :span="12">
+                  <el-button
+                    size="mini"
+                    v-if="scope.row.totalDevice > 0"
+                    @click="handleShowDeices(scope.row)"
+                  >查看设备</el-button>
+                </el-col>
+                <el-col :span="12">
+                  <el-button size="mini" type="danger" @click="() => handleShowChangeDialog(scope.row)">修改密码</el-button>
+                </el-col>
+              </el-row>
             </template>
           </el-table-column>
         </el-table>
@@ -41,19 +58,38 @@
         />
       </el-col>
     </el-row>
+    <el-dialog
+      title="修改密码"
+      :visible.sync="changeRow.visit"
+    >
+      <el-row type="flex">
+        <el-col :span="12">
+          <el-input type="text" v-model="changeRow.user.password" v-if="changeRow.visit" />
+        </el-col>
+        <el-col>
+          <el-button @click="changeRow = {visit: false}">取消</el-button>
+          <el-button type="primary" @click="handleUpdateRow">保存</el-button>
+        </el-col>
+      </el-row>
+    </el-dialog>
+
   </div>
 </template>
 
 <script lang="ts">
 
 import { Component, Vue } from 'vue-property-decorator'
-import type { DeviceType, UserListPageType, UserType } from '@/typings'
+import type { ChangeUserType, DeviceType, UserListPageType, UserType } from '@/typings'
 import { UserModule } from '@/store/modules/user'
+import { Loading } from '@/utils/helper'
 
+type ChangeRowType = {visit: true, user: ChangeUserType} | {visit: false}
 @Component({
   name: 'Users'
 })
 export default class extends Vue {
+  public changeRow: ChangeRowType = { visit: false }
+
   /**
    * 表格分页数据
    */
@@ -85,7 +121,6 @@ export default class extends Vue {
   }
 
   mounted() {
-    console.log(UserModule.userListPage.page)
     this.fetchData(UserModule.userListPage.page)
   }
 
@@ -100,6 +135,26 @@ export default class extends Vue {
 
   public handleShowDeices(row: UserType) {
     this.$router.push({ path: '/devices/index', query: { username: row.username } })
+  }
+
+  public handleShowChangeDialog(user: UserType) {
+    this.changeRow = { visit: true, user: { ...user, password: '' } }
+  }
+
+  @Loading()
+  public handleUpdateRow() {
+    const changeUserRow = this.changeRow.user as ChangeUserType
+    try {
+      UserModule.UpdatePassword(changeUserRow)
+      this.changeRow = { visit: false }
+      this.$message.success({ message: '操作成功' })
+    } catch (e) {
+      this.$message.error({ message: '操作失败' })
+    }
+  }
+
+  public handlerShowLocation(location: {lnt: number, lat: number}) {
+
   }
 }
 
