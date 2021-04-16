@@ -77,6 +77,14 @@ declare type ConfigSMSType = {
   ALIYUN_SMS_ACCESS_KEY_SECRET: string
   ALIYUN_SMS_ACCESS_KEY_ID: string
 }
+declare type ConfigQiniuType = {
+  QINIU_ACCESSKEY: string
+  QINIU_BUCKET: string
+  QINIU_DOMAIN: string
+  QINIU_SECRETKEY: string
+}
+
 declare type ConfigType = {
   sms: ConfigSMSType
+  qiniu: ConfigQiniuType
 }

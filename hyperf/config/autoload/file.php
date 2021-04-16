@@ -9,6 +9,8 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+use \Utils\Helper;
+
 return [
     'default' => 'qiniu',
     'storage' => [
@@ -70,10 +72,10 @@ return [
         ],
         'qiniu' => [
             'driver' => \Hyperf\Filesystem\Adapter\QiniuAdapterFactory::class,
-            'accessKey' => env('QINIU_ACCESSKEY'),
-            'secretKey' => env('QINIU_SECRETKEY'),
-            'bucket' => env('QINIU_BUCKET'),
-            'domain' => env('QINIU_DOMAIN'),
+            'accessKey' => Helper::getConfByKey('QINIU_ACCESSKEY'), //env('QIIU_ACCESSKEY'),
+            'secretKey' => Helper::getConfByKey('QINIU_SECRETKEY'),// env('QINIU_SECRETKEY'),
+            'bucket' => Helper::getConfByKey('QINIU_BUCKET'),// env('QINIU_BUCKET'),
+            'domain' => Helper::getConfByKey('QINIU_DOMAIN'),// env('QINIU_DOMAIN'),
         ],
         'cos' => [
             'driver' => \Hyperf\Filesystem\Adapter\CosAdapterFactory::class,

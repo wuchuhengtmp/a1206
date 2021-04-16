@@ -34,4 +34,8 @@ func RegisterApiRoutes(r *mux.Router) {
 	rp.HandleFunc("/configs/sms", middlewares.Auth((new (api.ConfigController)).ShowSms)).Methods("GET").Name("config.sms.Show")
 	// 修改sms配置
 	rp.HandleFunc("/configs/sms", middlewares.Auth((new (api.ConfigController)).UpdateSms)).Methods("PUT").Name("config.sms.update")
+	// 获取qiniu配置
+	rp.HandleFunc("/configs/qiniu", middlewares.Auth((new (api.ConfigController)).ShowQiniu)).Methods("GET").Name("config.qiniu.Show")
+	// 修改qiniu配置
+	rp.HandleFunc("/configs/qiniu", middlewares.Auth((new (api.ConfigController)).UpdateQiniu)).Methods("PUT").Name("config.qiniu.update")
 }

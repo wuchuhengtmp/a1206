@@ -26,7 +26,31 @@
               </el-col>
             </el-row>
           </el-tab-pane>
-          <el-tab-pane label="Task" name="fourth">Task</el-tab-pane>
+          <el-tab-pane label="七牛配置" name="fourth">
+
+            <el-row :gutter="30" type="flex" align="center">
+              <el-col :span="12" :offset="6">
+                <el-form ref="smsForm" :model="qiniu" label-width="15rem">
+                  <el-form-item label="access_key" >
+                    <el-input v-model="qiniu.QINIU_ACCESSKEY"/>
+                  </el-form-item>
+                  <el-form-item label="secretkey" >
+                    <el-input v-model="qiniu.QINIU_SECRETKEY" />
+                  </el-form-item>
+                  <el-form-item label="bucket" >
+                    <el-input v-model="qiniu.QINIU_BUCKET" />
+                  </el-form-item>
+                  <el-form-item label="域名" >
+                    <el-input v-model="qiniu.QINIU_DOMAIN" />
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button type="primary" @click="handleQiniuSave">保存</el-button>
+                  </el-form-item>
+                </el-form>
+              </el-col>
+            </el-row>
+
+          </el-tab-pane>
         </el-tabs>
       </el-col>
     </el-row>
@@ -59,6 +83,7 @@ export default class extends Vue {
 
   mounted() {
     ConfigModule.getSmsConfig()
+    ConfigModule.getQiniuConfig()
   }
 
   @Loading
@@ -66,6 +91,25 @@ export default class extends Vue {
     this.sms = { ...this.sms }
     try {
       ConfigModule.updateSmsConfig()
+      this.$message.success({ message: '操作成功' })
+    } catch (e) {
+      this.$message.error({ message: '操作失败' })
+    }
+  }
+
+  get qiniu() {
+    return ConfigModule.qiniu
+  }
+
+  set qiniu(newSms: ConfigSMSType) {
+    return ConfigModule.setQiniu(newSms)
+  }
+
+  @Loading
+  public handleQiniuSave() {
+    this.qiniu = { ...this.qiniu }
+    try {
+      ConfigModule.updateQiniuConfig()
       this.$message.success({ message: '操作成功' })
     } catch (e) {
       this.$message.error({ message: '操作失败' })

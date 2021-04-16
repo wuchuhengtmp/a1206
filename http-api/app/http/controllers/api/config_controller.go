@@ -17,7 +17,7 @@ import (
 	"net/http"
 )
 
-type ConfigController struct {}
+type ConfigController struct{}
 
 /**
  * 展示当前用户列表
@@ -57,13 +57,84 @@ func (*ConfigController) UpdateSms(w http.ResponseWriter, r *http.Request) {
 		configModel := configs.Configs{}
 		err := model.DB.Transaction(func(tx *gorm.DB) error {
 			err := model.DB.Model(&configModel).Where("name", "ALIYUN_SMS_TEMPLATE").Update("value", data.ALIYUN_SMS_TEMPLATE).Error
-			if err != nil { return err}
+			if err != nil {
+				return err
+			}
 			err = model.DB.Model(&configModel).Where("name", "ALIYUN_SMS_SIGN_NAME").Update("value", data.ALIYUN_SMS_SIGN_NAME).Error
-			if err != nil { return err}
+			if err != nil {
+				return err
+			}
 			err = model.DB.Model(&configModel).Where("name", "ALIYUN_SMS_ACCESS_KEY_SECRET").Update("value", data.ALIYUN_SMS_ACCESS_KEY_SECRET).Error
-			if err != nil { return err}
+			if err != nil {
+				return err
+			}
 			err = model.DB.Model(&configModel).Where("name", "ALIYUN_SMS_ACCESS_KEY_ID").Update("value", data.ALIYUN_SMS_ACCESS_KEY_ID).Error
-			if err != nil { return err}
+			if err != nil {
+				return err
+			}
+			return nil
+		})
+		if err != nil {
+			errMsg := err.Error()
+			res := response.Error{
+				Errors: map[string][]string{"database": {errMsg}},
+			}
+			res.ResponseByHttpWriter(w)
+		} else {
+			res := response.Success{}
+			res.ResponseByHttpWriter(w)
+		}
+	}
+}
+
+func (*ConfigController) ShowQiniu(w http.ResponseWriter, r *http.Request) {
+	config := api.UpdateQiniuConfigRequest{}
+	configModel := configs.Configs{}
+	tmp := struct {
+		Value string
+	}{}
+	model.DB.Model(&configModel).Where("name", "QINIU_ACCESSKEY").First(&tmp)
+	config.QINIU_ACCESSKEY = tmp.Value
+	model.DB.Model(&configModel).Where("name", "QINIU_SECRETKEY").First(&tmp)
+	config.QINIU_SECRETKEY = tmp.Value
+	model.DB.Model(&configModel).Where("name", "QINIU_BUCKET").First(&tmp)
+	config.QINIU_BUCKET = tmp.Value
+	model.DB.Model(&configModel).Where("name", "QINIU_DOMAIN").First(&tmp)
+	config.QINIU_DOMAIN = tmp.Value
+	res := response.Success{Data: config}
+	res.ResponseByHttpWriter(w)
+}
+
+/**
+ * 更新七牛配置
+ */
+func (*ConfigController) UpdateQiniu(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	var data api.UpdateQiniuConfigRequest
+	decoder.Decode(&data)
+	errors := api.ValidateUpdateQiniuConfigRequest(data)
+	if len(errors) > 0 {
+		res := response.Error{Errors: errors}
+		res.ResponseByHttpWriter(w)
+	} else {
+		configModel := configs.Configs{}
+		err := model.DB.Transaction(func(tx *gorm.DB) error {
+			err := model.DB.Model(&configModel).Where("name", "QINIU_ACCESSKEY").Update("value", data.QINIU_ACCESSKEY).Error
+			if err != nil {
+				return err
+			}
+			err = model.DB.Model(&configModel).Where("name", "QINIU_SECRETKEY").Update("value", data.QINIU_SECRETKEY).Error
+			if err != nil {
+				return err
+			}
+			err = model.DB.Model(&configModel).Where("name", "QINIU_BUCKET").Update("value", data.QINIU_BUCKET).Error
+			if err != nil {
+				return err
+			}
+			err = model.DB.Model(&configModel).Where("name", "QINIU_DOMAIN").Update("value", data.QINIU_DOMAIN).Error
+			if err != nil {
+				return err
+			}
 			return nil
 		})
 		if err != nil {

@@ -26,5 +26,9 @@ class Configs extends Seeder
         DB::insert("INSERT INTO `configs`(`id`, `name`, `value`, `created_at`, `updated_at`, `deleted_at`) VALUES (10, 'ALIYUN_SMS_SIGN_NAME', '优亿生活', NULL, NULL, NULL)");
         DB::insert("INSERT INTO `configs`(`id`, `name`, `value`, `created_at`, `updated_at`, `deleted_at`) VALUES (11, 'ALIYUN_SMS_ACCESS_KEY_SECRET', 'FiU9tYSRaWeJgbzVIm2V8dnxMYw4De', NULL, NULL, NULL)");
         DB::insert("INSERT INTO `configs`(`id`, `name`, `value`, `created_at`, `updated_at`, `deleted_at`) VALUES (12, 'ALIYUN_SMS_ACCESS_KEY_ID', 'LTAI5tN4vQBjUzDgimwm6oTm', NULL, NULL, NULL)");
+        DB::insert("INSERT INTO `configs`(`id`, `name`, `value`, `created_at`, `updated_at`, `deleted_at`) VALUES (13, 'QINIU_ACCESSKEY', 'F-Vtz4jH4Owaky1pLoJThqaO6ReK8Oj1sp1vRi15', NULL, NULL, NULL)");
+        DB::insert("INSERT INTO `configs`(`id`, `name`, `value`, `created_at`, `updated_at`, `deleted_at`) VALUES (14, 'QINIU_SECRETKEY', 'broq9Zi7W5J48rSXoyRd1iCBXVDRfCFDO0THRewO', NULL, NULL, NULL)");
+        DB::insert("INSERT INTO `configs`(`id`, `name`, `value`, `created_at`, `updated_at`, `deleted_at`) VALUES (15, 'QINIU_BUCKET', 'a1206', NULL, NULL, NULL)");
+        DB::insert("INSERT INTO `configs`(`id`, `name`, `value`, `created_at`, `updated_at`, `deleted_at`) VALUES (16, 'QINIU_DOMAIN', 'qq5m1x1n3.hn-bkt.clouddn.com', NULL, NULL, NULL)");
     }
 }

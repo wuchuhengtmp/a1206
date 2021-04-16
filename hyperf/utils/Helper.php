@@ -111,7 +111,17 @@ class Helper
     }
 
     static public function getConfByKey(string $key): string {
-        return ConfigsModel::query()->where('name', $key)->first()->value;
+        try {
+            $pdo = self::getPdoInstance();
+            $sql = "SELECT `value` from configs WHERE `name` = '{$key}' LIMIT 1";
+            $prepare = $pdo->prepare($sql);
+            $prepare->execute();
+            $res = $prepare->fetch();
+            $val = $res['value'];
+        }catch (\Exception $e) {
+            $val = ConfigsModel::query()->where('name', $key)->first()->value;
+        }
+        return $val;
     }
 
     static public function randStr($length = 10) {
@@ -124,4 +134,17 @@ class Helper
         return $randomString;
     }
 
+    protected static $_dbh = null;
+
+    static public function getPdoInstance(): \PDO {
+        if (self::$_dbh === null) {
+            $db_host = env('HYPERF_DB_HOST');
+            $db_user = env('HYPERF_DB_USERNAME');
+            $db_password = env('HYPERF_DB_PASSWORD');
+            $db = env('HYPERF_DB_DATABASE');
+            $port = env('HYPERF_DB_PORT');
+            self::$_dbh = new \PDO("mysql:host=$db_host;dbname=$db;port=$port", $db_user, $db_password);
+        }
+        return self::$_dbh;
+    }
 }
