@@ -1,29 +1,29 @@
 version: '3'
 
 services:
-#  hyperf:
-#    image: hyperf/hyperf:7.4-alpine-v3.11-swoole
-#    ports:
-#      - "9602:9602"
-#      - "9604:9604"
-#    volumes:
-#      - ./hyperf/:/opt/www/
-#      - ./.env:/opt/www/.env
-#    privileged: true
-#    working_dir: /opt/www/
-#    restart: always
-#    container_name: hyperf
-#    depends_on:
-#      - mysql
-#    networks:
-#      - default
-#    command:
-#      - /bin/sh
-#      - -c
-#      - |
-#        composer install
-#        php bin/hyperf.php tryCreateDatabaseAndSeeder:true
-#        php bin/hyperf.php start
+  hyperf:
+    image: hyperf/hyperf:7.4-alpine-v3.11-swoole
+    ports:
+      - "9602:9602"
+      - "9604:9604"
+    volumes:
+      - ./hyperf/:/opt/www/
+      - ./.env:/opt/www/.env
+    privileged: true
+    working_dir: /opt/www/
+    restart: always
+    container_name: hyperf
+    depends_on:
+      - mysql
+    networks:
+      - default
+    command:
+      - /bin/sh
+      - -c
+      - |
+        composer install
+        php bin/hyperf.php tryCreateDatabaseAndSeeder:true
+        php bin/hyperf.php start
 
   broker:
     image: emqx/emqx:v3.2.8
@@ -67,5 +67,27 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
       TZ: "$TZ"
+ # 管理后台接口
+  http-api:
+    image: golang:1.16.3-alpine3.13
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./http-api:/opt/www/
+    privileged: true
+    depends_on:
+      - mysql
+    working_dir: /opt/www/
+    restart: always
+    environment:
+      - GO111MODULE=on
+      # 国内代理
+      - GOPROXY=https://goproxy.cn,direct
+    container_name: http-api
+    command:
+      - /bin/sh
+      - -c
+      - |
+        go run main.go
 networks:
   default:

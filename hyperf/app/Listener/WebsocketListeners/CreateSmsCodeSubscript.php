@@ -77,7 +77,7 @@ class CreateSmsCodeSubscript implements EventSubscriberInterface
                 ->get(RedisCasheModel::class)
                 ->setMsgInfo($key, ['code' => $code, 'phone' => $data['phone']]);
         } catch (\Exception $e) {
-            WsMessage::resError($event);
+            WsMessage::resError($event, ['errorMsg' => $e->getExceptions()]);
         }
     }
 }

@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  http-api:
+    image: golang:1.16.3-alpine3.13
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/opt/www/
+    privileged: true
+    working_dir: /opt/www/
+    restart: always
+    environment:
+      - GO111MODULE=on
+      # 国内代理
+      - GOPROXY=https://goproxy.cn,direct
+    container_name: http-api
+    command:
+      - /bin/sh
+      - -c
+      - |
+        go run main.go
