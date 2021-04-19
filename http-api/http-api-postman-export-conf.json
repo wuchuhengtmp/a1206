@@ -1,0 +1,433 @@
+{
+	"info": {
+		"_postman_id": "3b8a07c6-642b-4ffd-be7b-5106876e5312",
+		"name": "a1206_警报器",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "登录",
+			"item": [
+				{
+					"name": "授权",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"passwo1rd\",\n    \"username\": \"admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{prefix}}/authorizations",
+							"host": [
+								"{{prefix}}"
+							],
+							"path": [
+								"authorizations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "当前用户信息",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{prefix}}/me",
+							"host": [
+								"{{prefix}}"
+							],
+							"path": [
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "关于我们",
+			"item": [
+				{
+					"name": "用户管理",
+					"item": [
+						{
+							"name": "更改密码",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\n    \"password\": \"12345678\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{prefix}}/users/:id/password",
+									"host": [
+										"{{prefix}}"
+									],
+									"path": [
+										"users",
+										":id",
+										"password"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "2",
+											"description": "用户id"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "关于我们",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{prefix}}/about",
+							"host": [
+								"{{prefix}}"
+							],
+							"path": [
+								"about"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "保存关于我们",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"12312312312\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{prefix}}/about",
+							"host": [
+								"{{prefix}}"
+							],
+							"path": [
+								"about"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "配置",
+			"item": [
+				{
+					"name": "获取短信配置",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{prefix}}/configs/sms",
+							"host": [
+								"{{prefix}}"
+							],
+							"path": [
+								"configs",
+								"sms"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "更新短信配置",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ALIYUN_SMS_TEMPLATE\": \"SMS_199770686\",\n    \"ALIYUN_SMS_SIGN_NAME\": \"优亿生活\",\n    \"ALIYUN_SMS_ACCESS_KEY_SECRET\": \"FiU9tYSRaWeJgbzVIm2V8dnxMYw4De\",\n    \"ALIYUN_SMS_ACCESS_KEY_ID\": \"LTAI5tN4vQBjUzDgimwm6oTm\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{prefix}}/configs/sms",
+							"host": [
+								"{{prefix}}"
+							],
+							"path": [
+								"configs",
+								"sms"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "七牛配置",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{prefix}}/configs/qiniu",
+							"host": [
+								"{{prefix}}"
+							],
+							"path": [
+								"configs",
+								"qiniu"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "更新七牛配置",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"QINIU_ACCESSKEY\": \"F-Vtz4jH4Owaky1pLoJThqaO6ReK8Oj1sp1vRi15\",\n    \"QINIU_BUCKET\": \"a1206\",\n    \"QINIU_DOMAIN\": \"qq5m1x1n3.hn-bkt.clouddn.com\",\n    \"QINIU_SECRETKEY\": \"broq9Zi7W5J48rSXoyRd1iCBXVDRfCFDO0THRewO\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{prefix}}/configs/qiniu",
+							"host": [
+								"{{prefix}}"
+							],
+							"path": [
+								"configs",
+								"qiniu"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "分类表",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "/sfasfasfas",
+					"path": [
+						"sfasfasfas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "用户列表",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{prefix}}/users?page=1",
+					"host": [
+						"{{prefix}}"
+					],
+					"path": [
+						"users"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "设备列表",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{prefix}}/devices?page=1",
+					"host": [
+						"{{prefix}}"
+					],
+					"path": [
+						"devices"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "仪表盘",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{prefix}}/dashboard?page=1",
+					"host": [
+						"{{prefix}}"
+					],
+					"path": [
+						"dashboard"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
