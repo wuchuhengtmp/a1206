@@ -77,7 +77,7 @@ export default {
     profile: '个人中心'
   },
   login: {
-    title: '系统登录',
+    title: '语音报警器管理后台',
     logIn: '登录',
     username: '账号',
     password: '密码',

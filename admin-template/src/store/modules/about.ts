@@ -8,7 +8,6 @@
 import { Action, getModule, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import store from '../index'
 import { GetContent, UpdateContent } from '@/api/about'
-import { getHashes } from 'crypto'
 import { getHash } from '@/utils/helper'
 
 export interface AboutState {

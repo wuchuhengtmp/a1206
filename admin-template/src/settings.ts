@@ -12,7 +12,7 @@ interface ISettings {
 
 // You can customize below settings :)
 const settings: ISettings = {
-  title: 'Vue Typescript Admin',
+  title: '语音报警器管理后台',
   showSettings: true,
   showTagsView: true,
   fixedHeader: false,
