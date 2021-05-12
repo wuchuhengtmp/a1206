@@ -32,7 +32,9 @@ $ docker-compose up # 启动全部服务
       - 8083:8083
       - 8883:8883
       - 8084:8084
-      - 18083:18083 // web管理后台服务
+      - 18083:18083 // web管理后台服务  
+3: 账号密码: admin public 
+
 
 #### 1.5 http-api 服务
 &emsp; 这个提供`rest-full`接口服务，用于支持管理后台，接口配置文件放在`http-api/http-api-postman-export-conf.json`, 把这个文件导入到`postman`中或访问
