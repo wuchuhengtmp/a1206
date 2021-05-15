@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace App\Listener\MqttListener;
 
+use App\CacheModel\RedisCasheModel;
 use App\Events\MqttEvents\AddDevicesEvent;
-use App\Events\MqttEvents\BaseEvent;
 use App\Events\MqttEvents\ReportDataEvent;
 use App\Events\MqttEvents\UpdateDeviceEvent;
 use App\Model\DevicesModel;
 use App\Model\UsersModel;
+use App\Servics\SendCreateFileCommandToDevice;
 use Hyperf\Event\Annotation\Listener;
+use Hyperf\Utils\ApplicationContext;
 use Psr\Container\ContainerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -70,6 +72,19 @@ class ReportDataListener implements ListenerInterface
                 $dispatcher->dispatch(new UpdateDeviceEvent($event->data));
             }
         }
+        // 保存最近通信记录
+        $redis = ApplicationContext::getContainer()->get(RedisCasheModel::class);
+        $redis->tagDeviceOnline($content['deviceid']);
+
+        $device_id = $content['deviceid'];
+        // 检验队列状态并纠正
+        $redis->canResetUploadQueueByDeviceId($device_id) && $redis->tagDeviceQueueToFree($device_id);
+        // 空闲 在线 有文件还没发送，就发送呗
+        $redis->isDeviceFreeByDeviceId($device_id)
+        && $redis->isDeviceOnlineByDeviceId($device_id)
+        && count($redis->getUploadFileQueueByDeviceId($device_id)) > 0
+        && (new SendCreateFileCommandToDevice())->sendFileFormQueueByDeviceId($device_id);
+
     }
 }
 

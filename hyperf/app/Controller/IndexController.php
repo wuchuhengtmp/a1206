@@ -36,7 +36,7 @@ class IndexController extends AbstractController
     {
         $content = $request->getBody()->getContents();
         $content = json_decode($content, true);
-        if (array_key_exists('payload', $content)) {
+        if (array_key_exists('payload', $content) && is_string($content['payload'])) {
             $payload = $content['payload'];
             $payload = substr($payload, 8);
             $payload = json_decode($payload, true);

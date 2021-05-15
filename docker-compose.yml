@@ -23,7 +23,9 @@ services:
       - |
         composer install
         php bin/hyperf.php tryCreateDatabaseAndSeeder:true
-        php bin/hyperf.php start
+        php watch.php -c
+#        php bin/hyperf.php start
+
 
   broker:
     image: emqx/emqx:v3.2.8

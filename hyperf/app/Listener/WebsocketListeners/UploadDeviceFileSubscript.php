@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace App\Listener\WebsocketListeners;
 
+use App\CacheModel\RedisCasheModel;
 use App\Events\WebsocketEvents\BaseEvent;
 use App\Events\WebsocketEvents\UploadDeviceFileEvent;
 use App\Model\FilesModel;
@@ -19,6 +20,7 @@ use Hyperf\Utils\ApplicationContext;
 use League\Flysystem\Filesystem;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Utils\Context;
 use Utils\WsMessage;
 
 class UploadDeviceFileSubscript implements EventSubscriberInterface

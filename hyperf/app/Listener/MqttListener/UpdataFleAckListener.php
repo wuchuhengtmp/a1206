@@ -21,7 +21,7 @@ use Hyperf\Event\Contract\ListenerInterface;
 use Utils\Helper;
 use Utils\Message;
 use Utils\WsMessage;
-use function PHPUnit\Framework\objectEquals;
+use App\Servics\SendCreateFileCommandToDevice;
 
 /**
  * @Listener
@@ -102,6 +102,13 @@ class UpdataFleAckListener implements ListenerInterface
             ApplicationContext::getContainer()
                 ->get(WebsocketBroad2User::class)
                 ->sendSuccessMsg($e, $newDeviceFiles, $msgid, $user->id);
+            // 出栈已成功上传的文件
+            $redisModel->shiftUploadFile2Queue($devcieId);
+            // 如果还有文件在队列中，则接着发送
+            $redisModel->tagDeviceQueueToFree($devcieId);
+            count($redisModel->getUploadFileQueueByDeviceId($devcieId)) > 0
+            && (new SendCreateFileCommandToDevice())->sendFileFormQueueByDeviceId($devcieId);
+
         }
     }
 }
