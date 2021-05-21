@@ -24,24 +24,29 @@ class RegisterValidation implements ValidationContract
      */
     public function goCheck(BaseEvent $event): void
     {
-        $res = new ReportFormat();
+        $e = '';
         $account = WsMessage::getMsgByEvent($event)->res['data'];
         if (!array_key_exists('username', $account)) {
-            throw new UserException('请输入账号');
+            $e = new UserException('请输入账号');
         }
         if (!array_key_exists('password', $account)) {
-            throw new UserException('请输入密码');
+            $e = new UserException('请输入密码');
         }
         if (strlen($account['password']) === 0) {
-            throw new UserException('密码不能为空');
+            $e = new UserException('密码不能为空');
         }
         if (strlen($account['password']) < 6) {
-            throw new UserException('密码不能少于6位');
+            $e = new UserException('密码不能少于6位');
         }
         $userModel = new UsersModel();
         $isUser = $userModel->hasUser(['username' => $account['username']]);
         if ($isUser) {
-            throw new UserException('用户已经存在');
+            $e = new UserException('用户已经存在');
+        }
+        if ($e !== '') {
+            $e->url = $event->url;
+            $e->method = $event->method;
+            throw $e;
         }
     }
 
