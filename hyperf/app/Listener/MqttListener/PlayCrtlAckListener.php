@@ -8,12 +8,14 @@ use App\CacheModel\RedisCasheModel;
 use App\Events\MqttEvents\PlayCrtlAckEvent;
 use App\Events\WebsocketEvents\BaseEvent;
 use App\Servics\WebsocketBroad2User;
+use http\Client\Curl\User;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Utils\ApplicationContext;
 use Psr\Container\ContainerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Swoole\Server;
 use App\Model\{FilesModel, UsersModel, DevicesModel};
+use Utils\Helper;
 use Utils\WsMessage;
 use function PHPUnit\Framework\objectEquals;
 
@@ -50,9 +52,8 @@ class PlayCrtlAckListener implements ListenerInterface
      */
     private function _replyUser(array $data)
     {
-        $payload =  json_decode(substr($data['payload'], 8), true);
-        $username = $data['from_username'];
-        $user = UsersModel::where('username', $username)->first();
+        $payload = Helper::decodeMsgByStr($data['payload']);
+        $user = ApplicationContext::getContainer()->get(UsersModel::class)->getUserByDeviceId($payload['deviceid']);
         $devcieId = $payload['deviceid'];
         $msgid = $payload['msgid'];
         $redisModel = ApplicationContext::getContainer()->get(RedisCasheModel::class);

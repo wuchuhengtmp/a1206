@@ -42,5 +42,7 @@ return [
     \App\Listener\WebsocketListeners\UpdateDevicePropertySubscript::class,
     \App\Listener\WebsocketListeners\AboutSubscript::class,
     \App\Listener\WebsocketListeners\CreateSmsCodeSubscript::class,
-    \App\Listener\WebsocketListeners\ResetMePasswordSubscript::class
+    \App\Listener\WebsocketListeners\ResetMePasswordSubscript::class,
+    \App\Listener\WebsocketListeners\DeviceBindUserSubscript::class,
+    \App\Listener\WebsocketListeners\DeviceUnbindUserSubscript::class,
     ];

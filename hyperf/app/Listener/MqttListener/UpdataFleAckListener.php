@@ -14,6 +14,7 @@ use App\Model\DeviceFilesModel;
 use App\Model\DevicesModel;
 use App\Model\UsersModel;
 use App\Servics\WebsocketBroad2User;
+use http\Client\Curl\User;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Utils\ApplicationContext;
 use Psr\Container\ContainerInterface;
@@ -48,8 +49,8 @@ class UpdataFleAckListener implements ListenerInterface
     public function process(object $event)
     {
         $data = $event->data;
-        $user = UsersModel::query()->where('username', $data['from_username'])->first();
         $payload = Helper::decodeMsgByStr($data['payload']);
+        $user = ApplicationContext::getContainer()->get(UsersModel::class)->getUserByDeviceId($payload['deviceid']);
         $msgid = $payload['msgid'];
         $devcieId = $payload['deviceid'];
         $redisModel = ApplicationContext::getContainer()->get(RedisCasheModel::class);

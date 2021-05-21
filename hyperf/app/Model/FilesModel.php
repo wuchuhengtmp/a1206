@@ -76,6 +76,7 @@ class FilesModel extends Model
     {
         $fileCurlName = str_replace("mp3", '.mp3',  strtolower($fileCurlName));
         $fileCurlName = str_replace(' ', '', $fileCurlName);
-        return self::where('path', 'like', "%" . $fileCurlName)->first()->url;
+        var_dump($fileCurlName);
+        return self::where('path', 'like', "%" . $fileCurlName)->first()->url ?? '';
     }
 }

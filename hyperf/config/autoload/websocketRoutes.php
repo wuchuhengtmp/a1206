@@ -80,7 +80,14 @@ return Router::group(
         Router::get('/me/devices', ShowMyDevicesEvent::class),
         // 用户设备详情
         Router::get('/me/devices/:id', ShowDeviceDetailEvent::class, [UserDeviceMustBeExistsValidation::class ]),
-        // 更新用户属性
+        // 绑定设备
+        Router::post('/me/devices', \App\Events\WebsocketEvents\DeviceBindUser::class, [
+            \App\Validations\WsValidations\DeviceMustBeExistsValidation::class
+        ]),
+        Router::delete('/me/devices/:id', \App\Events\WebsocketEvents\DeviceUnbindUser::class, [
+            \App\Validations\WsValidations\DeviceUnbindUserRequest::class
+        ]),
+    // 更新用户属性
         Router::put('/me', UpdateMeEnvent::class, [UpdateMeRequestValidation::class ]),
         // 设备在线才可操作集合
             ...Router::group(

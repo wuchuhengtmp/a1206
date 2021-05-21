@@ -15,6 +15,7 @@ use Hyperf\Utils\ApplicationContext;
 use Psr\Container\ContainerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Swoole\Server;
+use Utils\Helper;
 use Utils\WsMessage;
 
 /**
@@ -44,14 +45,14 @@ class DisconnectListener implements ListenerInterface
         $data = $event->data;
         $deviceId = $data['client_id'];
         $redis = ApplicationContext::getContainer()->get(RedisCasheModel::class);
-        $isUser = UsersModel::query()->where('username', $data['username'])->get()->isNotEmpty();
+        $hasUser = ApplicationContext::getContainer()->get(UsersModel::class)->getUserByDeviceId($deviceId);
         $isDevice = DevicesModel::query()->where('device_id', $deviceId)->get()->isNotEmpty();
-        if ($isUser && $isDevice) {
+        if ($hasUser && $isDevice) {
             // 更新设备状态
             $device = DevicesModel::query()->where('device_id', $deviceId)->first();
             $device->status = 'offline';
             $device->save();
-            $user = UsersModel::query()->where('username', $data['username'])->first();
+            $user = $hasUser;
             // 设备列表推送给在线的用户
             $devicves = DevicesModel::query()->where('user_id', $user->id)->get();
             $pushData = [];

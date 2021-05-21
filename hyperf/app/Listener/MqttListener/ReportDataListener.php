@@ -44,8 +44,7 @@ class ReportDataListener implements ListenerInterface
     public function process($event)
     {
         $payload = $event->data['payload'];
-        $content = $payload;
-        $content = json_decode(substr($content, 8), true);
+        $content = Helper::decodeMsgByStr($payload);
         $content['command'] = 'report_data_ack';
         $content['content'] = MqttClient::SUCCESS_CONTENT;
         $msg = Helper::fMqttMsg($content);
@@ -60,7 +59,7 @@ class ReportDataListener implements ListenerInterface
         if ($isUser) {
             $user = UsersModel::query()->where('username', $data['from_username'])->first();
             $payload = json_decode(substr($data['payload'], 8), true);
-            $isDevices = DevicesModel::query()->where('user_id', $user->id)->where('device_id', $payload['deviceid'])
+            $isDevices = DevicesModel::query()->where('device_id', $payload['deviceid'])
                 ->get()
                 ->isNotEmpty();
             $dispatcher = $this->container->get(EventDispatcherInterface::class);

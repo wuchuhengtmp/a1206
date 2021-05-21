@@ -4,6 +4,7 @@ declare (strict_types=1);
 namespace App\Model;
 
 use Hyperf\DbConnection\Model\Model;
+use PhpParser\Node\Expr\Cast\Object_;
 use Utils\Encrypt;
 use Utils\ReportFormat;
 
@@ -86,5 +87,11 @@ class UsersModel extends Model
     public function getUserById(int $uid): array
     {
         return self::query()->find($uid)->toArray();
+    }
+
+    public function getUserByDeviceId(string $deviceId)
+    {
+        $device = DevicesModel::where('device_id', $deviceId)->first();
+        return self::where('id', $device->user_id)->first();
     }
 }

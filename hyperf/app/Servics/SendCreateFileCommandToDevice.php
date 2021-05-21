@@ -50,15 +50,21 @@ class SendCreateFileCommandToDevice extends BaseAbstract
 
 
         $redisModel = ApplicationContext::getContainer()->get(RedisCasheModel::class);
+        $event = new BaseEvent($event->fd, $event->method, $event->url);
+        $e = new BaseException('');
+        $e->url = $event->url;
+        $e->method = $event->method;
         // 设备不在线
         if (!$redisModel->isDeviceOnlineByDeviceId($device['device_id'])) {
             $redisModel->addUploadFileQueue($topic, $message, $device, $msgid, $data);
-            throw new BackEndException('设备不在线, 已加入队列中');
+            $e->errorMsg = '设备不在线, 已加入队列中';
+            throw $e;
         }
         // 设备在下载别的文件，没空,后面再下
         if (!$redisModel->isDeviceFreeByDeviceId($device['device_id'])) {
             $redisModel->addUploadFileQueue($topic, $message, $device, $msgid, $data);
-            throw new BackEndException('设备正在下载别的文件, 已加入队列中');
+            $e->errorMsg = '设备正在下载别的文件, 已加入队列中';
+            throw $e;
         }
         // 标记为非空闲状态，通知设备下载文件
         $redisModel->tagDeviceQueueToBusy($device['device_id']);

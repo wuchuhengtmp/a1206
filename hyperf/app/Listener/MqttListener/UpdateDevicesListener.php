@@ -13,6 +13,7 @@ use Hyperf\Event\Annotation\Listener;
 use Hyperf\Utils\ApplicationContext;
 use Psr\Container\ContainerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
+use Utils\Helper;
 
 /**
  * @Listener
@@ -37,8 +38,8 @@ class UpdateDevicesListener implements ListenerInterface
     public function process(object $event)
     {
         $data = $event->data;
-        $user = UsersModel::query()->where('username', $data['from_username'])->first();
-        $payload = json_decode(substr($data['payload'], 8), true);
+        $payload = Helper::decodeMsgByStr($data['payload']);
+        $user = ApplicationContext::getContainer()->get(UsersModel::class)->getUserByDeviceId($payload['deviceid']);
         $device = DevicesModel::query()->where('user_id', $user->id)->where('device_id', $payload['deviceid'])
             ->first();
         $redis = ApplicationContext::getContainer()->get(RedisCasheModel::class);
@@ -50,7 +51,6 @@ class UpdateDevicesListener implements ListenerInterface
         $device->status = 'online';
         $device->version = $registerInfo['content']['version'];
         $device->last_ack_at = date("Y-m-d H:i:s", time());
-//        $device->connected_at = date("Y-m-d H:i:s", time());
         $device->client_id = $connectInfo['client_id'];
         $device->clean_session = 0;
         $device->play_state = $payload['content']['play_state'];

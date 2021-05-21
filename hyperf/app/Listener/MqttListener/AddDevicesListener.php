@@ -12,6 +12,7 @@ use Hyperf\Event\Annotation\Listener;
 use Hyperf\Utils\ApplicationContext;
 use Psr\Container\ContainerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
+use Utils\Helper;
 
 /**
  * @Listener
@@ -40,7 +41,7 @@ class AddDevicesListener implements ListenerInterface
         $data = $event->data;
         $username = $data['from_username'];
         $user = UsersModel::where('username', $username)->first();
-        $payload = json_decode(substr($data['payload'], 8), true);
+        $payload = Helper::decodeMsgByStr($data['payload']);
         $device = new DevicesModel();
         $redis = ApplicationContext::getContainer()->get(RedisCasheModel::class);
         $connectInfo = $redis->getConnectInfoByClientId($event->data['from_client_id']);
