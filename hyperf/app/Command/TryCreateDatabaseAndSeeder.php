@@ -45,6 +45,11 @@ class TryCreateDatabaseAndSeeder extends HyperfCommand
             die();
         }
 
+        $this->createTryCreateDatabase($dbh, $db);
+    }
+
+    public function createTryCreateDatabase($dbh, $db)
+    {
         $stmt = $dbh->query("SELECT COUNT(*) FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '${db}'");
         $is_db_exists = (bool) $stmt->fetchColumn();
         if (!$is_db_exists) {

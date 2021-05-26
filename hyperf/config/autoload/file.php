@@ -72,10 +72,10 @@ return [
         ],
         'qiniu' => [
             'driver' => \Hyperf\Filesystem\Adapter\QiniuAdapterFactory::class,
-            'accessKey' => Helper::getConfByKey('QINIU_ACCESSKEY'), //env('QIIU_ACCESSKEY'),
-            'secretKey' => Helper::getConfByKey('QINIU_SECRETKEY'),// env('QINIU_SECRETKEY'),
-            'bucket' => Helper::getConfByKey('QINIU_BUCKET'),// env('QINIU_BUCKET'),
-            'domain' => Helper::getConfByKey('QINIU_DOMAIN'),// env('QINIU_DOMAIN'),
+            'accessKey' => env('QIIU_ACCESSKEY'), // Helper::getConfByKey('QINIU_ACCESSKEY'),
+            'secretKey' => env('QINIU_SECRETKEY'), // Helper::getConfByKey('QINIU_SECRETKEY'),/
+            'bucket' => env('QINIU_BUCKET'), // Helper::getConfByKey('QINIU_BUCKET'),/
+            'domain' => env('QINIU_DOMAIN'), // Helper::getConfByKey('QINIU_DOMAIN'),/
         ],
         'cos' => [
             'driver' => \Hyperf\Filesystem\Adapter\CosAdapterFactory::class,

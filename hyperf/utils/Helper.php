@@ -112,14 +112,15 @@ class Helper
 
     static public function getConfByKey(string $key): string {
         try {
+            $val = ConfigsModel::query()->where('name', $key)->first()->value;
+        }catch (\Exception $e) {
             $pdo = self::getPdoInstance();
             $sql = "SELECT `value` from configs WHERE `name` = '{$key}' LIMIT 1";
             $prepare = $pdo->prepare($sql);
             $prepare->execute();
             $res = $prepare->fetch();
             $val = $res['value'];
-        }catch (\Exception $e) {
-            $val = ConfigsModel::query()->where('name', $key)->first()->value;
+
         }
         return $val;
     }
